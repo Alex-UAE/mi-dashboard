@@ -1059,6 +1059,7 @@ function enterApp(){
   const conn=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
   if(conn?.addEventListener) conn.addEventListener('change',onNet);
   setInterval(tryPull,4000); setInterval(flush,10000); setInterval(checkDue,60000); setTimeout(checkDue,3000);
+  setInterval(checkNotices,30000); setTimeout(checkNotices,2000);
   document.addEventListener('visibilitychange',()=>{ if(!document.hidden)onNet(); }); window.addEventListener('focus',onNet);
   // Traer lo último de Firebase antes de mostrar el menú: así solo se pinta una vez
   const showApp = () => {
