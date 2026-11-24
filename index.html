@@ -797,7 +797,7 @@ $('#widgets').addEventListener('submit', e=>{
   save(); renderWidgets(); toast('Agregado');
 });
 function syncOrder(visibleIds){
-  const slots=[]; state.widgetOrder.forEach((id,i)=>{ const w=WIDGETS[id]; if(w&&w.view===currentView&&!state.hiddenWidgets.includes(id)) slots.push(i); });
+  const slots=[]; state.widgetOrder.forEach((id,i)=>{ if(WIDGETS[id]&&widgetView(id)===currentView&&!state.hiddenWidgets.includes(id)) slots.push(i); });
   slots.forEach((idx,k)=>{ if(visibleIds[k]) state.widgetOrder[idx]=visibleIds[k]; });
 }
 $('#widgets').addEventListener('dragstart', e=>{
