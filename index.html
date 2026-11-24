@@ -794,13 +794,8 @@ function renderWidgets(){
   const extras=(state.extraWidgets||[]).filter(w=>w.view===currentView&&!state.hiddenWidgets.includes(w.id))
     .map(w=>({...w,key:w.id,extra:true}));
   const all=[...base,...extras];
-  const addBlock=state.editMode?`<section class="panel md:col-span-12 p-4">
-    <div class="flex items-center gap-2 mb-3"><span style="color:var(--accent)">${icon('plus','h-4 w-4')}</span><h3 class="text-sm font-bold">Añadir widget</h3></div>
-    <div class="flex flex-wrap gap-2">${ALL_IDS.map(id=>{
-      const w=WIDGETS[id]; if(!w)return '';
-      return `<button data-act="add-widget" data-id="${id}" class="btn btn-sm">${icon(w.icon,'h-4 w-4')} Agregar ${w.title}</button>`;
-    }).join('')}</div>
-    <p class="text-[11px] mt-3" style="color:var(--muted)">Se crea un widget nuevo en esta vista; puedes agregar varios del mismo tipo (por ejemplo, uno por foto o video). Usa el ícono de tamaño para cambiar su ancho y el de basura para borrarlo.</p>
+  const addBlock=state.editMode?`<section class="panel md:col-span-12 p-3">
+    <button data-act="open-add-widget" class="w-full flex items-center justify-center gap-2 rounded-lg py-2 text-sm font-semibold transition" style="border:2px solid var(--accent);color:var(--accent)">${icon('plus','h-4 w-4')} Añadir un bloque</button>
   </section>`:'';
   $('#widgets').innerHTML=addBlock+(all.length?all.map(widgetCard).join(''):`<div class="panel col-span-12 p-10 text-center"><div class="text-4xl mb-3">📦</div><div class="font-bold">Sin widgets visibles</div><div class="text-xs mt-1" style="color:var(--muted)">Activa widgets en modo edición.</div></div>`);
   updateClock();
