@@ -589,6 +589,7 @@ $('#widgets').addEventListener('click', e=>{
   else if(act==='del-task'){ state.tasks=state.tasks.filter(t=>t.id!==btn.dataset.id); save(); renderWidgets(); }
   else if(act==='del-course'){ state.courses=state.courses.filter(c=>c.id!==btn.dataset.id); save(); renderWidgets(); }
   else if(act==='del-shortcut'){ e.preventDefault(); e.stopPropagation(); state.shortcuts=state.shortcuts.filter(s=>s.id!==btn.dataset.id); save(); renderWidgets(); }
+  else if(act==='del-media'){ state.media=(state.media||[]).filter(m=>m.id!==btn.dataset.id); save(); renderWidgets(); toast('Eliminado'); }
   else if(act==='hide'){ if(!state.hiddenWidgets.includes(id)) state.hiddenWidgets.push(id); save(); renderWidgets(); renderToggles(); toast('Widget ocultado'); }
   else if(act==='up'||act==='down'){
     const order=state.widgetOrder.filter(x=>!state.hiddenWidgets.includes(x)&&WIDGETS[x]?.view===currentView);
