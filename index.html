@@ -815,6 +815,20 @@ $('#widgets').addEventListener('click', async e=>{
 /* ============ Navegación ============ */
 $('#nav').addEventListener('click', e=>{ const it=e.target.closest('.nav-item'); if(it) setView(it.dataset.section); });
 $('#quickSettings').addEventListener('click', ()=>openSettings());
+$('#bellBtn').addEventListener('click', ()=>{ updateBell(); $('#bellPanel').classList.toggle('hidden'); });
+$('#bellClose').addEventListener('click', ()=>$('#bellPanel').classList.add('hidden'));
+document.addEventListener('click', e=>{ if(!e.target.closest('#bellBtn') && !e.target.closest('#bellPanel')) $('#bellPanel').classList.add('hidden'); });
+$('#bellList').addEventListener('click', e=>{ if(e.target.closest('[data-act="go-tareas"]')){ setView('tareas'); $('#bellPanel').classList.add('hidden'); } });
+$('#notifEnable').addEventListener('click', async ()=>{
+  if(!('Notification' in window)){ toast('Este navegador no admite notificaciones'); return; }
+  const p=await Notification.requestPermission();
+  state.notify.enabled = p==='granted'; save(); updateNotifStatus();
+  toast(p==='granted'?'Notificaciones activadas':'Permiso no concedido');
+});
+$('#notifTest').addEventListener('click', async ()=>{
+  if(Notification.permission!=='granted'){ toast('Primero activa las notificaciones'); return; }
+  await fireNotify('Mi Dashboard','Notificación de prueba ✓'); toast('Notificación enviada');
+});
 $('#editToggle').addEventListener('change', e=>{
   state.editMode=e.target.checked; save();
   document.body.classList.toggle('editing', !!state.editMode);
