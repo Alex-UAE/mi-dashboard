@@ -516,7 +516,7 @@ const WIDGETS = {
     const first=new Date(calY,calM,1), days=new Date(calY,calM+1,0).getDate();
     const offset=(first.getDay()+6)%7;
     const today=localISO(new Date());
-    const marked={}; (state.tasks||[]).forEach(t=>{ if(t.date && !t.done) marked[t.date]=(marked[t.date]||0)+1; });
+    const marked={}; (state.tasks||[]).forEach(t=>{ if(t.date && taskStatus(t)!=='hecha') marked[t.date]=(marked[t.date]||0)+1; });
     const name=new Intl.DateTimeFormat('es-EC',{month:'long',year:'numeric'}).format(first);
     let cells='';
     for(let i=0;i<offset;i++) cells+='<div></div>';
