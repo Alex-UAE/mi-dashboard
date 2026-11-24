@@ -533,15 +533,6 @@ const WIDGETS = {
       </div>
     </div>`;
   }},
-  metas: { view:'progreso', title:'Mis metas', icon:'chart', span:'md:col-span-12', render(){
-    const rows=(state.goals||[]).map(g=>`<div class="py-3 border-b last:border-0" style="border-color:var(--border)">
-      <div class="flex justify-between items-center mb-2"><span class="text-sm font-semibold truncate">${esc(g.title)}</span>
-        <div class="flex items-center gap-2"><span class="text-xs font-bold" style="color:var(--accent)">${g.progress||0}%</span>
-          <button class="icon-btn danger edit-only" data-act="del-goal" data-id="${g.id}">${icon('trash','h-4 w-4')}</button></div></div>
-      <input type="range" min="0" max="100" value="${g.progress||0}" data-act="goal-range" data-id="${g.id}" class="w-full"></div>`).join('');
-    return `${rows||'<p class="py-3 text-center text-sm" style="color:var(--muted)">Sin metas todavía</p>'}
-      <form class="flex gap-2 mt-3 edit-only" data-form="add-goal"><input class="input" name="title" placeholder="Nueva meta..." required><button class="btn btn-sm shrink-0" type="submit">${icon('plus','h-4 w-4')} Agregar</button></form>`;
-  }},
   atajos: { view:'atajos', title:'Atajos', icon:'link', span:'md:col-span-12', render(){
     const items = state.shortcuts.map(s=>`<a href="${esc(s.url)}" target="_blank" rel="noopener" class="group flex items-center gap-3 rounded-xl p-3" style="background:var(--panel2);border:1px solid var(--border)">
       <div class="flex h-9 w-9 items-center justify-center rounded-lg text-sm font-bold" style="background:var(--accent-soft);color:var(--accent)">${esc((s.name||'?').charAt(0).toUpperCase())}</div>
