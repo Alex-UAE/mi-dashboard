@@ -379,6 +379,18 @@ async function fireNotify(title,body){
     } else new Notification(title,{body,icon:'icon-192.png'});
   }catch(e){ try{ new Notification(title,{body}); }catch(ex){} }
 }
+async function checkNotices(){
+  if(!state.notify?.enabled || Notification.permission!=='granted') return;
+  try{
+    const r=await fetch(`${FIREBASE_URL}/notice.json?v=${Date.now()}`,{cache:'no-store'});
+    const n=await r.json();
+    if(n && n.id && !(state.notify.notified||[]).includes(n.id)){
+      await fireNotify(n.title||'Mi Dashboard', n.body||'');
+      state.notify.notified.push(n.id); save();
+      await fetch(`${FIREBASE_URL}/notice.json`,{method:'DELETE'}).catch(()=>{});
+    }
+  }catch(e){}
+}
 function checkDue(){
   if(!state.notify?.enabled || Notification.permission!=='granted') return;
   const today=localISO(new Date());
