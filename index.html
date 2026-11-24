@@ -810,17 +810,29 @@ $('#widgets').addEventListener('click', e=>{
   else if(act==='hide'){ if(!state.hiddenWidgets.includes(id)) state.hiddenWidgets.push(id); save(); renderWidgets(); renderToggles(); toast('Widget ocultado'); }
   else if(act==='add-widget'){
     const wid=btn.dataset.id;
-    state.hiddenWidgets=state.hiddenWidgets.filter(x=>x!==wid);
-    if(!widgetViews(wid).includes(currentView)){
-      state.placements=state.placements||{};
-      state.placements[wid]=[...widgetViews(wid),currentView];
-    }
-    save(); renderWidgets(); renderToggles(); toast(WIDGETS[wid].title+' agregado a esta vista');
+    state.extraWidgets=state.extraWidgets||[];
+    state.extraWidgets.push({id:uid(),type:wid,view:currentView,mediaId:null});
+    save(); renderWidgets(); toast(WIDGETS[wid].title+' agregado como nuevo widget');
+  }
+  else if(act==='size'){
+    const key=btn.closest('.widget').dataset.key;
+    const cur=spanOf(key,btn.closest('.widget').dataset.type);
+    const next=SIZES[(SIZES.indexOf(cur)+1)%SIZES.length];
+    state.sizeOverrides[key]=next; save(); renderWidgets();
+    toast('Tamaño: '+SIZE_LABEL[next]);
+  }
+  else if(act==='del-instance'){
+    const wid=btn.dataset.id;
+    state.extraWidgets=(state.extraWidgets||[]).filter(w=>w.id!==wid);
+    delete state.sizeOverrides[wid];
+    save(); renderWidgets(); toast('Widget eliminado');
   }
   else if(act==='up'||act==='down'){
-    const order=state.widgetOrder.filter(x=>!state.hiddenWidgets.includes(x)&&widgetViews(x).includes(currentView));
-    const i=order.indexOf(id), j=act==='up'?i-1:i+1; if(j<0||j>=order.length) return;
-    [order[i],order[j]]=[order[j],order[i]]; syncOrder(order); save(); renderWidgets();
+    const els=$$('.widget'), i=els.findIndex(e=>e.dataset.id===id);
+    const j=act==='up'?i-1:i+1; if(i<0||j<0||j>=els.length) return;
+    if(act==='up') els[i].parentNode.insertBefore(els[i],els[j]);
+    else els[i].parentNode.insertBefore(els[i],els[j].nextSibling);
+    syncVisibleOrder(); save(); renderWidgets();
   }
   else if(act==='go-tareas') setView('tareas');
   else if(act==='open-settings') openSettings();
