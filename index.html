@@ -329,6 +329,13 @@ function updateNetChip(){
   else if (!canUseNetwork()){ el.textContent = 'Solo Wi-Fi'; el.style.color = '#f59e0b'; }
   else { el.textContent = 'Wi-Fi'; el.style.color = '#22c55e'; }
 }
+function updateEditToggle(){
+  const t=$('#editToggle'), track=$('#editTrack'), knob=$('#editKnob');
+  if(!t||!track||!knob) return;
+  t.checked=!!state.editMode;
+  track.style.background=state.editMode?'var(--accent)':'var(--border)';
+  knob.style.transform=state.editMode?'translateX(16px)':'none';
+}
 function applyTheme(){
   const c = state.theme.color || '#ef4444';
   const h = c.replace('#','');
