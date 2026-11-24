@@ -463,7 +463,7 @@ const WIDGETS = {
     return `<div class="mb-4"><div class="flex justify-between text-xs mb-1.5" style="color:var(--muted)"><span>Promedio</span><span class="font-bold" style="color:var(--text)">${avg}%</span></div>
       <div class="h-2 rounded-full overflow-hidden" style="background:var(--border)"><div class="progress-fill" style="width:${avg}%"></div></div></div>
       ${rows || '<p class="text-sm py-4 text-center" style="color:var(--muted)">Sin cursos</p>'}
-      <form class="flex gap-2 mt-4" data-form="add-course"><input class="input" name="name" placeholder="Nuevo curso..." required><button class="btn btn-sm shrink-0" type="submit">${icon('plus','h-4 w-4')} Agregar</button></form>`;
+      <form class="flex gap-2 mt-4 edit-only" data-form="add-course"><input class="input" name="name" placeholder="Nuevo curso..." required><button class="btn btn-sm shrink-0" type="submit">${icon('plus','h-4 w-4')} Agregar</button></form>`;
   }},
   tareas: { view:'tareas', title:'Tareas y recordatorios', icon:'check', span:'md:col-span-12', render(){
     const today = localISO(new Date()); const rank={alta:0,media:1,baja:2};
