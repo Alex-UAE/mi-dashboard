@@ -479,7 +479,7 @@ const WIDGETS = {
         <button class="icon-btn danger edit-only" data-act="del-task" data-id="${t.id}">${icon('trash','h-4 w-4')}</button></div>`;
     }).join('');
     const pending = state.tasks.filter(t=>!t.done).length;
-    return `<form class="grid grid-cols-1 sm:grid-cols-[1fr_auto_auto] gap-2 mb-2" data-form="add-task">
+    return `<form class="grid grid-cols-1 sm:grid-cols-[1fr_auto_auto] gap-2 mb-2 edit-only" data-form="add-task">
       <input class="input" name="title" placeholder="¿Qué tienes que hacer?" required>
       <input class="input" type="date" name="date"><select class="input" name="priority"><option value="media">Media</option><option value="alta">Alta</option><option value="baja">Baja</option></select>
       <button class="btn btn-sm sm:col-span-3" type="submit">${icon('plus','h-4 w-4')} Agregar tarea</button></form>
