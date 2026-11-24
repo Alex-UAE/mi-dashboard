@@ -854,7 +854,9 @@ let draggedEl=null;
 $('#widgets').addEventListener('click', e=>{
   const btn=e.target.closest('[data-act]'); if(!btn) return;
   const act=btn.dataset.act, id=btn.closest('.widget')?.dataset.id;
-  if(act==='set-status'){
+  if(act==='edit-task'){ editingTaskId=btn.dataset.id; renderWidgets(); }
+  else if(act==='cancel-edit'){ editingTaskId=null; renderWidgets(); }
+  else if(act==='set-status'){
     const t=state.tasks.find(x=>x.id===btn.dataset.id);
     if(t){
       t.status=btn.dataset.status; delete t.done;
