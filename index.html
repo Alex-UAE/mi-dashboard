@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<title>Mi Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','sans-serif']}}}}</script>
+<style>
+  :root{--bg:#0a0a0a;--panel:#141414;--panel2:#1b1b1b;--border:#292929;--text:#f5f5f5;--muted:#9a9a9a;--accent:#ef4444;--accent-soft:rgba(239,68,68,.16);--on-accent:#fff}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,sans-serif;-webkit-font-smoothing:antialiased}
+  ::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:#333;border-radius:99px}
+  .panel{background:var(--panel);border:1px solid var(--border);border-radius:1rem}
+  .input{width:100%;background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:.6rem;padding:.6rem .8rem;font-size:.875rem;outline:none}
+  .input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;background:var(--accent);color:var(--on-accent);border:none;border-radius:.6rem;padding:.6rem .95rem;font-size:.85rem;font-weight:600;cursor:pointer}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .btn-ghost{background:var(--panel2);color:var(--text);border:1px solid var(--border)}
+  .btn-sm{padding:.4rem .65rem;font-size:.78rem;border-radius:.5rem}
+  .icon-btn{display:inline-flex;align-items:center;justify-content:center;width:1.8rem;height:1.8rem;border-radius:.5rem;color:var(--muted);background:none;border:none;cursor:pointer}
+  .icon-btn:hover{background:var(--panel2);color:var(--text)}
+  .icon-btn.danger:hover{color:#ef4444}
+  .label{display:block;font-size:.75rem;font-weight:600;color:var(--muted);margin-bottom:.4rem}
+  .chip{display:inline-flex;align-items:center;gap:.35rem;border:1px solid var(--border);background:var(--panel2);border-radius:99px;padding:.25rem .6rem;font-size:.72rem;color:var(--muted)}
+  .nav-item{display:flex;align-items:center;gap:.75rem;width:100%;padding:.6rem .8rem;border-radius:.65rem;color:var(--muted);font-size:.875rem;font-weight:500;cursor:pointer;border:none;background:none;text-align:left}
+  .nav-item:hover{background:var(--panel2);color:var(--text)}
+  .nav-item.active{background:var(--accent-soft);color:var(--accent)}
+  .tab-btn{padding:.55rem .85rem;font-size:.82rem;font-weight:600;color:var(--muted);border:none;border-bottom:2px solid transparent;background:none;cursor:pointer;white-space:nowrap}
+  .tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+  .tab-panel{display:none}.tab-panel.active{display:block}
+  .swatch{width:2rem;height:2rem;border-radius:50%;border:2px solid transparent;cursor:pointer}
+  .swatch.selected{border-color:var(--text)}
+  .progress-fill{height:100%;background:var(--accent);border-radius:99px;transition:width .3s}
+  .fade-in{animation:fadeIn .3s ease both}@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .shake{animation:shake .4s}@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+  .drag-handle{cursor:grab}.widget.dragging{opacity:.4;border-style:dashed}.widget.drop-target{border-color:var(--accent)}
+  .task-done .task-title{text-decoration:line-through;color:#666}
+  input[type=range]{-webkit-appearance:none;height:5px;border-radius:99px;background:var(--border)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--accent);cursor:pointer;border:3px solid var(--panel)}
+  input[type=color]{-webkit-appearance:none;border:none;background:none;width:2.2rem;height:2.2rem;padding:0;cursor:pointer}
+  input[type=color]::-webkit-color-swatch{border:1px solid var(--border);border-radius:.5rem}
+  #loginScreen{background:radial-gradient(circle at 50% 0%,#1a1a1a,#080808 60%);min-height:100dvh;overflow-y:auto}
+  #sidebar{height:100dvh}
+  @media (orientation:landscape) and (max-height:520px){
+    #sidebar{width:13rem}#sideProfile{display:none}#loginScreen{align-items:flex-start}.login-card{margin:auto 0;padding:1.25rem}
+  }
+  @media(max-width:767px){#sidebar{position:fixed;z-index:40;left:0;top:0;bottom:0;transform:translateX(-105%);transition:transform .25s}#sidebar.open{transform:none}#sidebarBackdrop{position:fixed;inset:0;z-index:35;background:rgba(0,0,0,.6)}}
+  .toast{position:fixed;bottom:1.25rem;right:1.25rem;z-index:100;background:var(--panel2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:.6rem;padding:.7rem 1rem;font-size:.85rem;box-shadow:0 10px 30px #0009}
+</style>
+</head>
+<body class="min-h-screen">
+
+<div id="loginScreen" class="fixed inset-0 z-50 flex items-center justify-center p-5">
+  <div class="panel w-full max-w-sm p-8 fade-in">
+    <div class="mb-7 text-center">
+      <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl" style="background:var(--accent-soft);color:var(--accent)" id="loginLogo"></div>
+      <h1 class="text-2xl font-extrabold">Mi Dashboard</h1>
+      <p class="mt-1 text-sm" style="color:var(--muted)">Tu espacio personal</p>
+    </div>
+    <form id="loginForm" class="space-y-4">
+      <div><label class="label">Usuario</label><input id="loginUser" class="input" value="Admin" autocomplete="username"></div>
+      <div><label class="label">Contraseña</label><input id="loginPass" class="input" type="password" autocomplete="current-password"></div>
+      <label class="flex items-center gap-2 text-xs cursor-pointer" style="color:var(--muted)"><input id="remember" type="checkbox"> Mantener sesión</label>
+      <button class="btn w-full py-2.5" type="submit">Entrar</button>
+    </form>
+    <p id="loginError" class="mt-4 hidden text-center text-xs" style="color:#ef4444"></p>
+  </div>
+</div>
+
+<div id="app" class="hidden flex min-h-screen">
+  <div id="sidebarBackdrop" class="hidden"></div>
+  <aside id="sidebar" class="w-64 shrink-0 border-r flex flex-col fixed md:sticky md:top-0" style="background:var(--panel);border-color:var(--border)">
+    <div class="flex items-center gap-3 px-5 py-5 border-b" style="border-color:var(--border)">
+      <div class="flex h-9 w-9 items-center justify-center rounded-xl" style="background:var(--accent-soft);color:var(--accent)" id="sideLogo"></div>
+      <div><div class="text-sm font-extrabold">Mi Dashboard</div><div class="text-[10px]" style="color:var(--muted)">UAE · Uso personal</div></div>
+    </div>
+    <nav class="flex-1 p-3 space-y-1 overflow-y-auto" id="nav">
+      <button class="nav-item active" data-section="inicio"><span data-icon="home"></span>Inicio</button>
+      <button class="nav-item" data-section="tareas"><span data-icon="check"></span>Tareas</button>
+      <button class="nav-item" data-section="notas"><span data-icon="note"></span>Notas</button>
+      <button class="nav-item" data-section="progreso"><span data-icon="chart"></span>Progreso</button>
+      <button class="nav-item" data-section="horario"><span data-icon="calendar"></span>Horario</button>
+      <button class="nav-item" data-section="atajos"><span data-icon="link"></span>Atajos</button>
+      <button class="nav-item" data-section="perfil"><span data-icon="user"></span>Mi perfil</button>
+      <button class="nav-item" data-section="ia"><span data-icon="sparkles"></span>Asistente IA</button>
+      <div class="pt-3 mt-3 border-t" style="border-color:var(--border)"><button class="nav-item" data-section="ajustes"><span data-icon="settings"></span>Ajustes</button></div>
+    </nav>
+    <div class="p-3 border-t" style="border-color:var(--border)"><div id="sideProfile" class="mb-2"></div><button class="nav-item" id="logoutBtn"><span data-icon="logout"></span>Cerrar sesión</button></div>
+  </aside>
+  <div class="flex-1 flex flex-col min-w-0">
+    <header class="sticky top-0 z-20 border-b backdrop-blur-xl" style="background:rgba(10,10,10,.85);border-color:var(--border)">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center gap-3">
+        <button class="icon-btn md:hidden" id="menuBtn"><span data-icon="menu"></span></button>
+        <div class="min-w-0 flex-1"><h2 class="text-base sm:text-lg font-bold truncate" id="greeting">Hola</h2><p class="text-[11px] truncate" style="color:var(--muted)" id="todayLabel"></p></div>
+        <span id="netChip" class="chip hidden sm:inline-flex">Wi-Fi</span>
+        <button class="icon-btn" id="quickSettings"><span data-icon="settings"></span></button>
+      </div>
+    </header>
+    <main id="main" class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6">
+      <div id="widgets" class="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-5"></div>
+      <p class="text-center text-[11px] py-8" style="color:#555">Datos en este dispositivo · Arrastra el asidero para ordenar</p>
+    </main>
+  </div>
+</div>
+
+<div id="settingsModal" class="hidden fixed inset-0 z-[60] items-center justify-center p-3" style="background:rgba(0,0,0,.75);backdrop-filter:blur(5px)">
+  <div class="panel w-full max-w-2xl max-h-[90vh] flex flex-col">
+    <div class="flex items-center justify-between px-5 pt-5 pb-3"><h3 class="text-lg font-bold flex items-center gap-2"><span data-icon="settings"></span>Ajustes</h3><button class="icon-btn" id="closeSettings"><span data-icon="x"></span></button></div>
+    <div class="flex flex-wrap gap-1 px-5 border-b" style="border-color:var(--border)" id="tabs">
+      <button class="tab-btn active" data-tab="apariencia">Apariencia</button>
+      <button class="tab-btn" data-tab="perfil">Perfil</button>
+      <button class="tab-btn" data-tab="widgets">Widgets</button>
+      <button class="tab-btn" data-tab="ia">Seguridad e IA</button>
+      <button class="tab-btn" data-tab="github">GitHub Sync</button>
+      <button class="tab-btn" data-tab="datos">Datos</button>
+    </div>
+    <div class="overflow-y-auto px-5 py-5">
+      <section class="tab-panel active" data-panel="apariencia">
+        <p class="label">Color secundario</p>
+        <div class="flex flex-wrap items-center gap-3 mb-5" id="presetList"></div>
+        <div class="flex items-center gap-3 mb-2"><input type="color" id="customColor"><div><div class="text-sm font-semibold">Personalizado</div><div class="text-xs" style="color:var(--muted)">Elige cualquier color</div></div></div>
+        <div class="mt-5 rounded-xl p-4" style="background:var(--panel2);border:1px solid var(--border)"><div class="text-xs mb-2" style="color:var(--muted)">Vista previa</div><div class="flex items-center gap-3"><button class="btn btn-sm">Botón</button><span class="chip">Etiqueta</span><span class="text-sm font-bold" style="color:var(--accent)">Texto destacado</span></div></div>
+      </section>
+
+      <section class="tab-panel" data-panel="perfil">
+        <div class="flex items-center gap-4 mb-5"><div id="avatarPreview" class="h-16 w-16 rounded-full overflow-hidden flex items-center justify-center text-xl font-bold shrink-0" style="background:var(--accent-soft);color:var(--accent)"></div><div><label class="btn btn-ghost btn-sm cursor-pointer"><span data-icon="user"></span> Cambiar foto<input type="file" id="avatarInput" accept="image/*" class="hidden"></label><button class="btn btn-ghost btn-sm ml-2" id="removeAvatar">Quitar</button><p class="text-[11px] mt-2" style="color:var(--muted)">Se guarda en este navegador.</p></div></div>
+        <div class="grid sm:grid-cols-2 gap-4"><div><label class="label">Nombre</label><input id="profName" class="input"></div><div><label class="label">Rol / carrera</label><input id="profRole" class="input"></div><div class="sm:col-span-2"><label class="label">Biografía</label><textarea id="profBio" class="input" rows="2"></textarea></div></div>
+        <button class="btn mt-4" id="saveProfile">Guardar perfil</button>
+      </section>
+
+      <section class="tab-panel" data-panel="widgets">
+        <p class="text-xs mb-3" style="color:var(--muted)">Marca los widgets que quieres ver.</p>
+        <div id="widgetToggles" class="space-y-2 mb-5"></div>
+        <button class="btn btn-ghost btn-sm" id="resetOrder"><span data-icon="refresh"></span> Restablecer</button>
+      </section>
+
+      <section class="tab-panel" data-panel="ia">
+        <h4 class="text-sm font-bold mb-1 flex items-center gap-2"><span data-icon="sparkles" style="color:var(--accent)"></span> Asistente IA (opcional)</h4>
+        <p class="text-xs mb-3 leading-relaxed" style="color:var(--muted)">Pega una clave de <b>Google Gemini</b>. Se guarda en tu Gist y la heredan todos tus dispositivos.</p>
+        <div class="grid sm:grid-cols-2 gap-3"><div><label class="label">Clave API</label><input id="aiKey" type="password" class="input" placeholder="AIza... o AQ..."></div><div><label class="label">Modelo</label><input id="aiModel" class="input" placeholder="gemini-3.1-flash-lite"></div></div>
+        <button class="btn btn-sm mt-3" id="saveAI">Guardar configuración IA</button>
+        <div class="border-t mt-5 pt-5" style="border-color:var(--border)"><h4 class="text-sm font-bold mb-1">Cambiar contraseña</h4><p class="text-xs mb-3" style="color:var(--muted)">Se guarda como hash SHA-256.</p>
+          <div class="grid sm:grid-cols-2 gap-3"><div><label class="label">Actual</label><input id="oldPass" type="password" class="input"></div><div><label class="label">Nueva</label><input id="newPass" type="password" class="input"></div></div>
+          <button class="btn btn-sm mt-3" id="changePass">Actualizar contraseña</button>
+        </div>
+      </section>
+
+      <section class="tab-panel" data-panel="github">
+        <div class="rounded-xl p-4 mb-5" style="background:var(--panel2);border:1px solid var(--border)"><div class="text-sm font-bold">Sincronización entre dispositivos</div><p class="text-xs mt-1" style="color:var(--muted)">Los datos se guardan en un Gist secreto de tu cuenta. Funciona solo con Wi‑Fi; sin conexión la app sigue usable.</p></div>
+        <div class="mb-4"><label class="label">1. Token de GitHub</label><input id="ghToken" type="password" class="input" placeholder="ghp_... o gho_..."><p class="text-[11px] mt-1.5" style="color:var(--muted)">Puedes usar el token de tu PC con <code>gh auth token</code>. Se guarda en el Gist para que otros dispositivos lo hered en.</p></div>
+        <div class="mb-4"><label class="label">2. ID del Gist</label><input id="ghGistId" class="input"></div>
+        <div class="flex flex-wrap gap-2 mb-4">
+          <button class="btn btn-sm" id="ghSave">Guardar config.</button>
+          <button class="btn btn-ghost btn-sm" id="ghTest"><span data-icon="check"></span> Probar token</button>
+          <button class="btn btn-sm" id="ghPush"><span data-icon="upload"></span> Subir datos</button>
+          <button class="btn btn-ghost btn-sm" id="ghPull"><span data-icon="download"></span> Descargar datos</button>
+          <button class="btn btn-ghost btn-sm" id="ghOpenGist"><span data-icon="link"></span> Abrir Gist</button>
+        </div>
+        <label class="flex items-start gap-2 text-xs mb-3 cursor-pointer" style="color:var(--muted)"><input type="checkbox" id="ghAuto" class="mt-0.5"> Sincronización automática (sube cambios y baja del otro dispositivo)</label>
+        <label class="flex items-start gap-2 text-xs mb-3 cursor-pointer" style="color:var(--muted)"><input type="checkbox" id="ghPullLogin" class="mt-0.5"> Descargar lo último al iniciar sesión</label>
+        <div id="ghStatus" class="text-xs rounded-lg px-3 py-2" style="background:var(--panel2);border:1px solid var(--border);color:var(--muted)">Sin sincronizar.</div>
+        <div id="ghDiag" class="text-[11px] mt-2" style="color:var(--muted)"></div>
+      </section>
+
+      <section class="tab-panel" data-panel="datos">
+        <p class="text-xs mb-4" style="color:var(--muted)">Respaldo manual en JSON. El token no se incluye.</p>
+        <div class="flex flex-wrap gap-2"><button class="btn btn-ghost btn-sm" id="exportBtn"><span data-icon="download"></span> Exportar</button><button class="btn btn-ghost btn-sm" id="importBtn"><span data-icon="upload"></span> Importar</button><input type="file" id="importFile" accept="application/json,.json" class="hidden"></div>
+        <div class="border-t mt-6 pt-5" style="border-color:var(--border)"><button class="btn btn-sm" style="background:#ef4444" id="resetAll"><span data-icon="trash"></span> Borrar todos los datos</button></div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<div id="updateBanner" class="hidden fixed top-3 left-1/2 -translate-x-1/2 z-[80] flex items-center gap-3 rounded-xl px-4 py-2.5 shadow-2xl" style="background:var(--panel2);border:1px solid var(--accent)"><span id="updateText" class="text-xs font-semibold">Nueva versión</span><button id="updateReload" class="btn btn-sm">Actualizar</button><button id="updateLater" class="icon-btn"><span data-icon="x"></span></button></div>
+<div id="toastHost"></div>
+
+<script>
+/* ============ Constantes ============ */
+const APP_VERSION = '2026-11-24.0';
+const DEFAULT_GIST_ID = 'ee8e8e0db94d44f8fff29b207a116cc7';
+const STORE_KEY = 'uae_dashboard_v2';
+const SESSION_KEY = 'uae_dashboard_session_v2';
+const PASSWORD_HASH = '028e50f3e67bbd8cd6e4e1663dcac080c9e38251271c44a5a140d557ad6d41bb';
+const GIST_FILE = 'dashboard-backup.json';
+const PRESETS = [{name:'Rojo',color:'#ef4444'},{name:'Blanco',color:'#e5e5e5'},{name:'Azul',color:'#3b82f6'},{name:'Verde',color:'#22c55e'},{name:'Violeta',color:'#a855f7'},{name:'Ámbar',color:'#f59e0b'}];
+const ALL_IDS = ['resumen','reloj','urgentes','progreso','tareas','notas','horario','atajos','perfil','ia'];
+
+const ICONS = {
+  home:'<path stroke-linecap="round" stroke-linejoin="round" d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1V10.5Z"/>',
+  check:'<path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>',
+  note:'<path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/>',
+  chart:'<path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"/>',
+  calendar:'<path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/>',
+  clock:'<path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>',
+  user:'<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.5 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/>',
+  link:'<path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244"/>',
+  sparkles:'<path stroke-linecap="round" stroke-linejoin="round" d="m12 3 1.6 5.4L19 10l-5.4 1.6L12 17l-1.6-5.4L5 10l5.4-1.6L12 3Zm7 12 .7 2.3L22 18l-2.3.7L19 21l-.7-2.3L16 18l2.3-.7L19 15ZM5 3l.7 2.3L8 6l-2.3.7L5 9l-.7-2.3L2 6l2.3-.7L5 3Z"/>',
+  settings:'<path stroke-linecap="round" stroke-linejoin="round" d="M9.6 3.9c.1-.5.6-.9 1.1-.9h2.6c.5 0 1 .4 1.1.9l.2 1.3c.1.4.3.7.7.9l.2.1c.3.2.7.3 1.1.1l1.2-.5c.5-.2 1 0 1.4.5l1.3 2.2c.2.5.1 1-.3 1.4l-1 .8v.3l1 .8c.4.4.5.9.3 1.4l-1.3 2.2c-.4.5-.9.7-1.4.5l-1.2-.5c-.4-.2-.8-.1-1.1.1l-.2.1c-.4.2-.6.5-.7.9l-.2 1.3c-.1.5-.6.9-1.1.9H10.7c-.5 0-1-.4-1.1-.9l-.2-1.3c-.1-.4-.3-.7-.7-.9l-.2-.1c-.3-.2-.7-.3-1.1-.1l-1.2.5c-.5.2-1 0-1.4-.5L3.5 16c-.2-.5-.1-1 .3-1.4l1-.8v-.3l-1-.8c-.4-.4-.5-.9-.3-1.4l1.3-2.2c.4-.5.9-.7 1.4-.5l1.2.5c.4.2.8.1 1.1-.1l.2-.1c.4-.2.6-.5.7-.9l.2-1.3ZM15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>',
+  logout:'<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l3 3m0 0-3 3m3-3H2.25"/>',
+  menu:'<path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>',
+  x:'<path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>',
+  refresh:'<path stroke-linecap="round" stroke-linejoin="round" d="M16 9h4v-.001M3 19v-5h5m-5 0 3 3a8 8 0 0 0 13-3M4 10a8 8 0 0 1 13-3l3 3m0-5v5"/>',
+  download:'<path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/>',
+  upload:'<path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 7.5 12 3m0 0L7.5 7.5M12 3v13.5"/>',
+  trash:'<path stroke-linecap="round" stroke-linejoin="round" d="m14.7 9-.3 9m-4.8 0-.4-9m10.1-3.2c.3 0 .7.1 1 .2m-1-.2L18.2 19.7a2.2 2.2 0 0 1-2.2 2H8.1a2.2 2.2 0 0 1-2.2-2L4.7 5.8m14.5 0a48 48 0 0 0-3.5-.4m-12 .5c.3-.1.7-.1 1-.2m0 0a48 48 0 0 1 3.5-.4m7.5 0v-.9c0-1.2-.9-2.2-2.1-2.2a52 52 0 0 0-3.3 0C11 1.7 10 2.7 10 3.9v.9m7.5 0a48 48 0 0 0-7.5 0"/>',
+  plus:'<path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>',
+  grip:'<circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/>',
+  up:'<path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5"/>',
+  down:'<path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/>',
+  eyeoff:'<path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.5 10.5 0 0 0 1.9 12C3.2 16.3 7.2 19.5 12 19.5c1 0 2-.1 2.9-.4M6.2 6.2A10.5 10.5 0 0 1 12 4.5c4.8 0 8.8 3.2 10 7.5a10.5 10.5 0 0 1-4.3 5.8M6.2 6.2 3 3m3.2 3.2 3.7 3.7m7.9 7.9L21 21m-3.2-3.2-3.7-3.7m0 0a3 3 0 1 0-4.2-4.2"/>',
+  send:'<path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.3 3.1a59.8 59.8 0 0 1 18.2 8.9A59.8 59.8 0 0 1 3.3 20.9L6 12Zm0 0h7.5"/>'
+};
+function icon(n, c = 'h-5 w-5'){ return `<svg xmlns="http://www.w3.org/2000/svg" class="${c}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">${ICONS[n] || ''}</svg>`; }
+
+/* ============ Utilidades ============ */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const localISO = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+
+/* ============ Estado ============ */
+function defaults(){
+  return {
+    passwordHash: PASSWORD_HASH,
+    profile: { name:'Admin', role:'Estudiante · UAE', bio:'Universidad Agraria del Ecuador', avatar:'' },
+    theme: { color:'#ef4444' },
+    courses: [ {id:uid(),name:'Moodle UAE',progress:35}, {id:uid(),name:'Curso de Python',progress:60}, {id:uid(),name:'Carrera universitaria',progress:20} ],
+    tasks: [ {id:uid(),title:'Revisar avisos en Moodle',date:'',priority:'media',done:false}, {id:uid(),title:'Practicar Python 30 min',date:'',priority:'media',done:false} ],
+    notes: 'Mis notas rápidas...',
+    shortcuts: [ {id:uid(),name:'Moodle UAE',url:'https://uaevirtual.uagraria.edu.ec/my/'} ],
+    widgetOrder: ['resumen','reloj','urgentes','progreso','tareas','notas','horario','atajos','perfil','ia'],
+    hiddenWidgets: [],
+    ai: { key:'', model:'gemini-3.1-flash-lite' },
+    github: { token:'', gistId:DEFAULT_GIST_ID, autoSync:true, pullOnLogin:true, lastSync:'' }
+  };
+}
+function loadState(){
+  const d = defaults();
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (!raw) return d;
+    const p = JSON.parse(raw);
+    const order = Array.isArray(p.widgetOrder) ? p.widgetOrder.filter(x => ALL_IDS.includes(x)) : [];
+    d.widgetOrder.forEach((x,i) => { if (!order.includes(x)) order.splice(Math.min(i,order.length),0,x); });
+    return { ...d, ...p, widgetOrder:order,
+      profile:{...d.profile,...(p.profile||{})}, theme:{...d.theme,...(p.theme||{})},
+      ai:{...d.ai,...(p.ai||{})}, github:{...d.github,...(p.github||{})},
+      shortcuts: Array.isArray(p.shortcuts) ? p.shortcuts : d.shortcuts };
+  } catch(e){ return d; }
+}
+let state = loadState();
+let syncing = false, localDirty = false, pendingPush = false;
+function save(){
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+  catch(e){ toast('No se pudo guardar'); }
+  const g = state.github || {};
+  if (g.autoSync && g.token && g.gistId && !syncing){
+    localDirty = true;
+    if (!canUseNetwork()){ pendingPush = true; return; }
+    clearTimeout(save._t);
+    save._t = setTimeout(async function attempt(n){
+      try { await githubPush(); }
+      catch(e){ if (n < 8) save._t = setTimeout(() => attempt(n+1), 5000); }
+    }(0), 700);
+  }
+}
+
+/* ============ Red y tema ============ */
+function canUseNetwork(){
+  if (!navigator.onLine) return false;
+  const c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  if (!c) return true;
+  if (c.saveData) return false;
+  if (c.type && !['wifi','ethernet','unknown'].includes(c.type)) return false;
+  return true;
+}
+function updateNetChip(){
+  const el = $('#netChip'); if (!el) return;
+  if (!navigator.onLine){ el.textContent = 'Sin conexión'; el.style.color = '#ef4444'; }
+  else if (!canUseNetwork()){ el.textContent = 'Solo Wi-Fi'; el.style.color = '#f59e0b'; }
+  else { el.textContent = 'Wi-Fi'; el.style.color = '#22c55e'; }
+}
+function applyTheme(){
+  const c = state.theme.color || '#ef4444';
+  const h = c.replace('#','');
+  const full = h.length === 3 ? h.split('').map(x => x+x).join('') : h;
+  const r = parseInt(full.slice(0,2),16), g = parseInt(full.slice(2,4),16), b = parseInt(full.slice(4,6),16);
+  const root = document.documentElement.style;
+  root.setProperty('--accent', c);
+  root.setProperty('--accent-soft', `rgba(${r},${g},${b},.16)`);
+  root.setProperty('--on-accent', (0.299*r + 0.587*g + 0.114*b)/255 > 0.62 ? '#0a0a0a' : '#fff');
+}
+function toast(msg){
+  const el = document.createElement('div'); el.className = 'toast fade-in'; el.textContent = msg;
+  $('#toastHost').appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity .3s'; setTimeout(() => el.remove(), 300); }, 2500);
+}
+
+/* ============ Login ============ */
+async function sha256(t){
+  if (!window.crypto?.subtle) throw new Error('Navegador sin cifrado seguro');
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t));
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,'0')).join('');
+}
+async function doLogin(e){
+  e.preventDefault();
+  const err = $('#loginError'); err.classList.add('hidden');
+  try {
+    const user = $('#loginUser').value.trim();
+    const hash = await sha256($('#loginPass').value);
+    if (user.toLowerCase() === 'admin' && hash === state.passwordHash){
+      sessionStorage.setItem(SESSION_KEY,'1');
+      if ($('#remember').checked) localStorage.setItem(SESSION_KEY,'1');
+      $('#loginPass').value = ''; $('#loginForm').classList.remove('shake');
+      enterApp();
+    } else {
+      $('#loginForm').classList.remove('shake'); void $('#loginForm').offsetWidth; $('#loginForm').classList.add('shake');
+      err.textContent = 'Usuario o contraseña incorrectos'; err.classList.remove('hidden');
+    }
+  } catch(ex){ err.textContent = ex.message; err.classList.remove('hidden'); }
+}
+
+/* ============ Horario ============ */
+const SUBJECT_COLORS = {
+  'Pensamiento crítico':'#a855f7','Lenguaje y comunicación':'#f59e0b','Física':'#3b82f6',
+  'Cálculo diferencial':'#22c55e','Fundamentos de programación':'#ef4444','Computación y sociedad':'#06b6d4',
+  'Ofimática 1':'#ec4899','Libre':'#6b7280'
+};
+const SCHEDULE = {
+  tutor:'Ing. Verónica Isabel Guevara Arias',
+  slots:['17H00 – 18H00','18H00 – 19H00','19H00 – 20H00','20H00 – 21H00','21H00 – 22H00'],
+  days:[
+    {label:'LUNES', classes:[
+      {s:'Pensamiento crítico',t:'Ing. Verónica Guevara A'},{s:'Lenguaje y comunicación',t:'Ing. Eddie Erazo P'},
+      {s:'Física',t:'Ing. Christian Nieves M'},{s:'Cálculo diferencial',t:'Ing. Raquel Gómez C'},{s:'Ofimática 1',t:'Ing. Christian Nieves M'}]},
+    {label:'MARTES', classes:[
+      {s:'Cálculo diferencial',t:'Ing. Raquel Gómez C'},{s:'Cálculo diferencial',t:'Ing. Raquel Gómez C'},
+      {s:'Computación y sociedad',t:'Ing. Luis Paluco A'},{s:'Fundamentos de programación',t:'Ing. Christian Nieves M'},{s:'Fundamentos de programación',t:'Ing. Christian Nieves M'}]},
+    {label:'MIÉRCOLES', classes:[
+      {s:'Física',t:'Ing. Christian Nieves M'},{s:'Computación y sociedad',t:'Ing. Luis Paluco A'},
+      {s:'Computación y sociedad',t:'Ing. Luis Paluco A'},{s:'Ofimática 1',t:'Ing. Christian Nieves M'},{s:'Ofimática 1',t:'Ing. Christian Nieves M'}]},
+    {label:'JUEVES', classes:[
+      {s:'Fundamentos de programación',t:'Ing. Christian Nieves M'},{s:'Fundamentos de programación',t:'Ing. Christian Nieves M'},
+      {s:'Cálculo diferencial',t:'Ing. Raquel Gómez C'},{s:'Física',t:'Ing. Christian Nieves M'},{s:'Física',t:'Ing. Christian Nieves M'}]},
+    {label:'VIERNES', classes:[
+      {s:'Pensamiento crítico',t:'Ing. Verónica Guevara A'},{s:'Pensamiento crítico',t:'Ing. Verónica Guevara A'},
+      {s:'Lenguaje y comunicación',t:'Ing. Eddie Erazo P'},{s:'Lenguaje y comunicación',t:'Ing. Eddie Erazo P'},{s:'Libre',t:''}]}
+  ]
+};
+
+/* ============ Widgets ============ */
+const WIDGETS = {
+  resumen: { view:'inicio', title:'Resumen', icon:'chart', span:'md:col-span-12', render(){
+    const pending = state.tasks.filter(t => !t.done);
+    const avg = state.courses.length ? Math.round(state.courses.reduce((s,c)=>s+(+c.progress||0),0)/state.courses.length) : 0;
+    const today = localISO(new Date());
+    const urgent = pending.filter(t => t.date && t.date <= today);
+    const cards = [
+      {l:'Tareas pendientes',v:pending.length,s:urgent.length?`${urgent.length} urgentes`:'Todo al día',i:'check',c:'var(--accent)'},
+      {l:'Progreso promedio',v:avg+'%',s:`${state.courses.length} cursos`,i:'chart',c:'var(--muted)'},
+      {l:'Próxima tarea',v:pending.length?'1':'0',s:pending.length?pending[0].title.slice(0,26):'Sin pendientes',i:'calendar',c:'var(--muted)'}
+    ];
+    return `<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">${cards.map(c=>`
+      <div class="rounded-xl p-4 flex items-start gap-3" style="background:var(--panel2);border:1px solid var(--border)">
+        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg" style="background:var(--accent-soft);color:${c.c}">${icon(c.i,'h-4 w-4')}</div>
+        <div class="min-w-0"><div class="text-[11px]" style="color:var(--muted)">${c.l}</div><div class="text-xl font-extrabold">${c.v}</div><div class="text-[11px] truncate" style="color:var(--muted)">${esc(c.s)}</div></div>
+      </div>`).join('')}</div>`;
+  }},
+  reloj: { view:'inicio', title:'Reloj', icon:'clock', span:'md:col-span-4', render(){
+    const now = new Date();
+    const date = new Intl.DateTimeFormat('es-EC',{weekday:'long',day:'numeric',month:'long'}).format(now);
+    const start = new Date(now.getFullYear(),0,1);
+    const week = Math.ceil(((now-start)/86400000 + start.getDay() + 1)/7);
+    const doy = Math.floor((now - new Date(now.getFullYear(),0,0))/86400000);
+    return `<div class="flex flex-col items-center py-3 text-center">
+      <div id="clockTime" class="text-5xl font-extrabold tabular-nums">--:--</div>
+      <div class="mt-1 text-sm capitalize" style="color:var(--muted)">${date}</div>
+      <div id="clockGreet" class="mt-3 chip"></div>
+      <div class="mt-6 grid grid-cols-2 gap-2 w-full max-w-[250px]">
+        <div class="rounded-lg p-2.5" style="background:var(--panel2);border:1px solid var(--border)"><div class="text-[10px]" style="color:var(--muted)">Semana</div><div class="text-base font-bold">${week}</div></div>
+        <div class="rounded-lg p-2.5" style="background:var(--panel2);border:1px solid var(--border)"><div class="text-[10px]" style="color:var(--muted)">Día/año</div><div class="text-base font-bold">${doy}</div></div>
+      </div></div>`;
+  }},
+  urgentes: { view:'inicio', title:'Tareas urgentes', icon:'check', span:'md:col-span-8', render(){
+    const today = localISO(new Date());
+    const rank = {alta:0,media:1,baja:2};
+    const pending = state.tasks.filter(t=>!t.done).sort((a,b)=>(a.date||'9999').localeCompare(b.date||'9999')||(rank[a.priority]-rank[b.priority])).slice(0,4);
+    const rows = pending.map(t=>{
+      const over = t.date && t.date < today, isToday = t.date === today;
+      const label = over?'Vencida':isToday?'Hoy':t.date?new Intl.DateTimeFormat('es-EC',{day:'numeric',month:'short'}).format(new Date(t.date+'T00:00:00')):'Sin fecha';
+      const color = over?'#ef4444':isToday?'#f59e0b':'var(--muted)';
+      return `<div class="flex items-center gap-3 py-2.5 border-b last:border-0" style="border-color:var(--border)">
+        <input type="checkbox" data-act="toggle-task" data-id="${t.id}" class="h-4 w-4 rounded cursor-pointer">
+        <span class="text-sm flex-1 min-w-0 truncate">${esc(t.title)}</span>
+        <span class="text-[11px] shrink-0" style="color:${color}">${label}</span></div>`;
+    }).join('');
+    return `${rows || `<div class="py-8 text-center"><div class="text-3xl mb-2">✅</div><div class="text-sm font-semibold">Sin tareas urgentes</div></div>`}
+      <button class="btn btn-ghost btn-sm w-full mt-4" data-act="go-tareas">Ver todas las tareas</button>`;
+  }},
+  progreso: { view:'progreso', title:'Progreso de cursos', icon:'chart', span:'md:col-span-12', render(){
+    const avg = state.courses.length ? Math.round(state.courses.reduce((s,c)=>s+(+c.progress||0),0)/state.courses.length) : 0;
+    const rows = state.courses.map(c=>`<div class="py-3 border-b last:border-0" style="border-color:var(--border)">
+      <div class="flex justify-between items-center mb-2"><span class="text-sm font-semibold truncate">${esc(c.name)}</span>
+        <div class="flex items-center gap-2"><span class="text-xs font-bold" style="color:var(--accent)">${c.progress}%</span>
+        <button class="icon-btn danger" data-act="del-course" data-id="${c.id}">${icon('trash','h-4 w-4')}</button></div></div>
+      <input type="range" min="0" max="100" value="${c.progress}" data-act="range" data-id="${c.id}" class="w-full"></div>`).join('');
+    return `<div class="mb-4"><div class="flex justify-between text-xs mb-1.5" style="color:var(--muted)"><span>Promedio</span><span class="font-bold" style="color:var(--text)">${avg}%</span></div>
+      <div class="h-2 rounded-full overflow-hidden" style="background:var(--border)"><div class="progress-fill" style="width:${avg}%"></div></div></div>
+      ${rows || '<p class="text-sm py-4 text-center" style="color:var(--muted)">Sin cursos</p>'}
+      <form class="flex gap-2 mt-4" data-form="add-course"><input class="input" name="name" placeholder="Nuevo curso..." required><button class="btn btn-sm shrink-0" type="submit">${icon('plus','h-4 w-4')} Agregar</button></form>`;
+  }},
+  tareas: { view:'tareas', title:'Tareas y recordatorios', icon:'check', span:'md:col-span-12', render(){
+    const today = localISO(new Date()); const rank={alta:0,media:1,baja:2};
+    const sorted = [...state.tasks].sort((a,b)=>(a.done-b.done)||((a.date||'9999').localeCompare(b.date||'9999'))||(rank[a.priority]-rank[b.priority]));
+    const list = sorted.map(t=>{
+      let badge='',bc='var(--muted)';
+      if(t.date){ if(t.date<today){badge='Vencida';bc='#ef4444';} else if(t.date===today){badge='Hoy';bc='#f59e0b';} else badge=new Intl.DateTimeFormat('es-EC',{day:'numeric',month:'short'}).format(new Date(t.date+'T00:00:00')); }
+      const dot=t.priority==='alta'?'#ef4444':t.priority==='media'?'#f59e0b':'#6b7280';
+      return `<div class="task-item flex items-start gap-3 py-2.5 border-b last:border-0 ${t.done?'task-done':''}" style="border-color:var(--border)">
+        <input type="checkbox" ${t.done?'checked':''} data-act="toggle-task" data-id="${t.id}" class="mt-1 h-4 w-4 rounded cursor-pointer shrink-0">
+        <div class="min-w-0 flex-1"><div class="task-title text-sm ${t.done?'':'font-medium'} break-words">${esc(t.title)}</div>
+          <div class="flex items-center gap-2 mt-1"><span class="inline-block h-2 w-2 rounded-full" style="background:${dot}"></span>${badge?`<span class="text-[11px]" style="color:${bc}">${badge}</span>`:''}</div></div>
+        <button class="icon-btn danger" data-act="del-task" data-id="${t.id}">${icon('trash','h-4 w-4')}</button></div>`;
+    }).join('');
+    const pending = state.tasks.filter(t=>!t.done).length;
+    return `<form class="grid grid-cols-1 sm:grid-cols-[1fr_auto_auto] gap-2 mb-2" data-form="add-task">
+      <input class="input" name="title" placeholder="¿Qué tienes que hacer?" required>
+      <input class="input" type="date" name="date"><select class="input" name="priority"><option value="media">Media</option><option value="alta">Alta</option><option value="baja">Baja</option></select>
+      <button class="btn btn-sm sm:col-span-3" type="submit">${icon('plus','h-4 w-4')} Agregar tarea</button></form>
+      <div class="max-h-80 overflow-y-auto">${list||'<p class="py-6 text-center text-sm" style="color:var(--muted)">Sin tareas</p>'}</div>
+      <div class="mt-2 text-[11px]" style="color:var(--muted)">${pending} pendiente${pending===1?'':'s'}</div>`;
+  }},
+  notas: { view:'notas', title:'Notas rápidas', icon:'note', span:'md:col-span-12', render(){
+    return `<textarea id="notesArea" class="input min-h-[220px]" placeholder="Escribe tus notas...">${esc(state.notes)}</textarea>
+      <div class="flex justify-between mt-2 text-[11px]" style="color:var(--muted)"><span id="notesStatus">Guardado automático</span><span id="notesCount">${state.notes.length} caracteres</span></div>`;
+  }},
+  horario: { view:'horario', title:'Horario de clases', icon:'calendar', span:'md:col-span-12', render(){
+    const now=new Date(), jsDay=now.getDay();
+    const today=(jsDay>=1&&jsDay<=5)?jsDay-1:-1;
+    const hour=now.getHours()+now.getMinutes()/60;
+    const slot=(hour>=17&&hour<22)?Math.floor(hour-17):-1;
+    const count=today>=0?SCHEDULE.days[today].classes.filter(c=>c.s&&c.s!=='Libre').length:0;
+    return `<div class="flex flex-wrap items-center justify-between gap-3 mb-4"><div><div class="text-sm font-bold">Paralelo B</div><div class="text-xs" style="color:var(--muted)">Tutora: ${esc(SCHEDULE.tutor)}</div></div>
+      <div class="chip">${today>=0?`${SCHEDULE.days[today].label} · ${count} clase${count===1?'':'s'}`:'Fin de semana'}</div></div>
+      <div class="overflow-x-auto -mx-1 px-1 pb-2"><table class="w-full min-w-[780px] border-collapse text-xs">
+        <thead><tr><th class="p-2 text-left text-[11px]" style="color:var(--muted)">HORA</th>
+          ${SCHEDULE.days.map((d,i)=>`<th class="p-2 text-center text-[11px] font-bold rounded-t-lg" style="${i===today?'background:var(--accent);color:var(--on-accent)':'background:var(--panel2);color:var(--muted)'}">${d.label}${i===today?' · HOY':''}</th>`).join('')}
+        </tr></thead><tbody>
+        ${SCHEDULE.slots.map((s,si)=>`<tr>
+          <td class="p-2 align-top whitespace-nowrap font-semibold" style="color:${si===slot?'var(--accent)':'var(--muted)'};background:var(--panel2)">${s}${si===slot?' ◀':''}</td>
+          ${SCHEDULE.days.map((d,di)=>{const c=d.classes[si]; if(!c.s) return `<td class="p-1"><div class="rounded-lg min-h-[3.2rem]" style="background:var(--panel2)"></div></td>`;
+            const col=SUBJECT_COLORS[c.s]||'var(--accent)';
+            return `<td class="p-1 align-top"><div class="rounded-lg p-2 h-full" style="background:${col}1f;border-left:3px solid ${col};${di===today?'outline:1px solid var(--accent);':''}">
+              <div class="font-semibold leading-tight">${esc(c.s)}</div>${c.t?`<div class="mt-1 text-[10px] leading-tight" style="color:var(--muted)">${esc(c.t)}</div>`:''}</div></td>`;
+          }).join('')}</tr>`).join('')}
+        </tbody></table></div><p class="text-[11px] mt-2" style="color:var(--muted)">Desliza horizontalmente para ver todos los días.</p>`;
+  }},
+  atajos: { view:'atajos', title:'Atajos', icon:'link', span:'md:col-span-12', render(){
+    const items = state.shortcuts.map(s=>`<a href="${esc(s.url)}" target="_blank" rel="noopener" class="group flex items-center gap-3 rounded-xl p-3" style="background:var(--panel2);border:1px solid var(--border)">
+      <div class="flex h-9 w-9 items-center justify-center rounded-lg text-sm font-bold" style="background:var(--accent-soft);color:var(--accent)">${esc((s.name||'?').charAt(0).toUpperCase())}</div>
+      <span class="text-sm font-semibold truncate flex-1">${esc(s.name)}</span>
+      <button class="icon-btn danger opacity-100 sm:opacity-0 sm:group-hover:opacity-100" data-act="del-shortcut" data-id="${s.id}">${icon('trash','h-4 w-4')}</button></a>`).join('');
+    return `<div class="grid grid-cols-1 sm:grid-cols-2 gap-2">${items||'<p class="col-span-2 text-center py-4 text-sm" style="color:var(--muted)">Sin atajos</p>'}</div>
+      <form class="flex flex-wrap gap-2 mt-4" data-form="add-shortcut"><input class="input flex-1 min-w-[120px]" name="name" placeholder="Nombre" required><input class="input flex-1 min-w-[150px]" name="url" type="url" placeholder="https://..." required><button class="btn btn-sm" type="submit">${icon('plus','h-4 w-4')} Agregar</button></form>`;
+  }},
+  perfil: { view:'perfil', title:'Mi perfil', icon:'user', span:'md:col-span-12', render(){
+    const p=state.profile, ini=(p.name||'A').trim().charAt(0).toUpperCase();
+    const av=p.avatar?`<img src="${esc(p.avatar)}" class="h-full w-full object-cover" alt="">`:`<span>${esc(ini)}</span>`;
+    return `<div class="flex items-start gap-4"><div class="h-16 w-16 shrink-0 rounded-2xl overflow-hidden flex items-center justify-center text-2xl font-extrabold" style="background:var(--accent-soft);color:var(--accent)">${av}</div>
+      <div class="min-w-0 flex-1"><div class="text-lg font-bold truncate">${esc(p.name)}</div><div class="text-xs" style="color:var(--accent)">${esc(p.role)}</div><p class="text-sm mt-2" style="color:var(--muted)">${esc(p.bio)}</p></div></div>
+      <button class="btn btn-ghost btn-sm w-full mt-5" data-act="open-profile">${icon('settings','h-4 w-4')} Editar perfil</button>`;
+  }},
+  ia: { view:'ia', title:'Asistente IA', icon:'sparkles', span:'md:col-span-12', render(){
+    if(!state.ai.key) return `<div class="flex flex-col sm:flex-row items-center gap-4 py-2"><div class="flex h-12 w-12 items-center justify-center rounded-xl" style="background:var(--accent-soft);color:var(--accent)">${icon('sparkles')}</div>
+      <div class="flex-1"><div class="text-sm font-bold">Activa tu asistente</div><p class="text-xs mt-1" style="color:var(--muted)">Pega una clave de Gemini en Ajustes → Seguridad e IA.</p></div>
+      <button class="btn btn-ghost btn-sm" data-act="open-ai">Configurar ahora</button></div>`;
+    return `<textarea id="aiPrompt" class="input" rows="2" placeholder="Pregúntame lo que quieras..."></textarea>
+      <div class="flex items-center gap-3 mt-3"><button class="btn btn-sm" id="aiSend">${icon('send','h-4 w-4')} Preguntar</button><span class="text-[11px]" style="color:var(--muted)">Modelo: ${esc(state.ai.model)}</span></div>
+      <div id="aiResponse" class="mt-4 hidden rounded-xl p-4 text-sm whitespace-pre-wrap" style="background:var(--panel2);border:1px solid var(--border)"></div>`;
+  }}
+};
+
+let currentView = 'inicio';
+function renderWidgets(){
+  const visible = state.widgetOrder.filter(id => !state.hiddenWidgets.includes(id) && WIDGETS[id] && WIDGETS[id].view === currentView);
+  $('#widgets').innerHTML = visible.length ? visible.map(id=>{
+    const w = WIDGETS[id];
+    return `<section class="widget panel panel-hover fade-in ${w.span}" data-id="${id}">
+      <div class="flex items-center gap-2 px-4 py-3 border-b" style="border-color:var(--border)">
+        <span style="color:var(--accent)">${icon(w.icon,'h-4 w-4')}</span><h3 class="text-sm font-bold flex-1 truncate">${w.title}</h3>
+        <div class="flex gap-0.5"><button class="icon-btn" data-act="up" title="Subir">${icon('up','h-4 w-4')}</button>
+          <button class="icon-btn" data-act="down" title="Bajar">${icon('down','h-4 w-4')}</button>
+          <span class="icon-btn drag-handle" draggable="true" data-act="drag" title="Arrastrar">${icon('grip','h-4 w-4')}</span>
+          <button class="icon-btn danger" data-act="hide" title="Ocultar">${icon('eyeoff','h-4 w-4')}</button></div></div>
+      <div class="p-4">${w.render()}</div></section>`;
+  }).join('') : `<div class="panel col-span-12 p-10 text-center"><div class="text-4xl mb-3">📦</div><div class="font-bold">Sin widgets visibles</div><div class="text-xs mt-1" style="color:var(--muted)">Actívalos en Ajustes → Widgets.</div><button class="btn btn-ghost btn-sm mt-4" data-act="open-settings">Abrir ajustes</button></div>`;
+}
+function renderAll(){
+  applyTheme();
+  $('#greeting').textContent = `Hola, ${state.profile.name || 'Admin'}`;
+  const f = new Intl.DateTimeFormat('es-EC',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(new Date());
+  $('#todayLabel').textContent = f.charAt(0).toUpperCase()+f.slice(1);
+  renderWidgets(); renderSideProfile(); renderPresets(); renderToggles(); fillSettings(); updateClock(); updateNetChip();
+}
+function renderSideProfile(){
+  const p=state.profile, ini=(p.name||'A').trim().charAt(0).toUpperCase();
+  const av=p.avatar?`<img src="${esc(p.avatar)}" class="h-full w-full object-cover" alt="">`:`<span>${esc(ini)}</span>`;
+  $('#sideProfile').innerHTML=`<div class="flex items-center gap-3 px-2 py-2 rounded-xl" style="background:var(--panel2)">
+    <div class="h-9 w-9 rounded-full overflow-hidden flex items-center justify-center text-sm font-bold" style="background:var(--accent-soft);color:var(--accent)">${av}</div>
+    <div class="min-w-0"><div class="text-xs font-bold truncate">${esc(p.name)}</div><div class="text-[10px] truncate" style="color:var(--muted)">${esc(p.role)}</div></div></div>`;
+}
+function updateClock(){
+  const el=$('#clockTime'); if(!el) return;
+  el.textContent=new Intl.DateTimeFormat('es-EC',{hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date());
+  const h=new Date().getHours(); const g=$('#clockGreet'); if(g) g.textContent=h<12?'☀️ Buenos días':h<19?'🌤️ Buenas tardes':'🌙 Buenas noches';
+}
+function greeting(){ const h=new Date().getHours(); return h<12?'Buenos días':h<19?'Buenas tardes':'Buenas noches'; }
+function setView(v){
+  if(v==='ajustes'){ openSettings(); return; }
+  currentView=v;
+  $$('.nav-item').forEach(n=>n.classList.toggle('active',n.dataset.section===v));
+  renderWidgets(); closeSidebar(); window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ============ Eventos de widgets ============ */
+let draggedEl=null;
+$('#widgets').addEventListener('click', e=>{
+  const btn=e.target.closest('[data-act]'); if(!btn) return;
+  const act=btn.dataset.act, id=btn.closest('.widget')?.dataset.id;
+  if(act==='toggle-task'){ const t=state.tasks.find(x=>x.id===btn.dataset.id); if(t){t.done=btn.checked; save(); renderWidgets();} }
+  else if(act==='del-task'){ state.tasks=state.tasks.filter(t=>t.id!==btn.dataset.id); save(); renderWidgets(); }
+  else if(act==='del-course'){ state.courses=state.courses.filter(c=>c.id!==btn.dataset.id); save(); renderWidgets(); }
+  else if(act==='del-shortcut'){ e.preventDefault(); e.stopPropagation(); state.shortcuts=state.shortcuts.filter(s=>s.id!==btn.dataset.id); save(); renderWidgets(); }
+  else if(act==='hide'){ if(!state.hiddenWidgets.includes(id)) state.hiddenWidgets.push(id); save(); renderWidgets(); renderToggles(); toast('Widget ocultado'); }
+  else if(act==='up'||act==='down'){
+    const order=state.widgetOrder.filter(x=>!state.hiddenWidgets.includes(x)&&WIDGETS[x]?.view===currentView);
+    const i=order.indexOf(id), j=act==='up'?i-1:i+1; if(j<0||j>=order.length) return;
+    [order[i],order[j]]=[order[j],order[i]]; syncOrder(order); save(); renderWidgets();
+  }
+  else if(act==='go-tareas') setView('tareas');
+  else if(act==='open-settings') openSettings();
+  else if(act==='open-profile') openSettings('perfil');
+  else if(act==='open-ai') openSettings('ia');
+});
+$('#widgets').addEventListener('input', e=>{
+  const el=e.target;
+  if(el.dataset.act==='range'){
+    const c=state.courses.find(x=>x.id===el.dataset.id);
+    if(c){ c.progress=+el.value; const label=el.parentElement.querySelector('[style*="--accent"]'); if(label) label.textContent=c.progress+'%';
+      const avg=Math.round(state.courses.reduce((s,x)=>s+(+x.progress||0),0)/state.courses.length);
+      const fill=el.closest('.widget').querySelector('.progress-fill'); if(fill) fill.style.width=avg+'%'; save(); }
+  }
+  if(el.id==='notesArea'){
+    state.notes=el.value; $('#notesCount').textContent=el.value.length+' caracteres'; $('#notesStatus').textContent='Guardando...';
+    clearTimeout(el._t); el._t=setTimeout(()=>{save(); $('#notesStatus').textContent='Guardado ✓';},500);
+  }
+});
+$('#widgets').addEventListener('submit', e=>{
+  const form=e.target.closest('[data-form]'); if(!form) return; e.preventDefault();
+  const f=new FormData(form), kind=form.dataset.form;
+  if(kind==='add-course'){ const n=(f.get('name')||'').trim(); if(n) state.courses.push({id:uid(),name:n,progress:0}); }
+  else if(kind==='add-task'){ const t=(f.get('title')||'').trim(); if(t) state.tasks.push({id:uid(),title:t,date:f.get('date')||'',priority:f.get('priority')||'media',done:false}); }
+  else if(kind==='add-shortcut'){ const n=(f.get('name')||'').trim(),u=(f.get('url')||'').trim(); if(n&&u) state.shortcuts.push({id:uid(),name:n,url:u}); }
+  save(); renderWidgets(); toast('Agregado');
+});
+function syncOrder(visibleIds){
+  const slots=[]; state.widgetOrder.forEach((id,i)=>{ const w=WIDGETS[id]; if(w&&w.view===currentView&&!state.hiddenWidgets.includes(id)) slots.push(i); });
+  slots.forEach((idx,k)=>{ if(visibleIds[k]) state.widgetOrder[idx]=visibleIds[k]; });
+}
+$('#widgets').addEventListener('dragstart', e=>{
+  const h=e.target.closest('[data-act="drag"]'); if(!h){e.preventDefault();return;}
+  draggedEl=h.closest('.widget'); draggedEl.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain',draggedEl.dataset.id);
+});
+$('#widgets').addEventListener('dragover', e=>{
+  if(!draggedEl) return; e.preventDefault();
+  const t=e.target.closest('.widget'); if(!t||t===draggedEl) return;
+  $$('.widget').forEach(w=>w.classList.remove('drop-target')); t.classList.add('drop-target');
+  const r=t.getBoundingClientRect(); $('#widgets').insertBefore(draggedEl, e.clientY<r.top+r.height/2 ? t : t.nextSibling);
+});
+$('#widgets').addEventListener('dragend', ()=>{
+  if(draggedEl){ draggedEl.classList.remove('dragging'); $$('.widget').forEach(w=>w.classList.remove('drop-target')); syncOrder($$('.widget').map(w=>w.dataset.id)); save(); }
+  draggedEl=null;
+});
+
+/* ============ IA ============ */
+$('#widgets').addEventListener('click', async e=>{
+  if(!e.target.closest('#aiSend')) return;
+  const btn=e.target.closest('#aiSend'), prompt=$('#aiPrompt').value.trim(), out=$('#aiResponse');
+  if(!prompt) return;
+  btn.disabled=true; btn.textContent='Pensando...'; out.classList.remove('hidden'); out.textContent='Consultando…';
+  const models=[state.ai.model,'gemini-3.1-flash-lite','gemini-flash-latest','gemini-3.8-flash','gemini-3.5-flash'].filter((m,i,a)=>m&&a.indexOf(m)===i);
+  try{
+    let last='';
+    for(const model of models){
+      const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(state.ai.key)}`,{
+        method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});
+      const data=await res.json();
+      if(res.ok){ out.textContent=data.candidates?.[0]?.content?.parts?.[0]?.text||'Sin respuesta'; return; }
+      last=data.error?.message||'Error en la API';
+      if(!/not found|404|deprecated|no longer available/i.test(last)) break;
+    }
+    throw new Error(last||'Modelo no disponible');
+  }catch(ex){ out.textContent='No se pudo conectar: '+ex.message; }
+  finally{ btn.disabled=false; btn.innerHTML=icon('send','h-4 w-4')+' Preguntar'; }
+});
+
+/* ============ Navegación ============ */
+$('#nav').addEventListener('click', e=>{ const it=e.target.closest('.nav-item'); if(it) setView(it.dataset.section); });
+$('#quickSettings').addEventListener('click', ()=>openSettings());
+$('#menuBtn').addEventListener('click', ()=>{ $('#sidebar').classList.add('open'); $('#sidebarBackdrop').classList.remove('hidden'); });
+function closeSidebar(){ $('#sidebar').classList.remove('open'); $('#sidebarBackdrop').classList.add('hidden'); }
+$('#sidebarBackdrop').addEventListener('click', closeSidebar);
+$('#logoutBtn').addEventListener('click', ()=>{ sessionStorage.removeItem(SESSION_KEY); localStorage.removeItem(SESSION_KEY); location.reload(); });
+
+/* ============ Ajustes ============ */
+function openSettings(tab='apariencia'){
+  $('#settingsModal').classList.remove('hidden'); $('#settingsModal').classList.add('flex'); selectTab(tab);
+}
+function closeSettings(){ $('#settingsModal').classList.add('hidden'); $('#settingsModal').classList.remove('flex'); }
+$('#closeSettings').addEventListener('click', closeSettings);
+$('#settingsModal').addEventListener('click', e=>{ if(e.target.id==='settingsModal') closeSettings(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeSettings(); });
+function selectTab(tab){
+  $$('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+  $$('.tab-panel').forEach(p=>p.classList.toggle('active',p.dataset.panel===tab));
+  if(tab==='perfil') renderAvatarPreview();
+  if(tab==='github') updateGithubStatus(state.github?.lastSync?'Última sync: '+new Date(state.github.lastSync).toLocaleString('es-EC'):'Sin sincronizar.');
+}
+$('#tabs').addEventListener('click', e=>{ const b=e.target.closest('.tab-btn'); if(b) selectTab(b.dataset.tab); });
+function fillSettings(){
+  $('#profName').value=state.profile.name||''; $('#profRole').value=state.profile.role||''; $('#profBio').value=state.profile.bio||'';
+  $('#customColor').value=/^#[0-9a-f]{6}$/i.test(state.theme.color)?state.theme.color:'#ef4444';
+  $('#aiKey').value=state.ai.key||''; $('#aiModel').value=state.ai.model||'';
+  $('#ghToken').value=state.github.token||''; $('#ghGistId').value=state.github.gistId||'';
+  $('#ghAuto').checked=!!state.github.autoSync; $('#ghPullLogin').checked=state.github.pullOnLogin!==false;
+  updateGithubDiag();
+}
+function renderPresets(){
+  $('#presetList').innerHTML=PRESETS.map(p=>`<button class="swatch ${state.theme.color.toLowerCase()===p.color.toLowerCase()?'selected':''}" style="background:${p.color}" title="${p.name}" data-color="${p.color}"></button>`).join('');
+}
+$('#presetList').addEventListener('click', e=>{ const b=e.target.closest('[data-color]'); if(!b)return; state.theme.color=b.dataset.color; $('#customColor').value=b.dataset.color; save(); applyTheme(); renderPresets(); });
+$('#customColor').addEventListener('input', e=>{ state.theme.color=e.target.value; save(); applyTheme(); renderPresets(); });
+function renderAvatarPreview(){ const p=state.profile, ini=(p.name||'A').trim().charAt(0).toUpperCase(); $('#avatarPreview').innerHTML=p.avatar?`<img src="${esc(p.avatar)}" class="h-full w-full object-cover" alt="">`:esc(ini); }
+$('#avatarInput').addEventListener('change', e=>{
+  const file=e.target.files?.[0]; if(!file||!file.type.startsWith('image/')){toast('Selecciona una imagen');return;}
+  const img=new Image(), url=URL.createObjectURL(file);
+  img.onload=()=>{ URL.revokeObjectURL(url); const c=document.createElement('canvas'); c.width=c.height=256; const x=c.getContext('2d'); const s=Math.min(img.width,img.height);
+    x.drawImage(img,(img.width-s)/2,(img.height-s)/2,s,s,0,0,256,256); state.profile.avatar=c.toDataURL('image/jpeg',.8); save(); renderAvatarPreview(); renderSideProfile(); renderWidgets(); toast('Foto actualizada'); };
+  img.src=url;
+});
+$('#removeAvatar').addEventListener('click', ()=>{ state.profile.avatar=''; save(); renderAvatarPreview(); renderSideProfile(); renderWidgets(); });
+$('#saveProfile').addEventListener('click', ()=>{ state.profile.name=$('#profName').value.trim()||'Admin'; state.profile.role=$('#profRole').value.trim(); state.profile.bio=$('#profBio').value.trim(); save(); renderAll(); toast('Perfil guardado'); });
+function renderToggles(){
+  $('#widgetToggles').innerHTML=state.widgetOrder.map(id=>{ const w=WIDGETS[id]; if(!w)return '';
+    const on=!state.hiddenWidgets.includes(id);
+    return `<label class="flex items-center gap-3 rounded-lg px-3 py-2 cursor-pointer" style="background:var(--panel2)"><input type="checkbox" data-widget="${id}" ${on?'checked':''} class="h-4 w-4 rounded"><span style="color:var(--accent)">${icon(w.icon,'h-4 w-4')}</span><span class="text-sm flex-1">${w.title}</span></label>`;
+  }).join('');
+}
+$('#widgetToggles').addEventListener('change', e=>{ const b=e.target.closest('[data-widget]'); if(!b)return; const id=b.dataset.widget;
+  if(b.checked) state.hiddenWidgets=state.hiddenWidgets.filter(x=>x!==id); else if(!state.hiddenWidgets.includes(id)) state.hiddenWidgets.push(id);
+  save(); renderWidgets();
+});
+$('#resetOrder').addEventListener('click', ()=>{ state.widgetOrder=defaults().widgetOrder; state.hiddenWidgets=[]; save(); renderAll(); toast('Restablecido'); });
+$('#saveAI').addEventListener('click', async ()=>{
+  state.ai.key=$('#aiKey').value.trim(); state.ai.model=$('#aiModel').value.trim()||'gemini-3.1-flash-lite'; save(); renderWidgets(); toast('Configuración de IA guardada');
+  if(state.github.token&&state.github.gistId&&canUseNetwork()){ try{ await githubPush(); }catch(e){ pendingPush=true; } }
+  else if(state.github.token&&state.github.gistId) pendingPush=true;
+});
+$('#changePass').addEventListener('click', async ()=>{
+  const oldHash=await sha256($('#oldPass').value);
+  if(oldHash!==state.passwordHash){ toast('Contraseña actual incorrecta'); return; }
+  const next=$('#newPass').value; if(next.length<4){ toast('Mínimo 4 caracteres'); return; }
+  state.passwordHash=await sha256(next); save(); $('#oldPass').value=''; $('#newPass').value=''; toast('Contraseña actualizada');
+});
+
+/* ============ GitHub Sync ============ */
+function updateGithubDiag(){
+  const el=$('#ghDiag'); if(!el)return; const g=state.github||{};
+  const tail=g.token?'…'+g.token.slice(-4):'';
+  el.textContent=`Auto: ${g.autoSync?'ACTIVO':'APAGADO'} · Token: ${g.token?'sí'+tail:'NO'} · Gist: ${g.gistId||'NO'} · IA: ${state.ai?.key?'CONFIGURADA':'SIN CLAVE'} · Última: ${g.lastSync?new Date(g.lastSync).toLocaleString('es-EC'):'nunca'}`;
+}
+function updateGithubStatus(msg, isError){
+  const el=$('#ghStatus'); if(el){ el.textContent=msg; el.style.color=isError?'#ef4444':'var(--muted)'; }
+  updateGithubDiag();
+}
+function ghHeaders(){ return { Authorization:`Bearer ${state.github.token}`, Accept:'application/vnd.github+json', 'Content-Type':'application/json' }; }
+function clearBadToken(){
+  if(!state.github.token)return; state.github.token='';
+  syncing=true; try{ save(); } finally{ syncing=false; }
+  updateGithubStatus('Token inválido (401): se borró. Genera uno nuevo.', true);
+}
+function serializable(includeToken){ return { ...state, github:{ ...state.github, token:includeToken?state.github.token:'' } }; }
+function applyImported(data){
+  const d=defaults();
+  const order=Array.isArray(data.widgetOrder)?data.widgetOrder.filter(x=>ALL_IDS.includes(x)):[];
+  d.widgetOrder.forEach((x,i)=>{ if(!order.includes(x)) order.splice(Math.min(i,order.length),0,x); });
+  const token=state.github?.token||'', aiKey=state.ai?.key||'';
+  state={ ...d, ...data, widgetOrder:order,
+    github:{...d.github,...(data.github||{}),token},
+    profile:{...d.profile,...(data.profile||{})}, theme:{...d.theme,...(data.theme||{})},
+    ai:{...d.ai,...(data.ai||{}),key:data.ai?.key||aiKey,model:data.ai?.model||d.ai.model} };
+  save(); renderAll();
+}
+async function githubPush(){
+  if(!state.github.token) throw new Error('Pega primero tu token de GitHub');
+  if(!state.github.gistId) state.github.gistId=DEFAULT_GIST_ID;
+  // Si este dispositivo no tiene clave IA, no borrar la del Gist
+  if(!state.ai.key){
+    try{ const r=await fetch(`https://api.github.com/gists/${state.github.gistId}`,{headers:ghHeaders()});
+      if(r.ok){ const d=await r.json(), f=d.files?.[GIST_FILE]; if(f){ const remote=JSON.parse(f.content); if(remote.ai?.key){ state.ai.key=remote.ai.key; state.ai.model=remote.ai.model||state.ai.model; } } }
+    }catch(e){}
+  }
+  updateGithubStatus('Subiendo…'); syncing=true;
+  try{
+    const res=await fetch(`https://api.github.com/gists/${state.github.gistId}`,{method:'PATCH',headers:ghHeaders(),
+      body:JSON.stringify({description:'Mi Dashboard - respaldo personal',public:false,files:{[GIST_FILE]:{content:JSON.stringify(serializable(true),null,2)}}})});
+    if(res.status===401){ clearBadToken(); throw new Error('Token inválido'); }
+    const data=await res.json(); if(!res.ok) throw new Error(data.message||'No se pudo subir');
+    state.github.lastSync=data.updated_at||new Date().toISOString(); localDirty=false;
+    save(); updateGithubStatus('✓ Subido '+new Date().toLocaleString('es-EC')); toast('Respaldo subido');
+  } finally{ syncing=false; }
+}
+async function githubPull(silent){
+  if(!state.github.gistId) throw new Error('Falta el ID del Gist');
+  if(silent&&localDirty) return;
+  if(silent&&!$('#settingsModal').classList.contains('hidden')) return;
+  if(!silent) updateGithubStatus('Descargando…');
+  const headers=state.github.token?ghHeaders():{Accept:'application/vnd.github+json'};
+  const res=await fetch(`https://api.github.com/gists/${state.github.gistId}`,{headers});
+  if(res.status===401){ clearBadToken(); return; }
+  const data=await res.json(); if(!res.ok) throw new Error(data.message||'No se pudo descargar');
+  const file=data.files?.[GIST_FILE]; if(!file) throw new Error('El Gist no tiene el respaldo');
+  let content=file.content;
+  if(file.truncated){ const raw=await fetch(file.raw_url,{headers:state.github.token?{Authorization:`Bearer ${state.github.token}`}:{}}); content=await raw.text(); }
+  const remote=JSON.parse(content), remoteTime=data.updated_at||'';
+  if(silent&&remoteTime&&state.github.lastSync&&new Date(remoteTime)<=new Date(state.github.lastSync)) return;
+  syncing=true; try{ applyImported(remote); state.github.lastSync=remoteTime||new Date().toISOString(); save(); } finally{ syncing=false; }
+  updateGithubStatus('✓ Descargado '+new Date().toLocaleString('es-EC')); toast(silent?'Cambios descargados':'Datos descargados');
+}
+function readGithubFields(){
+  state.github.token=$('#ghToken').value.trim();
+  const id=$('#ghGistId').value.trim();
+  state.github.gistId=id||state.github.gistId||DEFAULT_GIST_ID;
+  $('#ghGistId').value=state.github.gistId;
+  state.github.autoSync=$('#ghAuto').checked; state.github.pullOnLogin=$('#ghPullLogin').checked;
+}
+$('#ghSave').addEventListener('click', async ()=>{
+  readGithubFields(); save(); updateGithubStatus(state.github.token?'Configuración guardada':'Falta el token',!state.github.token); toast('Configuración guardada');
+  if(state.github.token&&state.github.gistId&&canUseNetwork()){ try{ await githubPush(); }catch(e){ updateGithubStatus('Guardado localmente. '+e.message,true); } }
+  else if(state.github.token&&state.github.gistId) pendingPush=true;
+});
+$('#ghTest').addEventListener('click', async ()=>{
+  readGithubFields(); if(!state.github.token){ updateGithubStatus('Falta el token',true); return; }
+  updateGithubStatus('Probando token…');
+  try{ const r=await fetch('https://api.github.com/user',{headers:ghHeaders()});
+    if(r.ok||r.status===403) updateGithubStatus('✓ Token válido'); else updateGithubStatus(`Token inválido (${r.status}): genera uno nuevo`,true);
+  }catch(e){ updateGithubStatus('Error de conexión: '+e.message,true); }
+});
+$('#ghPush').addEventListener('click', async ()=>{ readGithubFields(); try{ await githubPush(); }catch(e){ updateGithubStatus('Error: '+e.message,true); } });
+$('#ghPull').addEventListener('click', async ()=>{ readGithubFields(); try{ await githubPull(); }catch(e){ updateGithubStatus('Error: '+e.message,true); } });
+$('#ghOpenGist').addEventListener('click', ()=>{ const id=state.github.gistId||$('#ghGistId').value.trim(); if(id) window.open('https://gist.github.com/'+id,'_blank','noopener'); else toast('Primero configura el Gist'); });
+$('#exportBtn').addEventListener('click', ()=>{
+  const blob=new Blob([JSON.stringify(serializable(false),null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='dashboard-backup.json'; a.click(); URL.revokeObjectURL(a.href); toast('Respaldo descargado');
+});
+$('#importBtn').addEventListener('click', ()=>$('#importFile').click());
+$('#importFile').addEventListener('change', e=>{
+  const file=e.target.files?.[0]; if(!file)return; const r=new FileReader();
+  r.onload=()=>{ try{ applyImported(JSON.parse(r.result)); toast('Datos importados'); }catch(ex){ toast('JSON inválido'); } }; r.readAsText(file);
+});
+$('#resetAll').addEventListener('click', ()=>{
+  if(!confirm('¿Borrar TODOS los datos? No se puede deshacer.'))return;
+  localStorage.removeItem(STORE_KEY); state=defaults(); save(); closeSettings(); renderAll(); toast('Datos reiniciados');
+});
+
+/* ============ Actualización de versión ============ */
+let updateTimer=null, pausedVersion='';
+try{ pausedVersion=sessionStorage.getItem('uae_paused_version')||''; }catch(e){}
+function canAutoReload(){
+  const ae=document.activeElement;
+  if(ae&&(['INPUT','TEXTAREA'].includes(ae.tagName)||ae.isContentEditable))return false;
+  if(!$('#settingsModal').classList.contains('hidden'))return false;
+  return true;
+}
+function armAutoReload(){
+  clearTimeout(updateTimer);
+  updateTimer=setTimeout(async function intentar(){
+    if(!canAutoReload()||!canUseNetwork()){ updateTimer=setTimeout(intentar,10000); return; }
+    const last=+(sessionStorage.getItem('uae_autoreload_at')||0);
+    if(Date.now()-last<120000)return;
+    try{ sessionStorage.setItem('uae_autoreload_at',String(Date.now())); }catch(e){}
+    try{ if(window.caches) await caches.delete('dashboard-shell-v1'); }catch(e){}
+    location.reload();
+  },6000);
+}
+async function checkVersion(){
+  if(location.protocol==='file:'||!canUseNetwork())return;
+  try{
+    const res=await fetch(location.href.split('?')[0]+'?v='+Date.now(),{cache:'no-store'});
+    if(!res.ok)return; const txt=await res.text(); const m=txt.match(/const APP_VERSION = '([^']+)'/);
+    if(!m||m[1]===APP_VERSION||m[1]===pausedVersion)return;
+    $('#updateText').textContent=`Nueva versión ${m[1]}. Actualizando…`;
+    $('#updateBanner').classList.remove('hidden'); armAutoReload();
+  }catch(e){}
+}
+$('#updateReload').addEventListener('click', ()=>{ clearTimeout(updateTimer); location.reload(); });
+$('#updateLater').addEventListener('click', ()=>{
+  clearTimeout(updateTimer); const m=$('#updateText').textContent.match(/Nueva versión ([^\.]+)/);
+  if(m){ pausedVersion=m[1]; try{ sessionStorage.setItem('uae_paused_version',pausedVersion); }catch(e){} }
+  $('#updateBanner').classList.add('hidden');
+});
+
+/* ============ Arranque ============ */
+function mountIcons(){
+  $('#loginLogo').innerHTML=icon('sparkles','h-7 w-7'); $('#sideLogo').innerHTML=icon('sparkles','h-5 w-5');
+  $$('[data-icon]').forEach(el=>{ el.innerHTML=icon(el.dataset.icon,'h-5 w-5'); });
+}
+function enterApp(){
+  $('#loginScreen').classList.add('hidden'); $('#app').classList.remove('hidden');
+  mountIcons(); renderAll(); checkVersion();
+  let lastPullAt=0;
+  const tryPull=()=>{
+    const g=state.github||{}; if(!canUseNetwork()||!g.autoSync||!g.token||!g.gistId||syncing)return;
+    const min=document.hidden?30000:4000; if(Date.now()-lastPullAt<min)return;
+    lastPullAt=Date.now(); githubPull(true).catch(()=>{});
+  };
+  const flush=()=>{
+    if(!canUseNetwork()||!pendingPush||syncing)return; const g=state.github||{};
+    if(!g.token||!g.gistId)return; pendingPush=false; githubPush().catch(()=>{pendingPush=true;});
+  };
+  const onNet=()=>{ updateNetChip(); checkVersion(); tryPull(); flush(); };
+  window.addEventListener('online',onNet); window.addEventListener('offline',onNet);
+  const conn=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
+  if(conn?.addEventListener) conn.addEventListener('change',onNet);
+  setInterval(tryPull,4000); setInterval(flush,10000);
+  document.addEventListener('visibilitychange',()=>{ if(!document.hidden)onNet(); }); window.addEventListener('focus',onNet);
+  // Al entrar: heredar token/clave del Gist y traer lo último
+  setTimeout(async ()=>{
+    if(!state.github.gistId) state.github.gistId=DEFAULT_GIST_ID;
+    if(!canUseNetwork()){ updateNetChip(); return; }
+    if(!state.github.token){
+      try{
+        const r=await fetch(`https://api.github.com/gists/${state.github.gistId}`,{headers:{Accept:'application/vnd.github+json'}});
+        if(r.ok){ const d=await r.json(), f=d.files?.[GIST_FILE]; if(f){ const remote=JSON.parse(f.content);
+          if(remote.github?.token) state.github.token=remote.github.token;
+          if(!state.ai.key&&remote.ai?.key){ state.ai.key=remote.ai.key; state.ai.model=remote.ai.model||state.ai.model; }
+          syncing=true; try{ save(); } finally{ syncing=false; }
+        } }
+      }catch(e){}
+    }
+    if(state.github.pullOnLogin!==false&&state.github.gistId){ try{ await githubPull(true); }catch(e){} }
+    if(state.github.token){ try{ await githubPush(); }catch(e){} }
+    fillSettings();
+  },400);
+}
+$('#loginForm').addEventListener('submit', doLogin);
+if(sessionStorage.getItem(SESSION_KEY)==='1'||localStorage.getItem(SESSION_KEY)==='1') enterApp();
+else { applyTheme(); mountIcons(); $('#loginPass').focus(); }
+setInterval(updateClock,15000); setInterval(checkVersion,60000);
+window.addEventListener('orientationchange',()=>setTimeout(updateClock,250));
+if('serviceWorker' in navigator && location.protocol==='https:') navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
