@@ -762,9 +762,11 @@ function renderSideProfile(){
     <div class="min-w-0"><div class="text-xs font-bold truncate">${esc(p.name)}</div><div class="text-[10px] truncate" style="color:var(--muted)">${esc(p.role)}</div></div></div>`;
 }
 function updateClock(){
-  const el=$('#clockTime'); if(!el) return;
-  el.textContent=new Intl.DateTimeFormat('es-EC',{hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date());
-  const h=new Date().getHours(); const g=$('#clockGreet'); if(g) g.textContent=h<12?'☀️ Buenos días':h<19?'🌤️ Buenas tardes':'🌙 Buenas noches';
+  const time=new Intl.DateTimeFormat('es-EC',{hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date());
+  $$('[data-clock]').forEach(el=>{ el.textContent=time; });
+  const h=new Date().getHours();
+  const greet=h<12?'☀️ Buenos días':h<19?'🌤️ Buenas tardes':'🌙 Buenas noches';
+  $$('[data-clock-greet]').forEach(el=>{ el.textContent=greet; });
 }
 function greeting(){ const h=new Date().getHours(); return h<12?'Buenos días':h<19?'Buenas tardes':'Buenas noches'; }
 function setView(v){
