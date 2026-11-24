@@ -687,6 +687,7 @@ function selectTab(tab){
 $('#tabs').addEventListener('click', e=>{ const b=e.target.closest('.tab-btn'); if(b) selectTab(b.dataset.tab); });
 function fillSettings(){
   $('#profName').value=state.profile.name||''; $('#profRole').value=state.profile.role||''; $('#profBio').value=state.profile.bio||'';
+  ['facebook','instagram','tiktok','x','youtube','whatsapp','linkedin'].forEach(n=>{ const el=$('#soc-'+n); if(el) el.value=(state.social||{})[n]||''; });
   $('#customColor').value=/^#[0-9a-f]{6}$/i.test(state.theme.color)?state.theme.color:'#ef4444';
   $('#aiKey').value=state.ai.key||''; $('#aiModel').value=state.ai.model||'';
   $('#fbAuto').checked=!!state.sync.autoSync; $('#fbPullLogin').checked=state.sync.pullOnLogin!==false;
