@@ -143,7 +143,18 @@
       <section class="tab-panel" data-panel="perfil">
         <div class="flex items-center gap-4 mb-5"><div id="avatarPreview" class="h-16 w-16 rounded-full overflow-hidden flex items-center justify-center text-xl font-bold shrink-0" style="background:var(--accent-soft);color:var(--accent)"></div><div><label class="btn btn-ghost btn-sm cursor-pointer"><span data-icon="user"></span> Cambiar foto<input type="file" id="avatarInput" accept="image/*" class="hidden"></label><button class="btn btn-ghost btn-sm ml-2" id="removeAvatar">Quitar</button><p class="text-[11px] mt-2" style="color:var(--muted)">Se guarda en este navegador.</p></div></div>
         <div class="grid sm:grid-cols-2 gap-4"><div><label class="label">Nombre</label><input id="profName" class="input"></div><div><label class="label">Rol / carrera</label><input id="profRole" class="input"></div><div class="sm:col-span-2"><label class="label">Biografía</label><textarea id="profBio" class="input" rows="2"></textarea></div></div>
-        <button class="btn mt-4" id="saveProfile">Guardar perfil</button>
+        <div class="border-t mt-5 pt-4" style="border-color:var(--border)"><h4 class="text-sm font-bold mb-3">Mis redes sociales</h4>
+          <div class="grid sm:grid-cols-2 gap-3">
+            <div><label class="label">Facebook</label><input id="soc-facebook" class="input" placeholder="https://facebook.com/..."></div>
+            <div><label class="label">Instagram</label><input id="soc-instagram" class="input" placeholder="https://instagram.com/..."></div>
+            <div><label class="label">TikTok</label><input id="soc-tiktok" class="input" placeholder="https://tiktok.com/@..."></div>
+            <div><label class="label">X (Twitter)</label><input id="soc-x" class="input" placeholder="https://x.com/..."></div>
+            <div><label class="label">YouTube</label><input id="soc-youtube" class="input" placeholder="https://youtube.com/@..."></div>
+            <div><label class="label">WhatsApp</label><input id="soc-whatsapp" class="input" placeholder="https://wa.me/593..."></div>
+            <div class="sm:col-span-2"><label class="label">LinkedIn</label><input id="soc-linkedin" class="input" placeholder="https://linkedin.com/in/..."></div>
+          </div>
+        </div>
+        <button class="btn mt-4" id="saveProfile">Guardar perfil y redes</button>
       </section>
 
       <section class="tab-panel" data-panel="widgets">
