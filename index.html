@@ -468,10 +468,13 @@ const WIDGETS = {
       let badge='',bc='var(--muted)';
       if(t.date){ if(t.date<today){badge='Vencida';bc='#ef4444';} else if(t.date===today){badge='Hoy';bc='#f59e0b';} else badge=new Intl.DateTimeFormat('es-EC',{day:'numeric',month:'short'}).format(new Date(t.date+'T00:00:00')); }
       const dot=t.priority==='alta'?'#ef4444':t.priority==='media'?'#f59e0b':'#6b7280';
-      return `<div class="task-item flex items-start gap-3 py-2.5 border-b last:border-0 ${t.done?'task-done':''}" style="border-color:var(--border)">
-        <input type="checkbox" ${t.done?'checked':''} data-act="toggle-task" data-id="${t.id}" class="mt-1 h-4 w-4 rounded cursor-pointer shrink-0">
-        <div class="min-w-0 flex-1"><div class="task-title text-sm ${t.done?'':'font-medium'} break-words">${esc(t.title)}</div>
-          <div class="flex items-center gap-2 mt-1"><span class="inline-block h-2 w-2 rounded-full" style="background:${dot}"></span>${badge?`<span class="text-[11px]" style="color:${bc}">${badge}</span>`:''}</div></div>
+      const st=taskStatus(t);
+      return `<div class="task-item flex items-start gap-3 py-2.5 border-b last:border-0 ${st==='hecha'?'task-done':''}" style="border-color:var(--border)">
+        <div class="min-w-0 flex-1">
+          <div class="task-title text-sm ${st==='hecha'?'':st==='no-hecha'?'':'font-medium'} break-words" style="${st==='no-hecha'?'color:var(--muted)':''}">${esc(t.title)}</div>
+          <div class="flex items-center gap-2 mt-1"><span class="inline-block h-2 w-2 rounded-full" style="background:${dot}"></span>${badge?`<span class="text-[11px]" style="color:${bc}">${badge}</span>`:''}</div>
+          <div class="flex flex-wrap gap-1 mt-2">${statusButtons(t)}</div>
+        </div>
         <button class="icon-btn danger edit-only" data-act="del-task" data-id="${t.id}">${icon('trash','h-4 w-4')}</button></div>`;
     }).join('');
     const pending = state.tasks.filter(t=>!t.done).length;
