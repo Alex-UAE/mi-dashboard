@@ -574,6 +574,29 @@ const WIDGETS = {
       if(t.date){ if(t.date<today){badge='Vencida';bc='#ef4444';} else if(t.date===today){badge='Hoy';bc='#f59e0b';} else badge=new Intl.DateTimeFormat('es-EC',{day:'numeric',month:'short'}).format(new Date(t.date+'T00:00:00')); }
       const dot=t.priority==='alta'?'#ef4444':t.priority==='media'?'#f59e0b':'#6b7280';
       const st=taskStatus(t);
+      if(editingTaskId===t.id){
+        return `<div class="py-3 border-b last:border-0" style="border-color:var(--border)">
+          <form data-form="edit-task" data-id="${t.id}" class="space-y-2">
+            <input class="input" name="title" value="${esc(t.title)}" required>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              <div><label class="label">Recordatorio</label><input class="input" type="date" name="date" value="${esc(t.date||'')}"></div>
+              <div><label class="label">Prioridad</label><select class="input" name="priority">
+                <option value="media" ${t.priority==='media'?'selected':''}>Media</option>
+                <option value="alta" ${t.priority==='alta'?'selected':''}>Alta</option>
+                <option value="baja" ${t.priority==='baja'?'selected':''}>Baja</option></select></div>
+              <div><label class="label">Estado</label><select class="input" name="status">
+                <option value="pendiente" ${st==='pendiente'?'selected':''}>Pendiente</option>
+                <option value="hecha" ${st==='hecha'?'selected':''}>Hecha</option>
+                <option value="no-hecha" ${st==='no-hecha'?'selected':''}>No hecha</option></select></div>
+              <div><label class="label">Apertura</label><input class="input" type="datetime-local" name="opening" value="${toLocalInput(t.opening)}"></div>
+              <div><label class="label">Finalización</label><input class="input" type="datetime-local" name="closing" value="${toLocalInput(t.closing)}"></div>
+              <div><label class="label">Detalle</label><input class="input" name="detail" value="${esc(t.detail||'')}"></div>
+            </div>
+            <label class="btn btn-ghost btn-sm cursor-pointer">📎 Agregar archivos<input type="file" name="files" multiple class="hidden"></label>
+            <div class="flex gap-2"><button class="btn btn-sm" type="submit">Guardar cambios</button>
+              <button class="btn btn-ghost btn-sm" type="button" data-act="cancel-edit">Cancelar</button></div>
+          </form></div>`;
+      }
       return `<div class="task-item flex items-start gap-3 py-2.5 border-b last:border-0 ${st==='hecha'?'task-done':''}" style="border-color:var(--border)">
         <div class="min-w-0 flex-1">
           <div class="task-title text-sm ${st==='hecha'?'':st==='no-hecha'?'':'font-medium'} break-words" style="${st==='no-hecha'?'color:var(--muted)':''}">${esc(t.title)}</div>
@@ -588,6 +611,7 @@ const WIDGETS = {
           ${(t.files||[]).length?`<div class="flex flex-wrap gap-1 mt-2">${t.files.map(f=>`<a class="chip" href="${esc(f.data)}" download="${esc(f.name)}" title="${esc(f.name)}">📎 ${esc((f.name||'archivo').slice(0,22))}</a>`).join('')}</div>`:''}
           <div class="flex flex-wrap gap-1 mt-2">${statusButtons(t)}</div>
         </div>
+        <button class="icon-btn edit-only" data-act="edit-task" data-id="${t.id}" title="Editar tarea">${icon('settings','h-4 w-4')}</button>
         <button class="icon-btn danger edit-only" data-act="del-task" data-id="${t.id}">${icon('trash','h-4 w-4')}</button></div>`;
     }).join('');
     const pending = state.tasks.filter(t=>taskStatus(t)==='pendiente').length;
