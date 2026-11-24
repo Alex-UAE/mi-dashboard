@@ -747,6 +747,7 @@ const WIDGETS = {
 let currentView = 'inicio';
 let calY = new Date().getFullYear(), calM = new Date().getMonth();
 let pomoLeft = 25*60, pomoTimer = null, pomoMode = 'focus';
+let editingTaskId = null;
 function widgetCard(inst){
   const w=WIDGETS[inst.type], key=inst.key, span=spanOf(key,inst.type);
   return `<section class="widget panel panel-hover ${span}" data-id="${inst.id}" data-key="${key}" data-type="${inst.type}">
