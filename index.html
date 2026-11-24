@@ -458,7 +458,7 @@ const WIDGETS = {
     const rows = state.courses.map(c=>`<div class="py-3 border-b last:border-0" style="border-color:var(--border)">
       <div class="flex justify-between items-center mb-2"><span class="text-sm font-semibold truncate">${esc(c.name)}</span>
         <div class="flex items-center gap-2"><span class="text-xs font-bold" style="color:var(--accent)">${c.progress}%</span>
-        <button class="icon-btn danger" data-act="del-course" data-id="${c.id}">${icon('trash','h-4 w-4')}</button></div></div>
+        <button class="icon-btn danger edit-only" data-act="del-course" data-id="${c.id}">${icon('trash','h-4 w-4')}</button></div></div>
       <input type="range" min="0" max="100" value="${c.progress}" data-act="range" data-id="${c.id}" class="w-full"></div>`).join('');
     return `<div class="mb-4"><div class="flex justify-between text-xs mb-1.5" style="color:var(--muted)"><span>Promedio</span><span class="font-bold" style="color:var(--text)">${avg}%</span></div>
       <div class="h-2 rounded-full overflow-hidden" style="background:var(--border)"><div class="progress-fill" style="width:${avg}%"></div></div></div>
@@ -476,7 +476,7 @@ const WIDGETS = {
         <input type="checkbox" ${t.done?'checked':''} data-act="toggle-task" data-id="${t.id}" class="mt-1 h-4 w-4 rounded cursor-pointer shrink-0">
         <div class="min-w-0 flex-1"><div class="task-title text-sm ${t.done?'':'font-medium'} break-words">${esc(t.title)}</div>
           <div class="flex items-center gap-2 mt-1"><span class="inline-block h-2 w-2 rounded-full" style="background:${dot}"></span>${badge?`<span class="text-[11px]" style="color:${bc}">${badge}</span>`:''}</div></div>
-        <button class="icon-btn danger" data-act="del-task" data-id="${t.id}">${icon('trash','h-4 w-4')}</button></div>`;
+        <button class="icon-btn danger edit-only" data-act="del-task" data-id="${t.id}">${icon('trash','h-4 w-4')}</button></div>`;
     }).join('');
     const pending = state.tasks.filter(t=>!t.done).length;
     return `<form class="grid grid-cols-1 sm:grid-cols-[1fr_auto_auto] gap-2 mb-2" data-form="add-task">
