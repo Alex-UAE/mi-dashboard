@@ -650,6 +650,34 @@ const WIDGETS = {
       <p class="text-[11px] mt-3 text-center" style="color:var(--muted)">El punto marca tareas pendientes con fecha.</p>
     </div>`;
   }},
+  agenda: { view:'horario', title:'Agenda', icon:'note', span:'md:col-span-12', render(){
+    const today=localISO(new Date());
+    const items=(state.tasks||[]).filter(t=>t.date||t.opening||t.closing)
+      .map(t=>({ t, when:(t.opening||t.closing||(t.date?t.date+'T00:00':'')) }))
+      .sort((a,b)=>a.when.localeCompare(b.when)).slice(0,20);
+    const colorOf=s=>({hecha:'#22c55e',pendiente:'#f59e0b','no-hecha':'#6b7280'}[s]||'#6b7280');
+    const rows=items.map(({t,when})=>{
+      const day=when.slice(0,10), past=day<today;
+      const d=new Date(when);
+      const fecha=isNaN(d)?'—':new Intl.DateTimeFormat('es-EC',{weekday:'short',day:'numeric',month:'short'}).format(d);
+      const hora=isNaN(d)?'':new Intl.DateTimeFormat('es-EC',{hour:'2-digit',minute:'2-digit'}).format(d);
+      const st=taskStatus(t);
+      return `<div class="flex gap-3 py-3 border-b last:border-0" style="border-color:var(--border);opacity:${past&&st==='hecha'?.6:1}">
+        <div class="w-20 shrink-0 text-right"><div class="text-xs font-bold ${day===today?'accent-text':''}" style="color:${day===today?'var(--accent)':'var(--text)'}">${fecha}</div><div class="text-[11px]" style="color:var(--muted)">${hora}</div></div>
+        <div class="w-px shrink-0" style="background:var(--border)"></div>
+        <div class="min-w-0 flex-1">
+          <div class="text-sm font-semibold truncate">${esc(t.title)}</div>
+          ${t.detail?`<div class="text-xs mt-0.5 truncate" style="color:var(--muted)">${esc(t.detail)}</div>`:''}
+          <div class="flex flex-wrap gap-2 mt-1 text-[10px]" style="color:var(--muted)">
+            <span style="color:${colorOf(st)}">● ${st==='hecha'?'Hecha':st==='pendiente'?'Pendiente':'No hecha'}</span>
+            ${t.closing?`<span>🏁 ${fmtLocal(t.closing)}</span>`:''}
+            ${(t.files||[]).length?`<span>📎 ${t.files.length}</span>`:''}
+          </div>
+        </div></div>`;
+    }).join('');
+    return `${rows||'<div class="py-6 text-center text-sm" style="color:var(--muted)">Sin tareas con fecha por ahora</div>'}
+      <button class="btn btn-ghost btn-sm w-full mt-3" data-act="go-tareas">Ver todas las tareas</button>`;
+  }},
   pomodoro: { view:'inicio', title:'Pomodoro', icon:'clock', span:'md:col-span-4', render(){
     const mm=String(Math.floor(pomoLeft/60)).padStart(2,'0'), ss=String(pomoLeft%60).padStart(2,'0');
     return `<div class="flex flex-col items-center py-2">
