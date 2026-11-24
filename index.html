@@ -662,7 +662,7 @@ const WIDGETS = {
       const fecha=isNaN(d)?'—':new Intl.DateTimeFormat('es-EC',{weekday:'short',day:'numeric',month:'short'}).format(d);
       const hora=isNaN(d)?'':new Intl.DateTimeFormat('es-EC',{hour:'2-digit',minute:'2-digit'}).format(d);
       const st=taskStatus(t);
-      return `<div class="flex gap-3 py-3 border-b last:border-0" style="border-color:var(--border);opacity:${past&&st==='hecha'?.6:1}">
+      return `<div class="flex gap-3 py-3 border-b last:border-0" style="border-color:var(--border);opacity:${(past&&st==='hecha') ? 0.6 : 1}">
         <div class="w-20 shrink-0 text-right"><div class="text-xs font-bold ${day===today?'accent-text':''}" style="color:${day===today?'var(--accent)':'var(--text)'}">${fecha}</div><div class="text-[11px]" style="color:var(--muted)">${hora}</div></div>
         <div class="w-px shrink-0" style="background:var(--border)"></div>
         <div class="min-w-0 flex-1">
