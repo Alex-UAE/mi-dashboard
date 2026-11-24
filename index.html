@@ -527,7 +527,7 @@ const WIDGETS = {
     return `<div class="flex items-start gap-4"><div class="h-16 w-16 shrink-0 rounded-2xl overflow-hidden flex items-center justify-center text-2xl font-extrabold" style="background:var(--accent-soft);color:var(--accent)">${av}</div>
       <div class="min-w-0 flex-1"><div class="text-lg font-bold truncate">${esc(p.name)}</div><div class="text-xs" style="color:var(--accent)">${esc(p.role)}</div><p class="text-sm mt-2" style="color:var(--muted)">${esc(p.bio)}</p></div></div>
       ${socials?`<div class="flex flex-wrap gap-2 mt-4 pt-4 border-t" style="border-color:var(--border)">${socials}</div>`:''}
-      <button class="btn btn-ghost btn-sm w-full mt-5" data-act="open-profile">${icon('settings','h-4 w-4')} Editar perfil y redes</button>`;
+      <button class="btn btn-ghost btn-sm w-full mt-5 edit-only" data-act="open-profile">${icon('settings','h-4 w-4')} Editar perfil y redes</button>`;
   }},
   medios: { view:'perfil', title:'Mis fotos y videos', icon:'sparkles', span:'md:col-span-12', render(){
     const items=(state.media||[]).map((m,i)=>{
