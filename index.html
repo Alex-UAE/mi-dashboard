@@ -581,7 +581,13 @@ const WIDGETS = {
     const doneCount = state.tasks.filter(t=>taskStatus(t)==='hecha').length;
     return `<form class="grid grid-cols-1 sm:grid-cols-[1fr_auto_auto] gap-2 mb-2 edit-only" data-form="add-task">
       <input class="input" name="title" placeholder="¿Qué tienes que hacer?" required>
-      <input class="input" type="date" name="date"><select class="input" name="priority"><option value="media">Media</option><option value="alta">Alta</option><option value="baja">Baja</option></select>
+      <input class="input" type="date" name="date" title="Fecha recordatorio"><select class="input" name="priority"><option value="media">Media</option><option value="alta">Alta</option><option value="baja">Baja</option></select>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:col-span-3">
+        <div><label class="label">Apertura (fecha y hora)</label><input class="input" type="datetime-local" name="opening"></div>
+        <div><label class="label">Finalización (fecha y hora)</label><input class="input" type="datetime-local" name="closing"></div>
+        <div><label class="label">Detalle</label><input class="input" name="detail" placeholder="Detalle de la tarea"></div>
+      </div>
+      <label class="btn btn-ghost btn-sm cursor-pointer sm:col-span-3">📎 Adjuntar archivos (cualquier tipo)<input type="file" name="files" multiple class="hidden"></label>
       <button class="btn btn-sm sm:col-span-3" type="submit">${icon('plus','h-4 w-4')} Agregar tarea</button></form>
       <div class="max-h-80 overflow-y-auto">${list||'<p class="py-6 text-center text-sm" style="color:var(--muted)">Sin tareas</p>'}</div>
       <div class="mt-2 text-[11px]" style="color:var(--muted)">${pending} pendiente${pending===1?'':'s'} · ${notDone} no hecha${notDone===1?'':'s'} · ${doneCount} hecha${doneCount===1?'':'s'}</div>`;
