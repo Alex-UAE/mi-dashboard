@@ -548,7 +548,7 @@ const WIDGETS = {
   ia: { view:'ia', title:'Asistente IA', icon:'sparkles', span:'md:col-span-12', render(){
     if(!state.ai.key) return `<div class="flex flex-col sm:flex-row items-center gap-4 py-2"><div class="flex h-12 w-12 items-center justify-center rounded-xl" style="background:var(--accent-soft);color:var(--accent)">${icon('sparkles')}</div>
       <div class="flex-1"><div class="text-sm font-bold">Activa tu asistente</div><p class="text-xs mt-1" style="color:var(--muted)">Pega una clave de Gemini en Ajustes → Seguridad e IA.</p></div>
-      <button class="btn btn-ghost btn-sm" data-act="open-ai">Configurar ahora</button></div>`;
+      <button class="btn btn-ghost btn-sm edit-only" data-act="open-ai">Configurar ahora</button></div>`;
     return `<textarea id="aiPrompt" class="input" rows="2" placeholder="Pregúntame lo que quieras..."></textarea>
       <div class="flex items-center gap-3 mt-3"><button class="btn btn-sm" id="aiSend">${icon('send','h-4 w-4')} Preguntar</button><span class="text-[11px]" style="color:var(--muted)">Modelo: ${esc(state.ai.model)}</span></div>
       <div id="aiResponse" class="mt-4 hidden rounded-xl p-4 text-sm whitespace-pre-wrap" style="background:var(--panel2);border:1px solid var(--border)"></div>`;
