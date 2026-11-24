@@ -814,8 +814,8 @@ function mountIcons(){
   $$('[data-icon]').forEach(el=>{ el.innerHTML=icon(el.dataset.icon,'h-5 w-5'); });
 }
 function enterApp(){
-  $('#loginScreen').classList.add('hidden'); $('#app').classList.remove('hidden');
-  mountIcons(); renderAll(); checkVersion();
+  // Mantener el login visible hasta tener los datos de Firebase: un solo repintado
+  mountIcons(); updateNetChip(); checkVersion();
   let lastPullAt=0;
   const tryPull=()=>{
     const s=state.sync||{}; if(!canUseNetwork()||!s.autoSync||syncing)return;
