@@ -1054,6 +1054,13 @@ function closeAddWidget(){ $('#addWidgetModal').classList.add('hidden'); $('#add
 $('#addWidgetClose').addEventListener('click', closeAddWidget);
 $('#addWidgetCancel').addEventListener('click', closeAddWidget);
 $('#addWidgetModal').addEventListener('click', e=>{ if(e.target.id==='addWidgetModal') closeAddWidget(); });
+$('#addWidgetList').addEventListener('click', e=>{
+  const b=e.target.closest('[data-act="add-widget"]'); if(!b) return;
+  const wid=b.dataset.id;
+  state.extraWidgets=state.extraWidgets||[];
+  state.extraWidgets.push({id:uid(),type:wid,view:currentView,mediaId:null});
+  save(); closeAddWidget(); renderWidgets(); toast(WIDGETS[wid].title+' agregado como nuevo bloque');
+});
 $('#bellBtn').addEventListener('click', ()=>{ updateBell(); $('#bellPanel').classList.toggle('hidden'); });
 $('#bellClose').addEventListener('click', ()=>$('#bellPanel').classList.add('hidden'));
 document.addEventListener('click', e=>{ if(!e.target.closest('#bellBtn') && !e.target.closest('#bellPanel')) $('#bellPanel').classList.add('hidden'); });
