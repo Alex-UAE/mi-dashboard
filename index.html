@@ -560,6 +560,10 @@ const WIDGETS = {
         <div class="min-w-0 flex-1">
           <div class="task-title text-sm ${st==='hecha'?'':st==='no-hecha'?'':'font-medium'} break-words" style="${st==='no-hecha'?'color:var(--muted)':''}">${esc(t.title)}</div>
           <div class="flex items-center gap-2 mt-1"><span class="inline-block h-2 w-2 rounded-full" style="background:${dot}"></span>${badge?`<span class="text-[11px]" style="color:${bc}">${badge}</span>`:''}</div>
+          <div class="mt-1.5 text-[10px] leading-relaxed" style="color:var(--muted)">
+            <div>🕓 Abierta: ${fmtStamp(t.createdAt)}${t.date?` · Fecha: ${esc(t.date)}`:''}</div>
+            <div>🏁 Finalizada: ${t.finishedAt?fmtStamp(t.finishedAt):'—'}</div>
+          </div>
           <div class="flex flex-wrap gap-1 mt-2">${statusButtons(t)}</div>
         </div>
         <button class="icon-btn danger edit-only" data-act="del-task" data-id="${t.id}">${icon('trash','h-4 w-4')}</button></div>`;
