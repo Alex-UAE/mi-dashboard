@@ -503,7 +503,7 @@ function renderWidgets(){
   const visible = state.widgetOrder.filter(id => !state.hiddenWidgets.includes(id) && WIDGETS[id] && WIDGETS[id].view === currentView);
   $('#widgets').innerHTML = visible.length ? visible.map(id=>{
     const w = WIDGETS[id];
-    return `<section class="widget panel panel-hover fade-in ${w.span}" data-id="${id}">
+    return `<section class="widget panel panel-hover ${w.span}" data-id="${id}">
       <div class="flex items-center gap-2 px-4 py-3 border-b" style="border-color:var(--border)">
         <span style="color:var(--accent)">${icon(w.icon,'h-4 w-4')}</span><h3 class="text-sm font-bold flex-1 truncate">${w.title}</h3>
         <div class="flex gap-0.5"><button class="icon-btn" data-act="up" title="Subir">${icon('up','h-4 w-4')}</button>
