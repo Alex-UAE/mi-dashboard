@@ -694,29 +694,51 @@ const WIDGETS = {
 let currentView = 'inicio';
 let calY = new Date().getFullYear(), calM = new Date().getMonth();
 let pomoLeft = 25*60, pomoTimer = null, pomoMode = 'focus';
+function widgetCard(inst){
+  const w=WIDGETS[inst.type], key=inst.key, span=spanOf(key,inst.type);
+  return `<section class="widget panel panel-hover ${span}" data-id="${inst.id}" data-key="${key}" data-type="${inst.type}">
+    <div class="flex items-center gap-2 px-4 py-3 border-b" style="border-color:var(--border)">
+      <span style="color:var(--accent)">${icon(w.icon,'h-4 w-4')}</span>
+      <h3 class="text-sm font-bold flex-1 truncate">${w.title}${inst.mediaId?' · '+(state.media||[]).findIndex(m=>m.id===inst.mediaId)+1:''}</h3>
+      <div class="flex gap-0.5 edit-only">
+        <button class="icon-btn" data-act="size" title="Cambiar tamaño">${icon('chart','h-4 w-4')}</button>
+        <button class="icon-btn" data-act="up" title="Subir">${icon('up','h-4 w-4')}</button>
+        <button class="icon-btn" data-act="down" title="Bajar">${icon('down','h-4 w-4')}</button>
+        <span class="icon-btn drag-handle" draggable="true" data-act="drag" title="Arrastrar">${icon('grip','h-4 w-4')}</span>
+        <button class="icon-btn danger" data-act="hide" title="Ocultar">${icon('eyeoff','h-4 w-4')}</button>
+        ${inst.extra?`<button class="icon-btn danger" data-act="del-instance" data-id="${inst.id}" title="Eliminar widget">${icon('trash','h-4 w-4')}</button>`:''}
+      </div></div>
+    <div class="p-4">${w.render(inst)}</div></section>`;
+}
 function renderWidgets(){
-  const visible = state.widgetOrder.filter(id => !state.hiddenWidgets.includes(id) && WIDGETS[id] && widgetViews(id).includes(currentView));
-  const addBlock = state.editMode ? `<section class="panel md:col-span-12 p-4">
+  const base=state.widgetOrder.filter(id=>!state.hiddenWidgets.includes(id)&&WIDGETS[id]&&widgetViews(id).includes(currentView))
+    .map(id=>({id,key:id,type:id}));
+  const extras=(state.extraWidgets||[]).filter(w=>w.view===currentView&&!state.hiddenWidgets.includes(w.id))
+    .map(w=>({...w,key:w.id,extra:true}));
+  const all=[...base,...extras];
+  const addBlock=state.editMode?`<section class="panel md:col-span-12 p-4">
     <div class="flex items-center gap-2 mb-3"><span style="color:var(--accent)">${icon('plus','h-4 w-4')}</span><h3 class="text-sm font-bold">Añadir widget</h3></div>
     <div class="flex flex-wrap gap-2">${ALL_IDS.map(id=>{
-      const w=WIDGETS[id]; if(!w) return '';
-      const here=widgetViews(id).includes(currentView), shown=here && !state.hiddenWidgets.includes(id);
-      const label=shown?'✓ Ya está aquí':'Agregar aquí';
-      return `<button data-act="add-widget" data-id="${id}" class="btn btn-sm ${shown?'btn-ghost':''}" ${shown?'disabled':''}>${icon(w.icon,'h-4 w-4')} ${w.title} · ${label}</button>`;
+      const w=WIDGETS[id]; if(!w)return '';
+      return `<button data-act="add-widget" data-id="${id}" class="btn btn-sm">${icon(w.icon,'h-4 w-4')} Agregar ${w.title}</button>`;
     }).join('')}</div>
-    <p class="text-[11px] mt-3" style="color:var(--muted)">Toca uno para agregarlo también a esta vista, sin quitarlo de las demás. Puedes ocultarlo con el ícono de ojo.</p>
-  </section>` : '';
-  $('#widgets').innerHTML = addBlock + (visible.length ? visible.map(id=>{
-    const w = WIDGETS[id];
-    return `<section class="widget panel panel-hover ${w.span}" data-id="${id}">
-      <div class="flex items-center gap-2 px-4 py-3 border-b" style="border-color:var(--border)">
-        <span style="color:var(--accent)">${icon(w.icon,'h-4 w-4')}</span><h3 class="text-sm font-bold flex-1 truncate">${w.title}</h3>
-        <div class="flex gap-0.5 edit-only"><button class="icon-btn" data-act="up" title="Subir">${icon('up','h-4 w-4')}</button>
-          <button class="icon-btn" data-act="down" title="Bajar">${icon('down','h-4 w-4')}</button>
-          <span class="icon-btn drag-handle" draggable="true" data-act="drag" title="Arrastrar">${icon('grip','h-4 w-4')}</span>
-          <button class="icon-btn danger" data-act="hide" title="Ocultar">${icon('eyeoff','h-4 w-4')}</button></div></div>
-      <div class="p-4">${w.render()}</div></section>`;
-  }).join('') : `<div class="panel col-span-12 p-10 text-center"><div class="text-4xl mb-3">📦</div><div class="font-bold">Sin widgets visibles</div><div class="text-xs mt-1" style="color:var(--muted)">Actívalos en Ajustes → Widgets.</div><button class="btn btn-ghost btn-sm mt-4" data-act="open-settings">Abrir ajustes</button></div>`);
+    <p class="text-[11px] mt-3" style="color:var(--muted)">Se crea un widget nuevo en esta vista; puedes agregar varios del mismo tipo (por ejemplo, uno por foto o video). Usa el ícono de tamaño para cambiar su ancho y el de basura para borrarlo.</p>
+  </section>`:'';
+  $('#widgets').innerHTML=addBlock+(all.length?all.map(widgetCard).join(''):`<div class="panel col-span-12 p-10 text-center"><div class="text-4xl mb-3">📦</div><div class="font-bold">Sin widgets visibles</div><div class="text-xs mt-1" style="color:var(--muted)">Activa widgets en modo edición.</div></div>`);
+  updateClock();
+}
+function syncVisibleOrder(){
+  const dom=$$('.widget').map(w=>w.dataset.id);
+  const baseSet=state.widgetOrder.filter(id=>!state.hiddenWidgets.includes(id)&&widgetViews(id).includes(currentView));
+  const extraSet=(state.extraWidgets||[]).filter(w=>w.view===currentView&&!state.hiddenWidgets.includes(w.id));
+  const baseOrder=dom.filter(id=>baseSet.includes(id));
+  const extraOrder=dom.filter(id=>extraSet.some(w=>w.id===id));
+  let k=0;
+  state.widgetOrder=state.widgetOrder.map(id=>baseSet.includes(id)?(baseOrder[k++]||id):id);
+  const mapExtra={}; extraSet.forEach(w=>mapExtra[w.id]=w);
+  let e=0;
+  state.extraWidgets=state.extraWidgets.map(w=>
+    (w.view===currentView&&!state.hiddenWidgets.includes(w.id))?(mapExtra[extraOrder[e++]]||w):w);
 }
 function renderAll(){
   applyTheme();
