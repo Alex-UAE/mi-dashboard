@@ -280,6 +280,11 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 const localISO = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const taskStatus = t => t.status || (t.done ? 'hecha' : 'pendiente');
 const normalizeTasks = arr => (Array.isArray(arr) ? arr : []).map(t => ({ ...t, status: taskStatus(t), createdAt: t.createdAt || new Date().toISOString() }));
+function toLocalInput(v){
+  if(!v) return '';
+  const d=new Date(v); if(isNaN(d)) return '';
+  return `${localISO(d)}T${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
 function fmtLocal(v){
   if(!v) return '—';
   const d=new Date(v);
