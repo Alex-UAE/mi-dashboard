@@ -677,7 +677,7 @@ let currentView = 'inicio';
 let calY = new Date().getFullYear(), calM = new Date().getMonth();
 let pomoLeft = 25*60, pomoTimer = null, pomoMode = 'focus';
 function renderWidgets(){
-  const visible = state.widgetOrder.filter(id => !state.hiddenWidgets.includes(id) && WIDGETS[id] && widgetView(id) === currentView);
+  const visible = state.widgetOrder.filter(id => !state.hiddenWidgets.includes(id) && WIDGETS[id] && widgetViews(id).includes(currentView));
   const addBlock = state.editMode ? `<section class="panel md:col-span-12 p-4">
     <div class="flex items-center gap-2 mb-3"><span style="color:var(--accent)">${icon('plus','h-4 w-4')}</span><h3 class="text-sm font-bold">Añadir widget</h3></div>
     <div class="flex flex-wrap gap-2">${ALL_IDS.map(id=>{
