@@ -542,6 +542,7 @@ const WIDGETS = {
         <div class="flex items-center gap-3">
           <span class="text-sm flex-1 min-w-0 truncate">${esc(t.title)}</span>
           <span class="text-[11px] shrink-0" style="color:${color}">${label}</span></div>
+        <div class="text-[10px] mt-1" style="color:var(--muted)">🕓 ${fmtStamp(t.createdAt)} · 🏁 ${t.finishedAt?fmtStamp(t.finishedAt):'—'}</div>
         <div class="flex flex-wrap gap-1 mt-1">${statusButtons(t)}</div></div>`;
     }).join('');
     return `${rows || `<div class="py-8 text-center"><div class="text-3xl mb-2">✅</div><div class="text-sm font-semibold">Sin tareas urgentes</div></div>`}
