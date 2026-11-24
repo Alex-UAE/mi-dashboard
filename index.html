@@ -839,6 +839,7 @@ function applyImported(data){
   const before = norm(state);
   state={ ...d, ...incoming, widgetOrder:order,
     profile:{...d.profile,...(data.profile||{})}, theme:{...d.theme,...(data.theme||{})},
+    tasks: normalizeTasks(data.tasks || state.tasks || d.tasks),
     sync:{...d.sync,...(data.sync||{})},
     ai:{...d.ai,...(data.ai||{}),key:data.ai?.key||aiKey,model:data.ai?.model||d.ai.model} };
   if (norm(state) !== before && appReady) renderAll();
