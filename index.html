@@ -611,8 +611,8 @@ const WIDGETS = {
           ${(t.files||[]).length?`<div class="flex flex-wrap gap-1 mt-2">${t.files.map(f=>`<a class="chip" href="${esc(f.data)}" download="${esc(f.name)}" title="${esc(f.name)}">📎 ${esc((f.name||'archivo').slice(0,22))}</a>`).join('')}</div>`:''}
           <div class="flex flex-wrap gap-1 mt-2">${statusButtons(t)}</div>
         </div>
-        <button class="icon-btn edit-only" data-act="edit-task" data-id="${t.id}" title="Editar tarea">${icon('settings','h-4 w-4')}</button>
-        <button class="icon-btn danger edit-only" data-act="del-task" data-id="${t.id}">${icon('trash','h-4 w-4')}</button></div>`;
+        <button class="icon-btn" data-act="edit-task" data-id="${t.id}" title="Editar tarea">${icon('settings','h-4 w-4')}</button>
+        <button class="icon-btn danger" data-act="del-task" data-id="${t.id}">${icon('trash','h-4 w-4')}</button></div>`;
     }).join('');
     const pending = state.tasks.filter(t=>taskStatus(t)==='pendiente').length;
     const notDone = state.tasks.filter(t=>taskStatus(t)==='no-hecha').length;
