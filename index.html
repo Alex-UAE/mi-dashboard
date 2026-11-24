@@ -514,19 +514,20 @@ const WIDGETS = {
       <button class="btn btn-ghost btn-sm w-full mt-5" data-act="open-profile">${icon('settings','h-4 w-4')} Editar perfil y redes</button>`;
   }},
   medios: { view:'perfil', title:'Mis fotos y videos', icon:'sparkles', span:'md:col-span-12', render(){
-    const items=(state.media||[]).map(m=>{
+    const items=(state.media||[]).map((m,i)=>{
       const src=esc(m.data);
       const inner=m.type==='video'
-        ? `<video src="${src}" autoplay muted loop playsinline class="h-full w-full object-cover"></video>`
-        : `<img src="${src}" class="h-full w-full object-cover" alt="">`;
-      return `<div class="group relative aspect-square rounded-xl overflow-hidden" style="background:var(--panel2);border:1px solid var(--border)">
+        ? `<video src="${src}" autoplay muted loop playsinline class="block mx-auto w-full h-auto max-h-[70vh] object-contain"></video>`
+        : `<img src="${src}" class="block mx-auto w-full h-auto max-h-[70vh] object-contain" alt="">`;
+      return `<div class="group relative rounded-2xl overflow-hidden mb-4" style="background:var(--panel2);border:1px solid var(--border)">
         ${inner}
-        <button class="icon-btn danger absolute top-1 right-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100" style="background:rgba(0,0,0,.6)" data-act="del-media" data-id="${m.id}">${icon('trash','h-4 w-4')}</button>
+        <button class="icon-btn danger absolute top-2 right-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100" style="background:rgba(0,0,0,.65);backdrop-filter:blur(4px)" data-act="del-media" data-id="${m.id}" title="Eliminar">${icon('trash','h-4 w-4')}</button>
+        <span class="absolute bottom-2 left-2 chip" style="background:rgba(0,0,0,.65)">${m.type==='video'?'Video':'Foto'} ${i+1}</span>
       </div>`;
     }).join('');
-    return `<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">${items||'<div class="col-span-full py-8 text-center"><div class="text-3xl mb-2">🖼️</div><div class="text-sm font-semibold">Aún no hay fotos ni videos</div><div class="text-xs mt-1" style="color:var(--muted)">Agrega los tuyos desde el botón de abajo.</div></div>'}</div>
-      <label class="btn btn-ghost btn-sm mt-4 cursor-pointer w-full">${icon('plus','h-4 w-4')} Agregar fotos o videos<input type="file" id="mediaInput" accept="image/*,video/*" multiple class="hidden"></label>
-      <p class="text-[11px] mt-2" style="color:var(--muted)">Los videos se reproducen solos, sin sonido ni controles. Fotos ≤ 900 px y videos ≤ 2 MB c/u para no cargar la sincronización.</p>`;
+    return `<div class="max-w-3xl mx-auto">${items||'<div class="py-8 text-center"><div class="text-3xl mb-2">🖼️</div><div class="text-sm font-semibold">Aún no hay fotos ni videos</div><div class="text-xs mt-1" style="color:var(--muted)">Agrega los tuyos desde el botón de abajo.</div></div>'}</div>
+      <label class="btn btn-ghost btn-sm mt-2 cursor-pointer w-full">${icon('plus','h-4 w-4')} Agregar fotos o videos<input type="file" id="mediaInput" accept="image/*,video/*" multiple class="hidden"></label>
+      <p class="text-[11px] mt-2" style="color:var(--muted)">Se muestran completos, en su formato original y centrados. Los videos se reproducen solos, sin sonido ni controles. Fotos ≤ 900 px y videos ≤ 2 MB c/u.</p>`;
   }},
   ia: { view:'ia', title:'Asistente IA', icon:'sparkles', span:'md:col-span-12', render(){
     if(!state.ai.key) return `<div class="flex flex-col sm:flex-row items-center gap-4 py-2"><div class="flex h-12 w-12 items-center justify-center rounded-xl" style="background:var(--accent-soft);color:var(--accent)">${icon('sparkles')}</div>
