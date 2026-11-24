@@ -515,7 +515,7 @@ const WIDGETS = {
     const items = state.shortcuts.map(s=>`<a href="${esc(s.url)}" target="_blank" rel="noopener" class="group flex items-center gap-3 rounded-xl p-3" style="background:var(--panel2);border:1px solid var(--border)">
       <div class="flex h-9 w-9 items-center justify-center rounded-lg text-sm font-bold" style="background:var(--accent-soft);color:var(--accent)">${esc((s.name||'?').charAt(0).toUpperCase())}</div>
       <span class="text-sm font-semibold truncate flex-1">${esc(s.name)}</span>
-      <button class="icon-btn danger opacity-100 sm:opacity-0 sm:group-hover:opacity-100" data-act="del-shortcut" data-id="${s.id}">${icon('trash','h-4 w-4')}</button></a>`).join('');
+      <button class="icon-btn danger opacity-100 sm:opacity-0 sm:group-hover:opacity-100 edit-only" data-act="del-shortcut" data-id="${s.id}">${icon('trash','h-4 w-4')}</button></a>`).join('');
     return `<div class="grid grid-cols-1 sm:grid-cols-2 gap-2">${items||'<p class="col-span-2 text-center py-4 text-sm" style="color:var(--muted)">Sin atajos</p>'}</div>
       <form class="flex flex-wrap gap-2 mt-4 edit-only" data-form="add-shortcut"><input class="input flex-1 min-w-[120px]" name="name" placeholder="Nombre" required><input class="input flex-1 min-w-[150px]" name="url" type="url" placeholder="https://..." required><button class="btn btn-sm" type="submit">${icon('plus','h-4 w-4')} Agregar</button></form>`;
   }},
