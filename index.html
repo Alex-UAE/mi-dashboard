@@ -740,7 +740,15 @@ let draggedEl=null;
 $('#widgets').addEventListener('click', e=>{
   const btn=e.target.closest('[data-act]'); if(!btn) return;
   const act=btn.dataset.act, id=btn.closest('.widget')?.dataset.id;
-  if(act==='set-status'){ const t=state.tasks.find(x=>x.id===btn.dataset.id); if(t){ t.status=btn.dataset.status; delete t.done; save(); renderWidgets(); } }
+  if(act==='set-status'){
+    const t=state.tasks.find(x=>x.id===btn.dataset.id);
+    if(t){
+      t.status=btn.dataset.status; delete t.done;
+      if(t.status==='hecha'){ if(!t.finishedAt) t.finishedAt=new Date().toISOString(); }
+      else t.finishedAt=null;
+      save(); renderWidgets();
+    }
+  }
   else if(act==='del-task'){ state.tasks=state.tasks.filter(t=>t.id!==btn.dataset.id); save(); renderWidgets(); }
   else if(act==='del-shortcut'){ e.preventDefault(); e.stopPropagation(); state.shortcuts=state.shortcuts.filter(s=>s.id!==btn.dataset.id); save(); renderWidgets(); }
   else if(act==='del-media'){ state.media=(state.media||[]).filter(m=>m.id!==btn.dataset.id); save(); renderWidgets(); toast('Eliminado'); }
