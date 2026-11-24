@@ -280,7 +280,11 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 const localISO = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const taskStatus = t => t.status || (t.done ? 'hecha' : 'pendiente');
 const normalizeTasks = arr => (Array.isArray(arr) ? arr : []).map(t => ({ ...t, status: taskStatus(t) }));
-function widgetView(id){ return (state.viewOverrides||{})[id] || WIDGETS[id]?.view; }
+// Un widget puede estar en varias vistas a la vez (se agrega, no se mueve)
+function widgetViews(id){
+  const p=(state.placements||{})[id];
+  return Array.isArray(p) ? p : [WIDGETS[id]?.view].filter(Boolean);
+}
 function statusButtons(t){
   const st=taskStatus(t);
   return [['hecha','Hecha','#22c55e'],['pendiente','Pendiente','#f59e0b'],['no-hecha','No hecha','#6b7280']]
