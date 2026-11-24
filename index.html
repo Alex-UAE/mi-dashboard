@@ -513,6 +513,51 @@ const WIDGETS = {
           }).join('')}</tr>`).join('')}
         </tbody></table></div><p class="text-[11px] mt-2" style="color:var(--muted)">Desliza horizontalmente para ver todos los días.</p>`;
   }},
+  calendario: { view:'horario', title:'Calendario', icon:'calendar', span:'md:col-span-12', render(){
+    const first=new Date(calY,calM,1), days=new Date(calY,calM+1,0).getDate();
+    const offset=(first.getDay()+6)%7;
+    const today=localISO(new Date());
+    const marked={}; (state.tasks||[]).forEach(t=>{ if(t.date && !t.done) marked[t.date]=(marked[t.date]||0)+1; });
+    const name=new Intl.DateTimeFormat('es-EC',{month:'long',year:'numeric'}).format(first);
+    let cells='';
+    for(let i=0;i<offset;i++) cells+='<div></div>';
+    for(let d=1;d<=days;d++){
+      const iso=localISO(new Date(calY,calM,d));
+      cells+=`<div class="relative flex flex-col items-center justify-center rounded-lg py-2 text-sm ${iso===today?'font-extrabold':''}" style="${iso===today?'background:var(--accent);color:var(--on-accent)':''}">
+        <span>${d}</span>${marked[iso]?`<span class="absolute bottom-0.5 h-1.5 w-1.5 rounded-full" style="background:${iso===today?'var(--on-accent)':'var(--accent)'}"></span>`:''}</div>`;
+    }
+    return `<div class="max-w-2xl mx-auto">
+      <div class="flex items-center justify-between mb-3">
+        <button class="icon-btn" data-act="cal-prev">${icon('up','h-4 w-4 rotate-[-90deg]')}</button>
+        <div class="text-sm font-bold capitalize">${name}</div>
+        <button class="icon-btn" data-act="cal-next">${icon('up','h-4 w-4 rotate-90')}</button>
+      </div>
+      <div class="grid grid-cols-7 gap-1 text-center text-[11px] mb-1" style="color:var(--muted)"><div>L</div><div>M</div><div>X</div><div>J</div><div>V</div><div>S</div><div>D</div></div>
+      <div class="grid grid-cols-7 gap-1">${cells}</div>
+      <p class="text-[11px] mt-3 text-center" style="color:var(--muted)">El punto marca tareas pendientes con fecha.</p>
+    </div>`;
+  }},
+  pomodoro: { view:'inicio', title:'Pomodoro', icon:'clock', span:'md:col-span-4', render(){
+    const mm=String(Math.floor(pomoLeft/60)).padStart(2,'0'), ss=String(pomoLeft%60).padStart(2,'0');
+    return `<div class="flex flex-col items-center py-2">
+      <div id="pomoTime" class="text-5xl font-extrabold tabular-nums">${mm}:${ss}</div>
+      <div class="text-[11px] mt-1" style="color:var(--muted)">${pomoMode==='focus'?'Enfoque 25 min':'Descanso 5 min'}</div>
+      <div class="flex flex-wrap justify-center gap-2 mt-4">
+        <button class="btn btn-sm" data-act="pomo-toggle">${pomoTimer?'Pausar':'Iniciar'}</button>
+        <button class="btn btn-ghost btn-sm" data-act="pomo-reset">Reiniciar</button>
+        <button class="btn btn-ghost btn-sm" data-act="pomo-mode">${pomoMode==='focus'?'Descanso 5 min':'Enfoque 25 min'}</button>
+      </div>
+    </div>`;
+  }},
+  metas: { view:'progreso', title:'Mis metas', icon:'chart', span:'md:col-span-12', render(){
+    const rows=(state.goals||[]).map(g=>`<div class="py-3 border-b last:border-0" style="border-color:var(--border)">
+      <div class="flex justify-between items-center mb-2"><span class="text-sm font-semibold truncate">${esc(g.title)}</span>
+        <div class="flex items-center gap-2"><span class="text-xs font-bold" style="color:var(--accent)">${g.progress||0}%</span>
+          <button class="icon-btn danger edit-only" data-act="del-goal" data-id="${g.id}">${icon('trash','h-4 w-4')}</button></div></div>
+      <input type="range" min="0" max="100" value="${g.progress||0}" data-act="goal-range" data-id="${g.id}" class="w-full"></div>`).join('');
+    return `${rows||'<p class="py-3 text-center text-sm" style="color:var(--muted)">Sin metas todavía</p>'}
+      <form class="flex gap-2 mt-3 edit-only" data-form="add-goal"><input class="input" name="title" placeholder="Nueva meta..." required><button class="btn btn-sm shrink-0" type="submit">${icon('plus','h-4 w-4')} Agregar</button></form>`;
+  }},
   atajos: { view:'atajos', title:'Atajos', icon:'link', span:'md:col-span-12', render(){
     const items = state.shortcuts.map(s=>`<a href="${esc(s.url)}" target="_blank" rel="noopener" class="group flex items-center gap-3 rounded-xl p-3" style="background:var(--panel2);border:1px solid var(--border)">
       <div class="flex h-9 w-9 items-center justify-center rounded-lg text-sm font-bold" style="background:var(--accent-soft);color:var(--accent)">${esc((s.name||'?').charAt(0).toUpperCase())}</div>
