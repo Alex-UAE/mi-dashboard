@@ -832,12 +832,17 @@ function enterApp(){
   if(conn?.addEventListener) conn.addEventListener('change',onNet);
   setInterval(tryPull,4000); setInterval(flush,10000);
   document.addEventListener('visibilitychange',()=>{ if(!document.hidden)onNet(); }); window.addEventListener('focus',onNet);
-  // Al entrar: traer lo último de Firebase. Sin token que configurar.
-  setTimeout(async ()=>{
-    if(!canUseNetwork()){ updateNetChip(); return; }
-    if(state.sync.pullOnLogin!==false){ try{ await fbPull(true); }catch(e){} }
-    fillSettings();
-  },400);
+  // Traer lo último de Firebase antes de mostrar el menú: así solo se pinta una vez
+  const showApp = () => {
+    if (appReady) return;
+    appReady = true;
+    $('#loginScreen').classList.add('hidden');
+    $('#app').classList.remove('hidden');
+    renderAll(); fillSettings();
+  };
+  if (canUseNetwork() && state.sync.pullOnLogin !== false){
+    Promise.race([ fbPull(true).catch(()=>{}), new Promise(r => setTimeout(r, 1500)) ]).then(showApp);
+  } else showApp();
 }
 $('#loginForm').addEventListener('submit', doLogin);
 if(sessionStorage.getItem(SESSION_KEY)==='1'||localStorage.getItem(SESSION_KEY)==='1') enterApp();
