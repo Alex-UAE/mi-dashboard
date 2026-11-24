@@ -558,6 +558,8 @@ const WIDGETS = {
 };
 
 let currentView = 'inicio';
+let calY = new Date().getFullYear(), calM = new Date().getMonth();
+let pomoLeft = 25*60, pomoTimer = null, pomoMode = 'focus';
 function renderWidgets(){
   const visible = state.widgetOrder.filter(id => !state.hiddenWidgets.includes(id) && WIDGETS[id] && WIDGETS[id].view === currentView);
   $('#widgets').innerHTML = visible.length ? visible.map(id=>{
