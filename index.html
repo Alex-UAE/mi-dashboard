@@ -707,11 +707,15 @@ function applyImported(data){
   d.widgetOrder.forEach((x,i)=>{ if(!order.includes(x)) order.splice(Math.min(i,order.length),0,x); });
   const aiKey=state.ai?.key||'';
   const { github, ...incoming } = data;
+  // Comparar sin los timestamps de sincronización: si no cambió nada, no repintar (evita parpadeo)
+  const norm = x => JSON.stringify({ ...x, sync:{ ...(x.sync||{}), lastSync:'', syncedAt:'' } });
+  const before = norm(state);
   state={ ...d, ...incoming, widgetOrder:order,
     profile:{...d.profile,...(data.profile||{})}, theme:{...d.theme,...(data.theme||{})},
     sync:{...d.sync,...(data.sync||{})},
     ai:{...d.ai,...(data.ai||{}),key:data.ai?.key||aiKey,model:data.ai?.model||d.ai.model} };
-  save(); renderAll();
+  if (norm(state) !== before) renderAll();
+  save();
 }
 async function fbPush(){
   const now=new Date().toISOString();
