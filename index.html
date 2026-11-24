@@ -287,6 +287,9 @@ function fmtStamp(iso){
   return new Intl.DateTimeFormat('es-EC',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}).format(d);
 }
 // Un widget puede estar en varias vistas a la vez (se agrega, no se mueve)
+const SIZES=['md:col-span-4','md:col-span-6','md:col-span-8','md:col-span-12'];
+const SIZE_LABEL={'md:col-span-4':'Pequeño','md:col-span-6':'Mediano','md:col-span-8':'Grande','md:col-span-12':'Completo'};
+function spanOf(key,type){ return (state.sizeOverrides||{})[key] || WIDGETS[type]?.span || 'md:col-span-12'; }
 function widgetViews(id){
   const p=(state.placements||{})[id];
   return Array.isArray(p) ? p : [WIDGETS[id]?.view].filter(Boolean);
