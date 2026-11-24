@@ -841,7 +841,7 @@ $('#widgets').addEventListener('change', async e=>{
       if(file.type.startsWith('video/')){
         if(file.size>2*1024*1024){ skipped++; continue; }
         const data=await new Promise(r=>{ const fr=new FileReader(); fr.onload=()=>r(fr.result); fr.readAsDataURL(file); });
-        state.media.push({id:uid(),type:'video',data});
+        state.media.push({id:uid(),type:'video',data,name:file.name});
       } else if(file.type.startsWith('image/')){
         const img=await new Promise(r=>{ const im=new Image(); im.onload=()=>r(im); im.src=URL.createObjectURL(file); });
         const scale=Math.min(1,900/Math.max(img.width,img.height));
