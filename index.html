@@ -320,7 +320,7 @@ function loadState(){
       media: Array.isArray(p.media) ? p.media : d.media,
       tasks: normalizeTasks(p.tasks || d.tasks),
       notify: { ...d.notify, ...(p.notify||{}) },
-      viewOverrides: { ...(p.viewOverrides||{}) },
+      placements: { ...(p.placements||{}) },
       theme:{...d.theme,...(p.theme||{})},
       ai:{...d.ai,...(p.ai||{})}, sync:{...d.sync,...(p.sync||{})},
       shortcuts: Array.isArray(p.shortcuts) ? p.shortcuts : d.shortcuts };
