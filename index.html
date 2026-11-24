@@ -307,6 +307,7 @@ function loadState(){
       profile:{...d.profile,...(p.profile||{})}, social:{...d.social,...(p.social||{})},
       media: Array.isArray(p.media) ? p.media : d.media,
       tasks: normalizeTasks(p.tasks || d.tasks),
+      notify: { ...d.notify, ...(p.notify||{}) },
       theme:{...d.theme,...(p.theme||{})},
       ai:{...d.ai,...(p.ai||{})}, sync:{...d.sync,...(p.sync||{})},
       shortcuts: Array.isArray(p.shortcuts) ? p.shortcuts : d.shortcuts };
