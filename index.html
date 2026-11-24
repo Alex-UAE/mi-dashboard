@@ -529,7 +529,7 @@ const WIDGETS = {
     const week = Math.ceil(((now-start)/86400000 + start.getDay() + 1)/7);
     const doy = Math.floor((now - new Date(now.getFullYear(),0,0))/86400000);
     return `<div class="flex flex-col items-center py-3 text-center">
-      <div id="clockTime" class="text-5xl font-extrabold tabular-nums">--:--</div>
+      <div data-clock class="text-5xl font-extrabold tabular-nums">--:--</div>
       <div class="mt-1 text-sm capitalize" style="color:var(--muted)">${date}</div>
       <div id="clockGreet" class="mt-3 chip"></div>
       <div class="mt-6 grid grid-cols-2 gap-2 w-full max-w-[250px]">
