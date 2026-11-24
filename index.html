@@ -705,7 +705,7 @@ $('#widgets').addEventListener('change', async e=>{
 $('#widgets').addEventListener('submit', e=>{
   const form=e.target.closest('[data-form]'); if(!form) return; e.preventDefault();
   const f=new FormData(form), kind=form.dataset.form;
-  if(kind==='add-task'){ const t=(f.get('title')||'').trim(); if(t) state.tasks.push({id:uid(),title:t,date:f.get('date')||'',priority:f.get('priority')||'media',done:false}); }
+  if(kind==='add-task'){ const t=(f.get('title')||'').trim(); if(t) state.tasks.push({id:uid(),title:t,date:f.get('date')||'',priority:f.get('priority')||'media',status:'pendiente'}); }
   else if(kind==='add-shortcut'){ const n=(f.get('name')||'').trim(),u=(f.get('url')||'').trim(); if(n&&u) state.shortcuts.push({id:uid(),name:n,url:u}); }
   save(); renderWidgets(); toast('Agregado');
 });
