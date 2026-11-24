@@ -889,10 +889,27 @@ $('#widgets').addEventListener('change', async e=>{
   save(); renderWidgets();
   toast(`${added} agregado${added===1?'':'s'}${skipped?' · '+skipped+' omitido(s) por tamaño':''}`);
 });
-$('#widgets').addEventListener('submit', e=>{
+$('#widgets').addEventListener('submit', async e=>{
   const form=e.target.closest('[data-form]'); if(!form) return; e.preventDefault();
   const f=new FormData(form), kind=form.dataset.form;
-  if(kind==='add-task'){ const t=(f.get('title')||'').trim(); if(t) state.tasks.push({id:uid(),title:t,date:f.get('date')||'',priority:f.get('priority')||'media',status:'pendiente',createdAt:new Date().toISOString(),finishedAt:null}); }
+  if(kind==='add-task'){
+    const t=(f.get('title')||'').trim();
+    if(t){
+      const files=[];
+      for(const file of (f.getAll('files')||[])){
+        if(!file || typeof file==='string' || !file.size) continue;
+        if(file.size>2*1024*1024){ toast('Archivo omitido por tamaño: '+file.name); continue; }
+        const data=await new Promise(r=>{ const fr=new FileReader(); fr.onload=()=>r(fr.result); fr.readAsDataURL(file); });
+        files.push({name:file.name,type:file.type||'application/octet-stream',size:file.size,data});
+      }
+      const opening=f.get('opening')||'', closing=f.get('closing')||'';
+      state.tasks.push({ id:uid(), title:t, date:f.get('date')||'', priority:f.get('priority')||'media',
+        status:'pendiente', createdAt:opening?new Date(opening).toISOString():new Date().toISOString(),
+        finishedAt:closing?new Date(closing).toISOString():null,
+        opening:opening?new Date(opening).toISOString():null, closing:closing?new Date(closing).toISOString():null,
+        detail:(f.get('detail')||'').trim(), files });
+    }
+  }
   else if(kind==='add-shortcut'){ const n=(f.get('name')||'').trim(),u=(f.get('url')||'').trim(); if(n&&u) state.shortcuts.push({id:uid(),name:n,url:u}); }
   save(); renderWidgets(); toast('Agregado');
 });
