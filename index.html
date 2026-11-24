@@ -707,7 +707,11 @@ $('#avatarInput').addEventListener('change', e=>{
   img.src=url;
 });
 $('#removeAvatar').addEventListener('click', ()=>{ state.profile.avatar=''; save(); renderAvatarPreview(); renderSideProfile(); renderWidgets(); });
-$('#saveProfile').addEventListener('click', ()=>{ state.profile.name=$('#profName').value.trim()||'Admin'; state.profile.role=$('#profRole').value.trim(); state.profile.bio=$('#profBio').value.trim(); save(); renderAll(); toast('Perfil guardado'); });
+$('#saveProfile').addEventListener('click', ()=>{
+  state.profile.name=$('#profName').value.trim()||'Admin'; state.profile.role=$('#profRole').value.trim(); state.profile.bio=$('#profBio').value.trim();
+  ['facebook','instagram','tiktok','x','youtube','whatsapp','linkedin'].forEach(n=>{ const el=$('#soc-'+n); if(el) state.social[n]=el.value.trim(); });
+  save(); renderAll(); toast('Perfil y redes guardados');
+});
 function renderToggles(){
   $('#widgetToggles').innerHTML=state.widgetOrder.map(id=>{ const w=WIDGETS[id]; if(!w)return '';
     const on=!state.hiddenWidgets.includes(id);
