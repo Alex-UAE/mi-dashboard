@@ -659,16 +659,6 @@ $('#widgets').addEventListener('click', e=>{
 });
 $('#widgets').addEventListener('input', e=>{
   const el=e.target;
-  if(el.dataset.act==='range'){
-    const c=state.courses.find(x=>x.id===el.dataset.id);
-    if(c){ c.progress=+el.value; const label=el.parentElement.querySelector('[style*="--accent"]'); if(label) label.textContent=c.progress+'%';
-      const avg=Math.round(state.courses.reduce((s,x)=>s+(+x.progress||0),0)/state.courses.length);
-      const fill=el.closest('.widget').querySelector('.progress-fill'); if(fill) fill.style.width=avg+'%'; save(); }
-  }
-  if(el.dataset.act==='goal-range'){
-    const g=(state.goals||[]).find(x=>x.id===el.dataset.id);
-    if(g){ g.progress=+el.value; const label=el.parentElement.querySelector('[style*="--accent"]'); if(label) label.textContent=g.progress+'%'; save(); }
-  }
   if(el.id==='notesArea'){
     state.notes=el.value; $('#notesCount').textContent=el.value.length+' caracteres'; $('#notesStatus').textContent='Guardando...';
     clearTimeout(el._t); el._t=setTimeout(()=>{save(); $('#notesStatus').textContent='Guardado ✓';},500);
