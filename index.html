@@ -292,6 +292,7 @@ function loadState(){
     return { ...d, ...p, widgetOrder:order,
       profile:{...d.profile,...(p.profile||{})}, social:{...d.social,...(p.social||{})},
       media: Array.isArray(p.media) ? p.media : d.media,
+      tasks: normalizeTasks(p.tasks || d.tasks),
       theme:{...d.theme,...(p.theme||{})},
       ai:{...d.ai,...(p.ai||{})}, sync:{...d.sync,...(p.sync||{})},
       shortcuts: Array.isArray(p.shortcuts) ? p.shortcuts : d.shortcuts };
