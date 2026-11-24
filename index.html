@@ -750,7 +750,7 @@ $('#widgets').addEventListener('click', e=>{
   else if(act==='pomo-mode'){ clearInterval(pomoTimer); pomoTimer=null; pomoMode=pomoMode==='focus'?'break':'focus'; pomoLeft=pomoMode==='focus'?25*60:5*60; renderWidgets(); }
   else if(act==='hide'){ if(!state.hiddenWidgets.includes(id)) state.hiddenWidgets.push(id); save(); renderWidgets(); renderToggles(); toast('Widget ocultado'); }
   else if(act==='up'||act==='down'){
-    const order=state.widgetOrder.filter(x=>!state.hiddenWidgets.includes(x)&&WIDGETS[x]?.view===currentView);
+    const order=state.widgetOrder.filter(x=>!state.hiddenWidgets.includes(x)&&widgetView(x)===currentView);
     const i=order.indexOf(id), j=act==='up'?i-1:i+1; if(j<0||j>=order.length) return;
     [order[i],order[j]]=[order[j],order[i]]; syncOrder(order); save(); renderWidgets();
   }
