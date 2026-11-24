@@ -119,7 +119,7 @@
       <button class="tab-btn" data-tab="perfil">Perfil</button>
       <button class="tab-btn" data-tab="widgets">Widgets</button>
       <button class="tab-btn" data-tab="ia">Seguridad e IA</button>
-      <button class="tab-btn" data-tab="github">GitHub Sync</button>
+      <button class="tab-btn" data-tab="sync">Sincronización</button>
       <button class="tab-btn" data-tab="datos">Datos</button>
     </div>
     <div class="overflow-y-auto px-5 py-5">
@@ -144,7 +144,7 @@
 
       <section class="tab-panel" data-panel="ia">
         <h4 class="text-sm font-bold mb-1 flex items-center gap-2"><span data-icon="sparkles" style="color:var(--accent)"></span> Asistente IA (opcional)</h4>
-        <p class="text-xs mb-3 leading-relaxed" style="color:var(--muted)">Pega una clave de <b>Google Gemini</b>. Se guarda en tu Gist y la heredan todos tus dispositivos.</p>
+        <p class="text-xs mb-3 leading-relaxed" style="color:var(--muted)">Pega una clave de <b>Google Gemini</b>. Se guarda en tu base Firebase y la heredan todos tus dispositivos.</p>
         <div class="grid sm:grid-cols-2 gap-3"><div><label class="label">Clave API</label><input id="aiKey" type="password" class="input" placeholder="AIza... o AQ..."></div><div><label class="label">Modelo</label><input id="aiModel" class="input" placeholder="gemini-3.1-flash-lite"></div></div>
         <button class="btn btn-sm mt-3" id="saveAI">Guardar configuración IA</button>
         <div class="border-t mt-5 pt-5" style="border-color:var(--border)"><h4 class="text-sm font-bold mb-1">Cambiar contraseña</h4><p class="text-xs mb-3" style="color:var(--muted)">Se guarda como hash SHA-256.</p>
@@ -153,25 +153,25 @@
         </div>
       </section>
 
-      <section class="tab-panel" data-panel="github">
-        <div class="rounded-xl p-4 mb-5" style="background:var(--panel2);border:1px solid var(--border)"><div class="text-sm font-bold">Sincronización entre dispositivos</div><p class="text-xs mt-1" style="color:var(--muted)">Los datos se guardan en un Gist secreto de tu cuenta. Funciona solo con Wi‑Fi; sin conexión la app sigue usable.</p></div>
-        <div class="mb-4"><label class="label">1. Token de GitHub</label><input id="ghToken" type="password" class="input" placeholder="ghp_... o gho_..."><p class="text-[11px] mt-1.5 leading-relaxed" style="color:#f59e0b">Este token se guarda <b>solo en este dispositivo</b>. GitHub revoca automáticamente los tokens que aparecen en un Gist, por eso no se incluye en el respaldo. Cada dispositivo necesita su propio token (puedes usar <code>gh auth token</code> en la PC). La clave de IA sí se hereda.</p></div>
-        <div class="mb-4"><label class="label">2. ID del Gist</label><input id="ghGistId" class="input"></div>
-        <div class="flex flex-wrap gap-2 mb-4">
-          <button class="btn btn-sm" id="ghSave">Guardar config.</button>
-          <button class="btn btn-ghost btn-sm" id="ghTest"><span data-icon="check"></span> Probar token</button>
-          <button class="btn btn-sm" id="ghPush"><span data-icon="upload"></span> Subir datos</button>
-          <button class="btn btn-ghost btn-sm" id="ghPull"><span data-icon="download"></span> Descargar datos</button>
-          <button class="btn btn-ghost btn-sm" id="ghOpenGist"><span data-icon="link"></span> Abrir Gist</button>
+      <section class="tab-panel" data-panel="sync">
+        <div class="rounded-xl p-4 mb-5" style="background:var(--panel2);border:1px solid var(--border)">
+          <div class="text-sm font-bold flex items-center gap-2"><span data-icon="refresh" style="color:var(--accent)"></span> Firebase Realtime Database</div>
+          <p class="text-xs mt-1.5 leading-relaxed" style="color:var(--muted)">Tus datos se guardan en tu base de Firebase. <b>No hay token ni clave que configurar</b>: basta con abrir la app en cualquier dispositivo. Funciona solo con Wi‑Fi; sin conexión sigues usando la app normalmente.</p>
         </div>
-        <label class="flex items-start gap-2 text-xs mb-3 cursor-pointer" style="color:var(--muted)"><input type="checkbox" id="ghAuto" class="mt-0.5"> Sincronización automática (sube cambios y baja del otro dispositivo)</label>
-        <label class="flex items-start gap-2 text-xs mb-3 cursor-pointer" style="color:var(--muted)"><input type="checkbox" id="ghPullLogin" class="mt-0.5"> Descargar lo último al iniciar sesión</label>
-        <div id="ghStatus" class="text-xs rounded-lg px-3 py-2" style="background:var(--panel2);border:1px solid var(--border);color:var(--muted)">Sin sincronizar.</div>
-        <div id="ghDiag" class="text-[11px] mt-2" style="color:var(--muted)"></div>
+        <div class="flex flex-wrap gap-2 mb-4">
+          <button class="btn btn-sm" id="fbSave"><span data-icon="refresh"></span> Sincronizar ahora</button>
+          <button class="btn btn-ghost btn-sm" id="fbPush"><span data-icon="upload"></span> Subir datos</button>
+          <button class="btn btn-ghost btn-sm" id="fbPull"><span data-icon="download"></span> Descargar datos</button>
+          <button class="btn btn-ghost btn-sm" id="fbOpen"><span data-icon="link"></span> Ver base</button>
+        </div>
+        <label class="flex items-start gap-2 text-xs mb-3 cursor-pointer" style="color:var(--muted)"><input type="checkbox" id="fbAuto" class="mt-0.5"> Sincronización automática (sube tus cambios cada vez que editas)</label>
+        <label class="flex items-start gap-2 text-xs mb-3 cursor-pointer" style="color:var(--muted)"><input type="checkbox" id="fbPullLogin" class="mt-0.5"> Descargar lo último al iniciar sesión</label>
+        <div id="fbStatus" class="text-xs rounded-lg px-3 py-2" style="background:var(--panel2);border:1px solid var(--border);color:var(--muted)">Sin sincronizar.</div>
+        <div id="fbDiag" class="text-[11px] mt-2" style="color:var(--muted)"></div>
       </section>
 
       <section class="tab-panel" data-panel="datos">
-        <p class="text-xs mb-4" style="color:var(--muted)">Respaldo manual en JSON. El token no se incluye.</p>
+        <p class="text-xs mb-4" style="color:var(--muted)">Respaldo manual en JSON de tus datos.</p>
         <div class="flex flex-wrap gap-2"><button class="btn btn-ghost btn-sm" id="exportBtn"><span data-icon="download"></span> Exportar</button><button class="btn btn-ghost btn-sm" id="importBtn"><span data-icon="upload"></span> Importar</button><input type="file" id="importFile" accept="application/json,.json" class="hidden"></div>
         <div class="border-t mt-6 pt-5" style="border-color:var(--border)"><button class="btn btn-sm" style="background:#ef4444" id="resetAll"><span data-icon="trash"></span> Borrar todos los datos</button></div>
       </section>
@@ -184,12 +184,11 @@
 
 <script>
 /* ============ Constantes ============ */
-const APP_VERSION = '2026-11-24.1';
-const DEFAULT_GIST_ID = 'ee8e8e0db94d44f8fff29b207a116cc7';
+const APP_VERSION = '2026-11-24.2';
+const FIREBASE_URL = 'https://mi-dashboard-uae-default-rtdb.europe-west1.firebasedatabase.app';
 const STORE_KEY = 'uae_dashboard_v2';
 const SESSION_KEY = 'uae_dashboard_session_v2';
 const PASSWORD_HASH = '028e50f3e67bbd8cd6e4e1663dcac080c9e38251271c44a5a140d557ad6d41bb';
-const GIST_FILE = 'dashboard-backup.json';
 const PRESETS = [{name:'Rojo',color:'#ef4444'},{name:'Blanco',color:'#e5e5e5'},{name:'Azul',color:'#3b82f6'},{name:'Verde',color:'#22c55e'},{name:'Violeta',color:'#a855f7'},{name:'Ámbar',color:'#f59e0b'}];
 const ALL_IDS = ['resumen','reloj','urgentes','progreso','tareas','notas','horario','atajos','perfil','ia'];
 
@@ -240,7 +239,7 @@ function defaults(){
     widgetOrder: ['resumen','reloj','urgentes','progreso','tareas','notas','horario','atajos','perfil','ia'],
     hiddenWidgets: [],
     ai: { key:'', model:'gemini-3.1-flash-lite' },
-    github: { token:'', gistId:DEFAULT_GIST_ID, autoSync:true, pullOnLogin:true, lastSync:'' }
+    sync: { autoSync:true, pullOnLogin:true, lastSync:'', syncedAt:'' }
   };
 }
 function loadState(){
@@ -253,7 +252,7 @@ function loadState(){
     d.widgetOrder.forEach((x,i) => { if (!order.includes(x)) order.splice(Math.min(i,order.length),0,x); });
     return { ...d, ...p, widgetOrder:order,
       profile:{...d.profile,...(p.profile||{})}, theme:{...d.theme,...(p.theme||{})},
-      ai:{...d.ai,...(p.ai||{})}, github:{...d.github,...(p.github||{})},
+      ai:{...d.ai,...(p.ai||{})}, sync:{...d.sync,...(p.sync||{})},
       shortcuts: Array.isArray(p.shortcuts) ? p.shortcuts : d.shortcuts };
   } catch(e){ return d; }
 }
@@ -262,13 +261,13 @@ let syncing = false, localDirty = false, pendingPush = false;
 function save(){
   try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
   catch(e){ toast('No se pudo guardar'); }
-  const g = state.github || {};
-  if (g.autoSync && g.token && g.gistId && !syncing){
+  const s = state.sync || {};
+  if (s.autoSync && !syncing){
     localDirty = true;
     if (!canUseNetwork()){ pendingPush = true; return; }
     clearTimeout(save._t);
     save._t = setTimeout(async function attempt(n){
-      try { await githubPush(); }
+      try { await fbPush(); }
       catch(e){ if (n < 8) save._t = setTimeout(() => attempt(n+1), 5000); }
     }(0), 700);
   }
@@ -633,16 +632,15 @@ function selectTab(tab){
   $$('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
   $$('.tab-panel').forEach(p=>p.classList.toggle('active',p.dataset.panel===tab));
   if(tab==='perfil') renderAvatarPreview();
-  if(tab==='github') updateGithubStatus(state.github?.lastSync?'Última sync: '+new Date(state.github.lastSync).toLocaleString('es-EC'):'Sin sincronizar.');
+  if(tab==='sync') updateFbStatus(state.sync?.lastSync?'Última sync: '+new Date(state.sync.lastSync).toLocaleString('es-EC'):'Sin sincronizar.');
 }
 $('#tabs').addEventListener('click', e=>{ const b=e.target.closest('.tab-btn'); if(b) selectTab(b.dataset.tab); });
 function fillSettings(){
   $('#profName').value=state.profile.name||''; $('#profRole').value=state.profile.role||''; $('#profBio').value=state.profile.bio||'';
   $('#customColor').value=/^#[0-9a-f]{6}$/i.test(state.theme.color)?state.theme.color:'#ef4444';
   $('#aiKey').value=state.ai.key||''; $('#aiModel').value=state.ai.model||'';
-  $('#ghToken').value=state.github.token||''; $('#ghGistId').value=state.github.gistId||'';
-  $('#ghAuto').checked=!!state.github.autoSync; $('#ghPullLogin').checked=state.github.pullOnLogin!==false;
-  updateGithubDiag();
+  $('#fbAuto').checked=!!state.sync.autoSync; $('#fbPullLogin').checked=state.sync.pullOnLogin!==false;
+  updateFbDiag();
 }
 function renderPresets(){
   $('#presetList').innerHTML=PRESETS.map(p=>`<button class="swatch ${state.theme.color.toLowerCase()===p.color.toLowerCase()?'selected':''}" style="background:${p.color}" title="${p.name}" data-color="${p.color}"></button>`).join('');
@@ -672,8 +670,8 @@ $('#widgetToggles').addEventListener('change', e=>{ const b=e.target.closest('[d
 $('#resetOrder').addEventListener('click', ()=>{ state.widgetOrder=defaults().widgetOrder; state.hiddenWidgets=[]; save(); renderAll(); toast('Restablecido'); });
 $('#saveAI').addEventListener('click', async ()=>{
   state.ai.key=$('#aiKey').value.trim(); state.ai.model=$('#aiModel').value.trim()||'gemini-3.1-flash-lite'; save(); renderWidgets(); toast('Configuración de IA guardada');
-  if(state.github.token&&state.github.gistId&&canUseNetwork()){ try{ await githubPush(); }catch(e){ pendingPush=true; } }
-  else if(state.github.token&&state.github.gistId) pendingPush=true;
+  if(canUseNetwork()){ try{ await fbPush(); }catch(e){ pendingPush=true; } }
+  else pendingPush=true;
 });
 $('#changePass').addEventListener('click', async ()=>{
   const oldHash=await sha256($('#oldPass').value);
@@ -682,95 +680,71 @@ $('#changePass').addEventListener('click', async ()=>{
   state.passwordHash=await sha256(next); save(); $('#oldPass').value=''; $('#newPass').value=''; toast('Contraseña actualizada');
 });
 
-/* ============ GitHub Sync ============ */
-function updateGithubDiag(){
-  const el=$('#ghDiag'); if(!el)return; const g=state.github||{};
-  const tail=g.token?'…'+g.token.slice(-4):'';
-  el.textContent=`Auto: ${g.autoSync?'ACTIVO':'APAGADO'} · Token: ${g.token?'sí'+tail:'NO'} · Gist: ${g.gistId||'NO'} · IA: ${state.ai?.key?'CONFIGURADA':'SIN CLAVE'} · Última: ${g.lastSync?new Date(g.lastSync).toLocaleString('es-EC'):'nunca'}`;
+/* ============ Sincronización con Firebase ============ */
+function updateFbDiag(){
+  const el=$('#fbDiag'); if(!el)return; const s=state.sync||{};
+  el.textContent=`Auto: ${s.autoSync?'ACTIVO':'APAGADO'} · IA: ${state.ai?.key?'CONFIGURADA':'SIN CLAVE'} · Última: ${s.lastSync?new Date(s.lastSync).toLocaleString('es-EC'):'nunca'}`;
 }
-function updateGithubStatus(msg, isError){
-  const el=$('#ghStatus'); if(el){ el.textContent=msg; el.style.color=isError?'#ef4444':'var(--muted)'; }
-  updateGithubDiag();
+function updateFbStatus(msg, isError){
+  const el=$('#fbStatus'); if(el){ el.textContent=msg; el.style.color=isError?'#ef4444':'var(--muted)'; }
+  updateFbDiag();
 }
-function ghHeaders(){ return { Authorization:`Bearer ${state.github.token}`, Accept:'application/vnd.github+json', 'Content-Type':'application/json' }; }
-function clearBadToken(){
-  if(!state.github.token)return; state.github.token='';
-  syncing=true; try{ save(); } finally{ syncing=false; }
-  updateGithubStatus('Token inválido (401): se borró. Genera uno nuevo.', true);
-}
-// El token NUNCA se guarda en el Gist: GitHub revoca tokens que aparecen en gists.
-function serializable(){ return { ...state, github:{ ...state.github, token:'' } }; }
+function serializable(){ const { github, ...clean } = state; return clean; }
 function applyImported(data){
   const d=defaults();
+  if(!data||typeof data!=='object') return;
   const order=Array.isArray(data.widgetOrder)?data.widgetOrder.filter(x=>ALL_IDS.includes(x)):[];
   d.widgetOrder.forEach((x,i)=>{ if(!order.includes(x)) order.splice(Math.min(i,order.length),0,x); });
-  const token=state.github?.token||'', aiKey=state.ai?.key||'';
-  state={ ...d, ...data, widgetOrder:order,
-    github:{...d.github,...(data.github||{}),token},
+  const aiKey=state.ai?.key||'';
+  const { github, ...incoming } = data;
+  state={ ...d, ...incoming, widgetOrder:order,
     profile:{...d.profile,...(data.profile||{})}, theme:{...d.theme,...(data.theme||{})},
+    sync:{...d.sync,...(data.sync||{})},
     ai:{...d.ai,...(data.ai||{}),key:data.ai?.key||aiKey,model:data.ai?.model||d.ai.model} };
   save(); renderAll();
 }
-async function githubPush(){
-  if(!state.github.token) throw new Error('Pega primero tu token de GitHub');
-  if(!state.github.gistId) state.github.gistId=DEFAULT_GIST_ID;
-  // Si este dispositivo no tiene clave IA, no borrar la del Gist
-  if(!state.ai.key){
-    try{ const r=await fetch(`https://api.github.com/gists/${state.github.gistId}`,{headers:ghHeaders()});
-      if(r.ok){ const d=await r.json(), f=d.files?.[GIST_FILE]; if(f){ const remote=JSON.parse(f.content); if(remote.ai?.key){ state.ai.key=remote.ai.key; state.ai.model=remote.ai.model||state.ai.model; } } }
-    }catch(e){}
-  }
-  updateGithubStatus('Subiendo…'); syncing=true;
+async function fbPush(){
+  const now=new Date().toISOString();
+  state.sync.syncedAt=now;
+  updateFbStatus('Subiendo…'); syncing=true;
   try{
-    const res=await fetch(`https://api.github.com/gists/${state.github.gistId}`,{method:'PATCH',headers:ghHeaders(),
-      body:JSON.stringify({description:'Mi Dashboard - respaldo personal',public:false,files:{[GIST_FILE]:{content:JSON.stringify(serializable(),null,2)}}})});
-    if(res.status===401){ clearBadToken(); throw new Error('Token inválido'); }
-    const data=await res.json(); if(!res.ok) throw new Error(data.message||'No se pudo subir');
-    state.github.lastSync=data.updated_at||new Date().toISOString(); localDirty=false;
-    save(); updateGithubStatus('✓ Subido '+new Date().toLocaleString('es-EC')); toast('Respaldo subido');
+    const res=await fetch(`${FIREBASE_URL}/dashboard.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(serializable())});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    state.sync.lastSync=now; localDirty=false;
+    save(); updateFbStatus('✓ Subido '+new Date().toLocaleString('es-EC')); toast('Respaldo subido');
   } finally{ syncing=false; }
 }
-async function githubPull(silent){
-  if(!state.github.gistId) throw new Error('Falta el ID del Gist');
+async function fbPull(silent){
   if(silent&&localDirty) return;
   if(silent&&!$('#settingsModal').classList.contains('hidden')) return;
-  if(!silent) updateGithubStatus('Descargando…');
-  const headers=state.github.token?ghHeaders():{Accept:'application/vnd.github+json'};
-  const res=await fetch(`https://api.github.com/gists/${state.github.gistId}`,{headers});
-  if(res.status===401){ clearBadToken(); return; }
-  const data=await res.json(); if(!res.ok) throw new Error(data.message||'No se pudo descargar');
-  const file=data.files?.[GIST_FILE]; if(!file) throw new Error('El Gist no tiene el respaldo');
-  let content=file.content;
-  if(file.truncated){ const raw=await fetch(file.raw_url,{headers:state.github.token?{Authorization:`Bearer ${state.github.token}`}:{}}); content=await raw.text(); }
-  const remote=JSON.parse(content), remoteTime=data.updated_at||'';
-  if(silent&&remoteTime&&state.github.lastSync&&new Date(remoteTime)<=new Date(state.github.lastSync)) return;
-  syncing=true; try{ applyImported(remote); state.github.lastSync=remoteTime||new Date().toISOString(); save(); } finally{ syncing=false; }
-  updateGithubStatus('✓ Descargado '+new Date().toLocaleString('es-EC')); toast(silent?'Cambios descargados':'Datos descargados');
+  if(!silent) updateFbStatus('Descargando…');
+  const res=await fetch(`${FIREBASE_URL}/dashboard.json?v=${Date.now()}`,{cache:'no-store'});
+  if(!res.ok) throw new Error('HTTP '+res.status);
+  const remote=await res.json();
+  if(!remote||typeof remote!=='object'||!Array.isArray(remote.tasks)) return;
+  if(silent&&remote.sync?.syncedAt&&state.sync.syncedAt&&new Date(remote.sync.syncedAt)<=new Date(state.sync.syncedAt)) return;
+  syncing=true;
+  try{ applyImported(remote); state.sync.lastSync=new Date().toISOString(); save(); }
+  finally{ syncing=false; }
+  updateFbStatus('✓ Descargado '+new Date().toLocaleString('es-EC')); toast(silent?'Cambios descargados':'Datos descargados');
 }
-function readGithubFields(){
-  state.github.token=$('#ghToken').value.trim();
-  const id=$('#ghGistId').value.trim();
-  state.github.gistId=id||state.github.gistId||DEFAULT_GIST_ID;
-  $('#ghGistId').value=state.github.gistId;
-  state.github.autoSync=$('#ghAuto').checked; state.github.pullOnLogin=$('#ghPullLogin').checked;
-}
-$('#ghSave').addEventListener('click', async ()=>{
-  readGithubFields(); save(); updateGithubStatus(state.github.token?'Configuración guardada':'Falta el token',!state.github.token); toast('Configuración guardada');
-  if(state.github.token&&state.github.gistId&&canUseNetwork()){ try{ await githubPush(); }catch(e){ updateGithubStatus('Guardado localmente. '+e.message,true); } }
-  else if(state.github.token&&state.github.gistId) pendingPush=true;
+function readFbFields(){ state.sync.autoSync=$('#fbAuto').checked; state.sync.pullOnLogin=$('#fbPullLogin').checked; }
+$('#fbSave').addEventListener('click', async ()=>{
+  readFbFields(); save(); toast('Preferencias guardadas');
+  if(!canUseNetwork()){ pendingPush=true; return; }
+  try{ await fbPush(); await fbPull(); }catch(e){ updateFbStatus('Error: '+e.message,true); }
 });
-$('#ghTest').addEventListener('click', async ()=>{
-  readGithubFields(); if(!state.github.token){ updateGithubStatus('Falta el token',true); return; }
-  updateGithubStatus('Probando token…');
-  try{ const r=await fetch('https://api.github.com/user',{headers:ghHeaders()});
-    if(r.ok||r.status===403) updateGithubStatus('✓ Token válido'); else updateGithubStatus(`Token inválido (${r.status}): genera uno nuevo`,true);
-  }catch(e){ updateGithubStatus('Error de conexión: '+e.message,true); }
+$('#fbPush').addEventListener('click', async ()=>{
+  readFbFields(); if(!canUseNetwork()){ updateFbStatus('Sin conexión o sin Wi-Fi',true); return; }
+  try{ await fbPush(); }catch(e){ updateFbStatus('Error: '+e.message,true); }
 });
-$('#ghPush').addEventListener('click', async ()=>{ readGithubFields(); try{ await githubPush(); }catch(e){ updateGithubStatus('Error: '+e.message,true); } });
-$('#ghPull').addEventListener('click', async ()=>{ readGithubFields(); try{ await githubPull(); }catch(e){ updateGithubStatus('Error: '+e.message,true); } });
-$('#ghOpenGist').addEventListener('click', ()=>{ const id=state.github.gistId||$('#ghGistId').value.trim(); if(id) window.open('https://gist.github.com/'+id,'_blank','noopener'); else toast('Primero configura el Gist'); });
+$('#fbPull').addEventListener('click', async ()=>{
+  readFbFields(); if(!canUseNetwork()){ updateFbStatus('Sin conexión o sin Wi-Fi',true); return; }
+  try{ await fbPull(); }catch(e){ updateFbStatus('Error: '+e.message,true); }
+});
+$('#fbOpen').addEventListener('click', ()=>window.open(FIREBASE_URL,'_blank','noopener'));
 $('#exportBtn').addEventListener('click', ()=>{
-  const blob=new Blob([JSON.stringify(serializable(false),null,2)],{type:'application/json'});
+  const blob=new Blob([JSON.stringify(serializable(),null,2)],{type:'application/json'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='dashboard-backup.json'; a.click(); URL.revokeObjectURL(a.href); toast('Respaldo descargado');
 });
 $('#importBtn').addEventListener('click', ()=>$('#importFile').click());
@@ -830,13 +804,13 @@ function enterApp(){
   mountIcons(); renderAll(); checkVersion();
   let lastPullAt=0;
   const tryPull=()=>{
-    const g=state.github||{}; if(!canUseNetwork()||!g.autoSync||!g.token||!g.gistId||syncing)return;
+    const s=state.sync||{}; if(!canUseNetwork()||!s.autoSync||syncing)return;
     const min=document.hidden?30000:4000; if(Date.now()-lastPullAt<min)return;
-    lastPullAt=Date.now(); githubPull(true).catch(()=>{});
+    lastPullAt=Date.now(); fbPull(true).catch(()=>{});
   };
   const flush=()=>{
-    if(!canUseNetwork()||!pendingPush||syncing)return; const g=state.github||{};
-    if(!g.token||!g.gistId)return; pendingPush=false; githubPush().catch(()=>{pendingPush=true;});
+    if(!canUseNetwork()||!pendingPush||syncing)return;
+    pendingPush=false; fbPush().catch(()=>{pendingPush=true;});
   };
   const onNet=()=>{ updateNetChip(); checkVersion(); tryPull(); flush(); };
   window.addEventListener('online',onNet); window.addEventListener('offline',onNet);
@@ -844,22 +818,10 @@ function enterApp(){
   if(conn?.addEventListener) conn.addEventListener('change',onNet);
   setInterval(tryPull,4000); setInterval(flush,10000);
   document.addEventListener('visibilitychange',()=>{ if(!document.hidden)onNet(); }); window.addEventListener('focus',onNet);
-  // Al entrar: heredar token/clave del Gist y traer lo último
+  // Al entrar: traer lo último de Firebase. Sin token que configurar.
   setTimeout(async ()=>{
-    if(!state.github.gistId) state.github.gistId=DEFAULT_GIST_ID;
     if(!canUseNetwork()){ updateNetChip(); return; }
-    if(!state.github.token){
-      try{
-        const r=await fetch(`https://api.github.com/gists/${state.github.gistId}`,{headers:{Accept:'application/vnd.github+json'}});
-        if(r.ok){ const d=await r.json(), f=d.files?.[GIST_FILE]; if(f){ const remote=JSON.parse(f.content);
-          // No heredar token del Gist ( GitHub lo revoca ). Solo la clave de IA.
-          if(!state.ai.key&&remote.ai?.key){ state.ai.key=remote.ai.key; state.ai.model=remote.ai.model||state.ai.model; }
-          syncing=true; try{ save(); } finally{ syncing=false; }
-        } }
-      }catch(e){}
-    }
-    if(state.github.pullOnLogin!==false&&state.github.gistId){ try{ await githubPull(true); }catch(e){} }
-    if(state.github.token){ try{ await githubPush(); }catch(e){} }
+    if(state.sync.pullOnLogin!==false){ try{ await fbPull(true); }catch(e){} }
     fillSettings();
   },400);
 }
