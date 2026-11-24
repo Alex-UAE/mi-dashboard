@@ -267,7 +267,7 @@ function loadState(){
   } catch(e){ return d; }
 }
 let state = loadState();
-let syncing = false, localDirty = false, pendingPush = false;
+let syncing = false, localDirty = false, pendingPush = false, appReady = false;
 function save(){
   try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
   catch(e){ toast('No se pudo guardar'); }
