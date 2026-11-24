@@ -614,6 +614,29 @@ $('#widgets').addEventListener('input', e=>{
     clearTimeout(el._t); el._t=setTimeout(()=>{save(); $('#notesStatus').textContent='Guardado ✓';},500);
   }
 });
+$('#widgets').addEventListener('change', async e=>{
+  if(e.target.id!=='mediaInput') return;
+  const files=[...(e.target.files||[])];
+  let added=0, skipped=0;
+  for(const file of files){
+    try{
+      if(file.type.startsWith('video/')){
+        if(file.size>2*1024*1024){ skipped++; continue; }
+        const data=await new Promise(r=>{ const fr=new FileReader(); fr.onload=()=>r(fr.result); fr.readAsDataURL(file); });
+        state.media.push({id:uid(),type:'video',data});
+      } else if(file.type.startsWith('image/')){
+        const img=await new Promise(r=>{ const im=new Image(); im.onload=()=>r(im); im.src=URL.createObjectURL(file); });
+        const scale=Math.min(1,900/Math.max(img.width,img.height));
+        const c=document.createElement('canvas'); c.width=Math.round(img.width*scale); c.height=Math.round(img.height*scale);
+        c.getContext('2d').drawImage(img,0,0,c.width,c.height); URL.revokeObjectURL(img.src);
+        state.media.push({id:uid(),type:'image',data:c.toDataURL('image/jpeg',.75)});
+      }
+      added++;
+    }catch(ex){ skipped++; }
+  }
+  save(); renderWidgets();
+  toast(`${added} agregado${added===1?'':'s'}${skipped?' · '+skipped+' omitido(s) por tamaño':''}`);
+});
 $('#widgets').addEventListener('submit', e=>{
   const form=e.target.closest('[data-form]'); if(!form) return; e.preventDefault();
   const f=new FormData(form), kind=form.dataset.form;
