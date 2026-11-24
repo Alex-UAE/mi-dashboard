@@ -462,7 +462,8 @@ const WIDGETS = {
   }},
   tareas: { view:'tareas', title:'Tareas y recordatorios', icon:'check', span:'md:col-span-12', render(){
     const today = localISO(new Date()); const rank={alta:0,media:1,baja:2};
-    const sorted = [...state.tasks].sort((a,b)=>(a.done-b.done)||((a.date||'9999').localeCompare(b.date||'9999'))||(rank[a.priority]-rank[b.priority]));
+    const order={pendiente:0,'no-hecha':1,hecha:2};
+    const sorted = [...state.tasks].sort((a,b)=>(order[taskStatus(a)]-order[taskStatus(b)])||((a.date||'9999').localeCompare(b.date||'9999'))||(rank[a.priority]-rank[b.priority]));
     const list = sorted.map(t=>{
       let badge='',bc='var(--muted)';
       if(t.date){ if(t.date<today){badge='Vencida';bc='#ef4444';} else if(t.date===today){badge='Hoy';bc='#f59e0b';} else badge=new Intl.DateTimeFormat('es-EC',{day:'numeric',month:'short'}).format(new Date(t.date+'T00:00:00')); }
