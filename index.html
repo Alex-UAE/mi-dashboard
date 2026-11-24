@@ -1086,7 +1086,7 @@ function openSettings(tab='apariencia'){
 function closeSettings(){ $('#settingsModal').classList.add('hidden'); $('#settingsModal').classList.remove('flex'); }
 $('#closeSettings').addEventListener('click', closeSettings);
 $('#settingsModal').addEventListener('click', e=>{ if(e.target.id==='settingsModal') closeSettings(); });
-document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeSettings(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closeSettings(); closeAddWidget(); } });
 function selectTab(tab){
   $$('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
   $$('.tab-panel').forEach(p=>p.classList.toggle('active',p.dataset.panel===tab));
