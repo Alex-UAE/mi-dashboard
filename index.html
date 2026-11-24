@@ -155,7 +155,7 @@
 
       <section class="tab-panel" data-panel="github">
         <div class="rounded-xl p-4 mb-5" style="background:var(--panel2);border:1px solid var(--border)"><div class="text-sm font-bold">Sincronización entre dispositivos</div><p class="text-xs mt-1" style="color:var(--muted)">Los datos se guardan en un Gist secreto de tu cuenta. Funciona solo con Wi‑Fi; sin conexión la app sigue usable.</p></div>
-        <div class="mb-4"><label class="label">1. Token de GitHub</label><input id="ghToken" type="password" class="input" placeholder="ghp_... o gho_..."><p class="text-[11px] mt-1.5" style="color:var(--muted)">Puedes usar el token de tu PC con <code>gh auth token</code>. Se guarda en el Gist para que otros dispositivos lo hered en.</p></div>
+        <div class="mb-4"><label class="label">1. Token de GitHub</label><input id="ghToken" type="password" class="input" placeholder="ghp_... o gho_..."><p class="text-[11px] mt-1.5 leading-relaxed" style="color:#f59e0b">Este token se guarda <b>solo en este dispositivo</b>. GitHub revoca automáticamente los tokens que aparecen en un Gist, por eso no se incluye en el respaldo. Cada dispositivo necesita su propio token (puedes usar <code>gh auth token</code> en la PC). La clave de IA sí se hereda.</p></div>
         <div class="mb-4"><label class="label">2. ID del Gist</label><input id="ghGistId" class="input"></div>
         <div class="flex flex-wrap gap-2 mb-4">
           <button class="btn btn-sm" id="ghSave">Guardar config.</button>
@@ -184,7 +184,7 @@
 
 <script>
 /* ============ Constantes ============ */
-const APP_VERSION = '2026-11-24.0';
+const APP_VERSION = '2026-11-24.1';
 const DEFAULT_GIST_ID = 'ee8e8e0db94d44f8fff29b207a116cc7';
 const STORE_KEY = 'uae_dashboard_v2';
 const SESSION_KEY = 'uae_dashboard_session_v2';
@@ -698,7 +698,8 @@ function clearBadToken(){
   syncing=true; try{ save(); } finally{ syncing=false; }
   updateGithubStatus('Token inválido (401): se borró. Genera uno nuevo.', true);
 }
-function serializable(includeToken){ return { ...state, github:{ ...state.github, token:includeToken?state.github.token:'' } }; }
+// El token NUNCA se guarda en el Gist: GitHub revoca tokens que aparecen en gists.
+function serializable(){ return { ...state, github:{ ...state.github, token:'' } }; }
 function applyImported(data){
   const d=defaults();
   const order=Array.isArray(data.widgetOrder)?data.widgetOrder.filter(x=>ALL_IDS.includes(x)):[];
@@ -722,7 +723,7 @@ async function githubPush(){
   updateGithubStatus('Subiendo…'); syncing=true;
   try{
     const res=await fetch(`https://api.github.com/gists/${state.github.gistId}`,{method:'PATCH',headers:ghHeaders(),
-      body:JSON.stringify({description:'Mi Dashboard - respaldo personal',public:false,files:{[GIST_FILE]:{content:JSON.stringify(serializable(true),null,2)}}})});
+      body:JSON.stringify({description:'Mi Dashboard - respaldo personal',public:false,files:{[GIST_FILE]:{content:JSON.stringify(serializable(),null,2)}}})});
     if(res.status===401){ clearBadToken(); throw new Error('Token inválido'); }
     const data=await res.json(); if(!res.ok) throw new Error(data.message||'No se pudo subir');
     state.github.lastSync=data.updated_at||new Date().toISOString(); localDirty=false;
@@ -851,7 +852,7 @@ function enterApp(){
       try{
         const r=await fetch(`https://api.github.com/gists/${state.github.gistId}`,{headers:{Accept:'application/vnd.github+json'}});
         if(r.ok){ const d=await r.json(), f=d.files?.[GIST_FILE]; if(f){ const remote=JSON.parse(f.content);
-          if(remote.github?.token) state.github.token=remote.github.token;
+          // No heredar token del Gist ( GitHub lo revoca ). Solo la clave de IA.
           if(!state.ai.key&&remote.ai?.key){ state.ai.key=remote.ai.key; state.ai.model=remote.ai.model||state.ai.model; }
           syncing=true; try{ save(); } finally{ syncing=false; }
         } }
