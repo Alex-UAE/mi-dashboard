@@ -686,7 +686,7 @@ function renderWidgets(){
       const label=shown?'✓ Ya está aquí':'Agregar aquí';
       return `<button data-act="add-widget" data-id="${id}" class="btn btn-sm ${shown?'btn-ghost':''}" ${shown?'disabled':''}>${icon(w.icon,'h-4 w-4')} ${w.title} · ${label}</button>`;
     }).join('')}</div>
-    <p class="text-[11px] mt-3" style="color:var(--muted)">Toca uno para ponerlo en esta vista. Puedes ocultarlo después con el ícono de ojo.</p>
+    <p class="text-[11px] mt-3" style="color:var(--muted)">Toca uno para agregarlo también a esta vista, sin quitarlo de las demás. Puedes ocultarlo con el ícono de ojo.</p>
   </section>` : '';
   $('#widgets').innerHTML = addBlock + (visible.length ? visible.map(id=>{
     const w = WIDGETS[id];
