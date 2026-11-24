@@ -406,12 +406,12 @@ const SCHEDULE = {
 const WIDGETS = {
   resumen: { view:'inicio', title:'Resumen', icon:'chart', span:'md:col-span-12', render(){
     const pending = state.tasks.filter(t => !t.done);
-    const avg = state.courses.length ? Math.round(state.courses.reduce((s,c)=>s+(+c.progress||0),0)/state.courses.length) : 0;
+    const done = state.tasks.length - pending.length;
     const today = localISO(new Date());
     const urgent = pending.filter(t => t.date && t.date <= today);
     const cards = [
       {l:'Tareas pendientes',v:pending.length,s:urgent.length?`${urgent.length} urgentes`:'Todo al día',i:'check',c:'var(--accent)'},
-      {l:'Progreso promedio',v:avg+'%',s:`${state.courses.length} cursos`,i:'chart',c:'var(--muted)'},
+      {l:'Tareas completadas',v:done,s:`${state.tasks.length} en total`,i:'check',c:'var(--muted)'},
       {l:'Próxima tarea',v:pending.length?'1':'0',s:pending.length?pending[0].title.slice(0,26):'Sin pendientes',i:'calendar',c:'var(--muted)'}
     ];
     return `<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">${cards.map(c=>`
