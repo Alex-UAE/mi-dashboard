@@ -446,7 +446,7 @@ const WIDGETS = {
   urgentes: { view:'inicio', title:'Tareas urgentes', icon:'check', span:'md:col-span-8', render(){
     const today = localISO(new Date());
     const rank = {alta:0,media:1,baja:2};
-    const pending = state.tasks.filter(t=>!t.done).sort((a,b)=>(a.date||'9999').localeCompare(b.date||'9999')||(rank[a.priority]-rank[b.priority])).slice(0,4);
+    const pending = state.tasks.filter(t=>taskStatus(t)!=='hecha').sort((a,b)=>(a.date||'9999').localeCompare(b.date||'9999')||(rank[a.priority]-rank[b.priority])).slice(0,4);
     const rows = pending.map(t=>{
       const over = t.date && t.date < today, isToday = t.date === today;
       const label = over?'Vencida':isToday?'Hoy':t.date?new Intl.DateTimeFormat('es-EC',{day:'numeric',month:'short'}).format(new Date(t.date+'T00:00:00')):'Sin fecha';
