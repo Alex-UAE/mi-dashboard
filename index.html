@@ -756,7 +756,10 @@ $('#widgets').addEventListener('click', e=>{
   else if(act==='add-widget'){
     const wid=btn.dataset.id;
     state.hiddenWidgets=state.hiddenWidgets.filter(x=>x!==wid);
-    if(widgetView(wid)!==currentView) state.viewOverrides=state.viewOverrides||{}, state.viewOverrides[wid]=currentView;
+    if(!widgetViews(wid).includes(currentView)){
+      state.placements=state.placements||{};
+      state.placements[wid]=[...widgetViews(wid),currentView];
+    }
     save(); renderWidgets(); renderToggles(); toast(WIDGETS[wid].title+' agregado a esta vista');
   }
   else if(act==='up'||act==='down'){
