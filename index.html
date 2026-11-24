@@ -708,6 +708,12 @@ $('#widgets').addEventListener('click', async e=>{
 /* ============ Navegación ============ */
 $('#nav').addEventListener('click', e=>{ const it=e.target.closest('.nav-item'); if(it) setView(it.dataset.section); });
 $('#quickSettings').addEventListener('click', ()=>openSettings());
+$('#editToggle').addEventListener('change', e=>{
+  state.editMode=e.target.checked; save();
+  document.body.classList.toggle('editing', !!state.editMode);
+  updateEditToggle(); renderWidgets();
+  toast(state.editMode?'Modo edición activado':'Modo edición desactivado');
+});
 $('#menuBtn').addEventListener('click', ()=>{ $('#sidebar').classList.add('open'); $('#sidebarBackdrop').classList.remove('hidden'); });
 function closeSidebar(){ $('#sidebar').classList.remove('open'); $('#sidebarBackdrop').classList.add('hidden'); }
 $('#sidebarBackdrop').addEventListener('click', closeSidebar);
