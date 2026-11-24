@@ -189,6 +189,15 @@
         </div>
       </section>
 
+      <section class="tab-panel" data-panel="notif">
+        <div class="rounded-xl p-4 mb-5" style="background:var(--panel2);border:1px solid var(--border)"><div class="text-sm font-bold flex items-center gap-2"><span data-icon="bell" style="color:var(--accent)"></span> Avisos de tareas</div><p class="text-xs mt-1.5 leading-relaxed" style="color:var(--muted)">La campana del encabezado muestra siempre las tareas urgentes. Si activas las notificaciones del navegador, recibirás un aviso del sistema cuando una tarea con fecha llegue a su día (con la app abierta).</p></div>
+        <div class="flex flex-wrap gap-2 mb-4">
+          <button class="btn btn-sm" id="notifEnable">Activar notificaciones</button>
+          <button class="btn btn-ghost btn-sm" id="notifTest">Probar notificación</button>
+        </div>
+        <p id="notifStatus" class="text-xs" style="color:var(--muted)"></p>
+      </section>
+
       <section class="tab-panel" data-panel="sync">
         <div class="rounded-xl p-4 mb-5" style="background:var(--panel2);border:1px solid var(--border)">
           <div class="text-sm font-bold flex items-center gap-2"><span data-icon="refresh" style="color:var(--accent)"></span> Firebase Realtime Database</div>
