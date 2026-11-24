@@ -565,6 +565,8 @@ function renderWidgets(){
 }
 function renderAll(){
   applyTheme();
+  document.body.classList.toggle('editing', !!state.editMode);
+  updateEditToggle();
   $('#greeting').textContent = `Hola, ${state.profile.name || 'Admin'}`;
   const f = new Intl.DateTimeFormat('es-EC',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(new Date());
   $('#todayLabel').textContent = f.charAt(0).toUpperCase()+f.slice(1);
