@@ -408,8 +408,8 @@ const SCHEDULE = {
 /* ============ Widgets ============ */
 const WIDGETS = {
   resumen: { view:'inicio', title:'Resumen', icon:'chart', span:'md:col-span-12', render(){
-    const pending = state.tasks.filter(t => !t.done);
-    const done = state.tasks.length - pending.length;
+    const pending = state.tasks.filter(t => taskStatus(t) === 'pendiente');
+    const done = state.tasks.filter(t => taskStatus(t) === 'hecha').length;
     const today = localISO(new Date());
     const urgent = pending.filter(t => t.date && t.date <= today);
     const cards = [
