@@ -847,6 +847,11 @@ $('#widgets').addEventListener('input', e=>{
   }
 });
 $('#widgets').addEventListener('change', async e=>{
+  if(e.target.dataset?.act==='media-pick'){
+    const w=(state.extraWidgets||[]).find(x=>x.id===e.target.dataset.id);
+    if(w){ w.mediaId=e.target.value||null; save(); renderWidgets(); }
+    return;
+  }
   if(e.target.id!=='mediaInput') return;
   const files=[...(e.target.files||[])];
   let added=0, skipped=0;
