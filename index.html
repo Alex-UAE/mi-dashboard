@@ -763,7 +763,7 @@ $('#widgets').addEventListener('click', e=>{
     save(); renderWidgets(); renderToggles(); toast(WIDGETS[wid].title+' agregado a esta vista');
   }
   else if(act==='up'||act==='down'){
-    const order=state.widgetOrder.filter(x=>!state.hiddenWidgets.includes(x)&&widgetView(x)===currentView);
+    const order=state.widgetOrder.filter(x=>!state.hiddenWidgets.includes(x)&&widgetViews(x).includes(currentView));
     const i=order.indexOf(id), j=act==='up'?i-1:i+1; if(j<0||j>=order.length) return;
     [order[i],order[j]]=[order[j],order[i]]; syncOrder(order); save(); renderWidgets();
   }
