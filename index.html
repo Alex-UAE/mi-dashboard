@@ -355,6 +355,48 @@ function updateNetChip(){
   else if (!canUseNetwork()){ el.textContent = 'Solo Wi-Fi'; el.style.color = '#f59e0b'; }
   else { el.textContent = 'Wi-Fi'; el.style.color = '#22c55e'; }
 }
+function urgentTasks(){
+  const today=localISO(new Date());
+  return (state.tasks||[]).filter(t=>taskStatus(t)!=='hecha' && t.date && t.date<=today)
+    .sort((a,b)=>a.date.localeCompare(b.date));
+}
+function updateBell(){
+  const list=urgentTasks(), badge=$('#bellBadge');
+  if(!badge) return;
+  badge.textContent=list.length;
+  badge.classList.toggle('hidden', list.length===0);
+  const host=$('#bellList'); if(!host) return;
+  host.innerHTML=list.length ? list.map(t=>`<button data-act="go-tareas" class="w-full text-left rounded-lg px-2 py-2 hover:bg-[var(--panel2)]">
+    <div class="text-xs font-semibold truncate">${esc(t.title)}</div>
+    <div class="text-[10px]" style="color:${t.date<localISO(new Date())?'#ef4444':'#f59e0b'}">${t.date<localISO(new Date())?'Vencida':'Es hoy'} · ${taskStatus(t)==='pendiente'?'Pendiente':'No hecha'}</div>
+  </button>`).join('') : '<div class="py-5 text-center text-xs" style="color:var(--muted)">Sin avisos por ahora ✓</div>';
+}
+async function fireNotify(title,body){
+  try{
+    if('serviceWorker' in navigator && navigator.serviceWorker.controller){
+      const reg=await navigator.serviceWorker.ready;
+      await reg.showNotification(title,{body,icon:'icon-192.png',badge:'icon-192.png'});
+    } else new Notification(title,{body,icon:'icon-192.png'});
+  }catch(e){ try{ new Notification(title,{body}); }catch(ex){} }
+}
+function checkDue(){
+  if(!state.notify?.enabled || Notification.permission!=='granted') return;
+  const today=localISO(new Date());
+  let changed=false;
+  (state.tasks||[]).forEach(t=>{
+    if(t.date && t.date<=today && taskStatus(t)!=='hecha' && !(state.notify.notified||[]).includes(t.id)){
+      fireNotify('Recordatorio: '+t.title, t.date===today?'Tarea para hoy':'Tarea vencida');
+      state.notify.notified.push(t.id); changed=true;
+    }
+  });
+  if(changed) save();
+}
+function updateNotifStatus(){
+  const el=$('#notifStatus'); if(!el) return;
+  const ok=Notification.permission==='granted' && state.notify.enabled;
+  el.textContent=ok?'✓ Notificaciones activas':Notification.permission==='denied'?'Permiso denegado en el navegador':'Notificaciones desactivadas';
+  el.style.color=ok?'#22c55e':Notification.permission==='denied'?'#ef4444':'var(--muted)';
+}
 function updateEditToggle(){
   const t=$('#editToggle'), track=$('#editTrack'), knob=$('#editKnob');
   if(!t||!track||!knob) return;
