@@ -485,7 +485,7 @@ const WIDGETS = {
       <input class="input" type="date" name="date"><select class="input" name="priority"><option value="media">Media</option><option value="alta">Alta</option><option value="baja">Baja</option></select>
       <button class="btn btn-sm sm:col-span-3" type="submit">${icon('plus','h-4 w-4')} Agregar tarea</button></form>
       <div class="max-h-80 overflow-y-auto">${list||'<p class="py-6 text-center text-sm" style="color:var(--muted)">Sin tareas</p>'}</div>
-      <div class="mt-2 text-[11px]" style="color:var(--muted)">${pending} pendiente${pending===1?'':'s'}</div>`;
+      <div class="mt-2 text-[11px]" style="color:var(--muted)">${pending} pendiente${pending===1?'':'s'} · ${notDone} no hecha${notDone===1?'':'s'} · ${doneCount} hecha${doneCount===1?'':'s'}</div>`;
   }},
   notas: { view:'notas', title:'Notas rápidas', icon:'note', span:'md:col-span-12', render(){
     return `<textarea id="notesArea" class="input min-h-[220px]" placeholder="Escribe tus notas...">${esc(state.notes)}</textarea>
