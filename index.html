@@ -515,7 +515,7 @@ const WIDGETS = {
     }).join('');
     return `<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">${items||'<div class="col-span-full py-8 text-center"><div class="text-3xl mb-2">🖼️</div><div class="text-sm font-semibold">Aún no hay fotos ni videos</div><div class="text-xs mt-1" style="color:var(--muted)">Agrega los tuyos desde el botón de abajo.</div></div>'}</div>
       <label class="btn btn-ghost btn-sm mt-4 cursor-pointer w-full">${icon('plus','h-4 w-4')} Agregar fotos o videos<input type="file" id="mediaInput" accept="image/*,video/*" multiple class="hidden"></label>
-      <p class="text-[11px] mt-2" style="color:var(--muted)">Los videos se reproducen solos, sin sonido ni controles. Fotos ≤ 900 px y videos ≤ 2 MB each para no cargar la sincronización.</p>`;
+      <p class="text-[11px] mt-2" style="color:var(--muted)">Los videos se reproducen solos, sin sonido ni controles. Fotos ≤ 900 px y videos ≤ 2 MB c/u para no cargar la sincronización.</p>`;
   }},
   ia: { view:'ia', title:'Asistente IA', icon:'sparkles', span:'md:col-span-12', render(){
     if(!state.ai.key) return `<div class="flex flex-col sm:flex-row items-center gap-4 py-2"><div class="flex h-12 w-12 items-center justify-center rounded-xl" style="background:var(--accent-soft);color:var(--accent)">${icon('sparkles')}</div>
