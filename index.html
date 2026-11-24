@@ -970,6 +970,28 @@ $('#widgets').addEventListener('submit', async e=>{
         detail:(f.get('detail')||'').trim(), files });
     }
   }
+  else if(kind==='edit-task'){
+    const t=(state.tasks||[]).find(x=>x.id===form.dataset.id);
+    if(t){
+      t.title=(f.get('title')||'').trim()||t.title;
+      t.date=f.get('date')||''; t.priority=f.get('priority')||'media';
+      t.detail=(f.get('detail')||'').trim();
+      const opening=f.get('opening')||'', closing=f.get('closing')||'';
+      t.opening=opening?new Date(opening).toISOString():null;
+      t.closing=closing?new Date(closing).toISOString():null;
+      t.status=f.get('status')||t.status;
+      if(t.status==='hecha'){ if(!t.finishedAt) t.finishedAt=t.closing||new Date().toISOString(); }
+      else t.finishedAt=null;
+      t.files=t.files||[];
+      for(const file of (f.getAll('files')||[])){
+        if(!file||typeof file==='string'||!file.size) continue;
+        if(file.size>2*1024*1024){ toast('Archivo omitido por tamaño: '+file.name); continue; }
+        const data=await new Promise(r=>{ const fr=new FileReader(); fr.onload=()=>r(fr.result); fr.readAsDataURL(file); });
+        t.files.push({name:file.name,type:file.type||'application/octet-stream',size:file.size,data});
+      }
+      editingTaskId=null; toast('Tarea actualizada');
+    }
+  }
   else if(kind==='add-shortcut'){ const n=(f.get('name')||'').trim(),u=(f.get('url')||'').trim(); if(n&&u) state.shortcuts.push({id:uid(),name:n,url:u}); }
   save(); renderWidgets(); toast('Agregado');
 });
