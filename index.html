@@ -673,8 +673,18 @@ let currentView = 'inicio';
 let calY = new Date().getFullYear(), calM = new Date().getMonth();
 let pomoLeft = 25*60, pomoTimer = null, pomoMode = 'focus';
 function renderWidgets(){
-  const visible = state.widgetOrder.filter(id => !state.hiddenWidgets.includes(id) && WIDGETS[id] && WIDGETS[id].view === currentView);
-  $('#widgets').innerHTML = visible.length ? visible.map(id=>{
+  const visible = state.widgetOrder.filter(id => !state.hiddenWidgets.includes(id) && WIDGETS[id] && widgetView(id) === currentView);
+  const addBlock = state.editMode ? `<section class="panel md:col-span-12 p-4">
+    <div class="flex items-center gap-2 mb-3"><span style="color:var(--accent)">${icon('plus','h-4 w-4')}</span><h3 class="text-sm font-bold">Añadir widget</h3></div>
+    <div class="flex flex-wrap gap-2">${ALL_IDS.map(id=>{
+      const w=WIDGETS[id]; if(!w) return '';
+      const here=widgetView(id)===currentView, shown=here && !state.hiddenWidgets.includes(id);
+      const label=shown?'✓ Ya está aquí':here?'Agregar':'Mover aquí';
+      return `<button data-act="add-widget" data-id="${id}" class="btn btn-sm ${shown?'btn-ghost':''}" ${shown?'disabled':''}>${icon(w.icon,'h-4 w-4')} ${w.title} · ${label}</button>`;
+    }).join('')}</div>
+    <p class="text-[11px] mt-3" style="color:var(--muted)">Toca uno para ponerlo en esta vista. Puedes ocultarlo después con el ícono de ojo.</p>
+  </section>` : '';
+  $('#widgets').innerHTML = addBlock + (visible.length ? visible.map(id=>{
     const w = WIDGETS[id];
     return `<section class="widget panel panel-hover ${w.span}" data-id="${id}">
       <div class="flex items-center gap-2 px-4 py-3 border-b" style="border-color:var(--border)">
