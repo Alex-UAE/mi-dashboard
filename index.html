@@ -891,7 +891,7 @@ $('#widgets').addEventListener('dragover', e=>{
   const r=t.getBoundingClientRect(); $('#widgets').insertBefore(draggedEl, e.clientY<r.top+r.height/2 ? t : t.nextSibling);
 });
 $('#widgets').addEventListener('dragend', ()=>{
-  if(draggedEl){ draggedEl.classList.remove('dragging'); $$('.widget').forEach(w=>w.classList.remove('drop-target')); syncOrder($$('.widget').map(w=>w.dataset.id)); save(); }
+  if(draggedEl){ draggedEl.classList.remove('dragging'); $$('.widget').forEach(w=>w.classList.remove('drop-target')); syncVisibleOrder(); save(); }
   draggedEl=null;
 });
 
