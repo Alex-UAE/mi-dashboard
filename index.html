@@ -678,7 +678,11 @@ const WIDGETS = {
         <span class="absolute bottom-2 left-2 chip" style="background:rgba(0,0,0,.65)">${m.type==='video'?'Video':'Foto'} ${i+1}</span>
       </div>`;
     }).join('');
-    return `<div class="max-w-3xl mx-auto">${items||'<div class="py-8 text-center"><div class="text-3xl mb-2">🖼️</div><div class="text-sm font-semibold">Aún no hay fotos ni videos</div><div class="text-xs mt-1" style="color:var(--muted)">Agrega los tuyos desde el botón de abajo.</div></div>'}</div>
+    const picker=(inst&&state.editMode)?`<select class="input mb-3" data-act="media-pick" data-id="${inst.id}">
+      <option value="">Mostrar todos</option>
+      ${(state.media||[]).map((m,i)=>`<option value="${m.id}" ${inst.mediaId===m.id?'selected':''}>${m.type==='video'?'Video':'Foto'} ${i+1} · ${esc((m.name||'').slice(0,24))}</option>`).join('')}
+    </select>`:'';
+    return `${picker}<div class="max-w-3xl mx-auto">${items||'<div class="py-8 text-center"><div class="text-3xl mb-2">🖼️</div><div class="text-sm font-semibold">Aún no hay fotos ni videos</div><div class="text-xs mt-1" style="color:var(--muted)">Agrega los tuyos desde el botón de abajo.</div></div>'}</div>
       <label class="btn btn-ghost btn-sm mt-2 cursor-pointer w-full edit-only">${icon('plus','h-4 w-4')} Agregar fotos o videos<input type="file" id="mediaInput" accept="image/*,video/*" multiple class="hidden"></label>
       <p class="text-[11px] mt-2" style="color:var(--muted)">Se muestran completos, en su formato original y centrados. Los videos se reproducen solos, sin sonido ni controles. Fotos ≤ 900 px y videos ≤ 2 MB c/u.</p>`;
   }},
