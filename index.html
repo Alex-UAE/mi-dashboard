@@ -451,18 +451,6 @@ const WIDGETS = {
     return `${rows || `<div class="py-8 text-center"><div class="text-3xl mb-2">✅</div><div class="text-sm font-semibold">Sin tareas urgentes</div></div>`}
       <button class="btn btn-ghost btn-sm w-full mt-4" data-act="go-tareas">Ver todas las tareas</button>`;
   }},
-  progreso: { view:'progreso', title:'Progreso de cursos', icon:'chart', span:'md:col-span-12', render(){
-    const avg = state.courses.length ? Math.round(state.courses.reduce((s,c)=>s+(+c.progress||0),0)/state.courses.length) : 0;
-    const rows = state.courses.map(c=>`<div class="py-3 border-b last:border-0" style="border-color:var(--border)">
-      <div class="flex justify-between items-center mb-2"><span class="text-sm font-semibold truncate">${esc(c.name)}</span>
-        <div class="flex items-center gap-2"><span class="text-xs font-bold" style="color:var(--accent)">${c.progress}%</span>
-        <button class="icon-btn danger edit-only" data-act="del-course" data-id="${c.id}">${icon('trash','h-4 w-4')}</button></div></div>
-      <input type="range" min="0" max="100" value="${c.progress}" data-act="range" data-id="${c.id}" class="w-full"></div>`).join('');
-    return `<div class="mb-4"><div class="flex justify-between text-xs mb-1.5" style="color:var(--muted)"><span>Promedio</span><span class="font-bold" style="color:var(--text)">${avg}%</span></div>
-      <div class="h-2 rounded-full overflow-hidden" style="background:var(--border)"><div class="progress-fill" style="width:${avg}%"></div></div></div>
-      ${rows || '<p class="text-sm py-4 text-center" style="color:var(--muted)">Sin cursos</p>'}
-      <form class="flex gap-2 mt-4 edit-only" data-form="add-course"><input class="input" name="name" placeholder="Nuevo curso..." required><button class="btn btn-sm shrink-0" type="submit">${icon('plus','h-4 w-4')} Agregar</button></form>`;
-  }},
   tareas: { view:'tareas', title:'Tareas y recordatorios', icon:'check', span:'md:col-span-12', render(){
     const today = localISO(new Date()); const rank={alta:0,media:1,baja:2};
     const sorted = [...state.tasks].sort((a,b)=>(a.done-b.done)||((a.date||'9999').localeCompare(b.date||'9999'))||(rank[a.priority]-rank[b.priority]));
