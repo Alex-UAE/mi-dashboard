@@ -730,6 +730,7 @@ $('#widgets').addEventListener('submit', e=>{
   if(kind==='add-course'){ const n=(f.get('name')||'').trim(); if(n) state.courses.push({id:uid(),name:n,progress:0}); }
   else if(kind==='add-task'){ const t=(f.get('title')||'').trim(); if(t) state.tasks.push({id:uid(),title:t,date:f.get('date')||'',priority:f.get('priority')||'media',done:false}); }
   else if(kind==='add-shortcut'){ const n=(f.get('name')||'').trim(),u=(f.get('url')||'').trim(); if(n&&u) state.shortcuts.push({id:uid(),name:n,url:u}); }
+  else if(kind==='add-goal'){ const t=(f.get('title')||'').trim(); if(t) state.goals.push({id:uid(),title:t,progress:0}); }
   save(); renderWidgets(); toast('Agregado');
 });
 function syncOrder(visibleIds){
