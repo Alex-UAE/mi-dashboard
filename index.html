@@ -192,6 +192,15 @@
       <button class="tab-btn" data-tab="datos">Datos</button>
     </div>
     <div class="overflow-y-auto px-5 py-5">
+      <section class="tab-panel" data-panel="inicio">
+        <div class="rounded-xl p-4 mb-4" style="background:var(--panel2);border:1px solid var(--border)">
+          <div class="text-sm font-bold mb-1">Personalizar el Inicio</div>
+          <p class="text-xs" style="color:var(--muted)">Elige qué widgets aparecen y en qué orden. Los cambios se guardan y se sincronizan.</p>
+        </div>
+        <div id="inicioList" class="space-y-2 mb-4"></div>
+        <button class="btn btn-ghost btn-sm" id="iniAdd">${icon('plus','h-4 w-4')} Agregar widget al inicio</button>
+      </section>
+
       <section class="tab-panel active" data-panel="apariencia">
         <p class="label">Color secundario</p>
         <div class="flex flex-wrap items-center gap-3 mb-5" id="presetList"></div>
