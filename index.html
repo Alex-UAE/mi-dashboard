@@ -1557,7 +1557,6 @@ $('#addWidgetList').addEventListener('click', e=>{
 document.addEventListener('click', e=>{
   const b=e.target.closest('[data-act]'); if(!b) return;
   if(b.dataset.act==='pb-open'){ window.open('https://open.spotify.com/search/'+encodeURIComponent(state.lastfm?.track?.name||''),'_blank','noopener'); }
-  else if(b.dataset.act==='pb-close'){ $('#playerBar').classList.add('hidden'); }
 });
 $('#bellBtn').addEventListener('click', ()=>{ updateBell(); $('#bellPanel').classList.toggle('hidden'); });
 $('#bellClose').addEventListener('click', ()=>$('#bellPanel').classList.add('hidden'));
