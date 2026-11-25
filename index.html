@@ -906,7 +906,7 @@ const WIDGETS = {
     </select>`:'';
     return `${picker}<div class="max-w-3xl mx-auto">${items||'<div class="py-8 text-center"><div class="text-3xl mb-2">🖼️</div><div class="text-sm font-semibold">Aún no hay fotos ni videos</div><div class="text-xs mt-1" style="color:var(--muted)">Agrega los tuyos desde el botón de abajo.</div></div>'}</div>
       <label class="btn btn-ghost btn-sm mt-2 cursor-pointer w-full edit-only">${icon('plus','h-4 w-4')} Agregar fotos o videos<input type="file" id="mediaInput" accept="image/*,video/*" multiple class="hidden"></label>
-      <p class="text-[11px] mt-2" style="color:var(--muted)">Se muestran completos, en su formato original y centrados. Los videos se reproducen solos, sin sonido ni controles. Fotos ≤ 900 px y videos ≤ 2 MB c/u.</p>`;
+      `;
   }},
   python: { view:'python', title:'Aprender Python', icon:'code', span:'md:col-span-12', render(){
     const p=state.python||{}, done=p.completed||[], xp=p.xp||0;
