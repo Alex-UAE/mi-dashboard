@@ -720,6 +720,8 @@ function dailyChallenge(){
   return {title:'Reto del día · '+diff,unit:ui,color:PY_BANK[ui].c,questions:qs};
 }
 const PY_TOTAL_PHASES=PY_UNITS.reduce((n,u)=>n+u.phases.length,0);
+// Feriados de Ecuador 2026 que caen en días lectivos del periodo
+const EC_HOLIDAYS=['2026-11-02','2026-11-03','2026-11-20'];
 
 /* ============ Widgets ============ */
 const WIDGETS = {
