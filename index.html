@@ -1738,6 +1738,18 @@ function fillSettings(){
   $('#fbAuto').checked=!!state.sync.autoSync; $('#fbPullLogin').checked=state.sync.pullOnLogin!==false;
   updateFbDiag();
 }
+function renderInicioSettings(){
+  const host=$('#inicioList'); if(!host) return;
+  const ids=state.widgetOrder.filter(id=>WIDGETS[id]&&widgetViews(id).includes('inicio'));
+  host.innerHTML=ids.map(id=>{
+    const w=WIDGETS[id], on=!state.hiddenWidgets.includes(id);
+    return `<div class="flex items-center gap-2 rounded-lg px-3 py-2" style="background:var(--panel2)">
+      <button class="icon-btn" data-act="ini-up" data-id="${id}" title="Subir">${icon('up','h-4 w-4')}</button>
+      <button class="icon-btn" data-act="ini-down" data-id="${id}" title="Bajar">${icon('down','h-4 w-4')}</button>
+      <input type="checkbox" data-act="ini-toggle" data-id="${id}" ${on?'checked':''} class="h-4 w-4 rounded">
+      <span class="text-sm flex-1">${w.title}</span></div>`;
+  }).join('')||'<div class="text-xs" style="color:var(--muted)">No hay widgets en el inicio.</div>';
+}
 function renderPresets(){
   $('#presetList').innerHTML=PRESETS.map(p=>`<button class="swatch ${state.theme.color.toLowerCase()===p.color.toLowerCase()?'selected':''}" style="background:${p.color}" title="${p.name}" data-color="${p.color}"></button>`).join('');
 }
