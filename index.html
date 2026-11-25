@@ -1277,6 +1277,11 @@ $('#widgets').addEventListener('click', e=>{
     save(); renderWidgets(); toast('Curso reiniciado');
   }
   else if(act==='open-add-widget'){ openAddWidget(); }
+  else if(act==='auto-order'){
+    state.widgetOrder=defaults().widgetOrder; state.hiddenWidgets=[];
+    state.sizeOverrides={}; state.widgetSizes={};
+    save(); renderAll(); toast('Widgets ordenados');
+  }
   else if(act==='add-widget'){
     const wid=btn.dataset.id;
     state.extraWidgets=state.extraWidgets||[];
