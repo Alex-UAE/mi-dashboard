@@ -995,14 +995,32 @@ const WIDGETS = {
       </div>`;
     }
     const t=l.track||{};
-    return `<div class="flex items-center gap-4">
-      ${t.image?`<img src="${esc(t.image)}" class="h-20 w-20 rounded-xl object-cover shrink-0" alt="">`:`<div class="flex h-20 w-20 shrink-0 items-center justify-center rounded-xl text-3xl" style="background:var(--panel2)">🎵</div>`}
-      <div class="min-w-0 flex-1">
-        <div class="text-sm font-bold truncate">${esc(t.name||'Buscando lo que escuchas…')}</div>
-        <div class="text-xs truncate" style="color:var(--muted)">${esc(t.artist||'Last.fm conectado')}</div>
-        <div class="text-[11px] mt-2" style="color:${t.playing?'#22c55e':'var(--muted)'}">${t.playing?'▶ Escuchando ahora':'⏸ Última canción'}</div>
+    return `<div class="rounded-2xl p-4 sm:p-5" style="background:var(--panel2);border:1px solid var(--border)">
+      <div class="flex flex-col sm:flex-row items-center gap-4">
+        ${t.image?`<img src="${esc(t.image)}" class="h-20 w-20 sm:h-24 sm:w-24 rounded-xl object-cover shrink-0" alt="">`:`<div class="flex h-20 w-20 sm:h-24 sm:w-24 shrink-0 items-center justify-center rounded-xl" style="background:var(--panel)">${icon('sparkles','h-8 w-8')}</div>`}
+        <div class="min-w-0 flex-1 text-center sm:text-left">
+          <div class="text-base font-bold truncate">${esc(t.name||'Buscando lo que escuchas…')}</div>
+          <div class="text-sm truncate" style="color:var(--muted)">${esc(t.artist||'Last.fm conectado')}</div>
+          <div class="flex items-center justify-center sm:justify-start gap-1.5 text-[11px] mt-2" style="color:${t.playing?'#22c55e':'var(--muted)'}">
+            <span class="h-1.5 w-1.5 rounded-full" style="background:currentColor"></span>${t.playing?'Escuchando ahora':'Última canción'}
+          </div>
+        </div>
+        <button class="btn btn-ghost btn-sm shrink-0" data-act="lf-disconnect">Desconectar</button>
       </div>
-      <button class="btn btn-ghost btn-sm shrink-0" data-act="lf-disconnect">Desconectar</button>
+      <div class="mt-4 pt-4 border-t" style="border-color:var(--border)">
+        <div class="flex items-center justify-center gap-3">
+          <button class="icon-btn" data-act="pb-open" title="Abrir Spotify">${icon('shuffle','h-4 w-4')}</button>
+          <button class="icon-btn" data-act="pb-open" title="Abrir Spotify">${icon('prev','h-4 w-4')}</button>
+          <button class="flex h-10 w-10 items-center justify-center rounded-full transition hover:scale-105" style="background:#22c55e;color:#000" data-act="pb-open" title="Abrir Spotify">${icon(t.playing?'pause':'play','h-5 w-5')}</button>
+          <button class="icon-btn" data-act="pb-open" title="Abrir Spotify">${icon('next','h-4 w-4')}</button>
+          <button class="icon-btn" data-act="pb-open" title="Abrir Spotify">${icon('refresh','h-4 w-4')}</button>
+        </div>
+        <div class="flex items-center gap-2 mt-3">
+          <span id="pbElapsed" class="text-[10px] tabular-nums" style="color:var(--muted)">0:00</span>
+          <div class="h-1.5 flex-1 rounded-full overflow-hidden" style="background:var(--border)"><div id="pbFill" class="h-full rounded-full" style="width:0%;background:#22c55e"></div></div>
+          <span id="pbTotal" class="text-[10px] tabular-nums" style="color:var(--muted)">—</span>
+        </div>
+      </div>
     </div>`;
   }},
   ia: { view:'ia', title:'Asistente IA', icon:'sparkles', span:'md:col-span-12', render(){
