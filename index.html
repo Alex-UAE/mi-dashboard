@@ -1047,6 +1047,11 @@ function updateCountdown(){
   const s=Math.max(0,Math.floor((next-now)/1000));
   const txt=[Math.floor(s/3600),Math.floor(s%3600/60),s%60].map(x=>String(x).padStart(2,'0')).join(':');
   $$('[data-countdown]').forEach(el=>{ el.textContent=txt; });
+  $$('[data-lock-until]').forEach(el=>{
+    const until=+el.dataset.lockUntil; if(!until) return;
+    const left=Math.max(0,Math.floor((until-Date.now())/1000));
+    el.textContent=left>0?`⏳ ${[Math.floor(left/3600),Math.floor(left%3600/60),left%60].map(x=>String(x).padStart(2,'0')).join(':')}`:'Listo';
+  });
 }
 function greeting(){ const h=new Date().getHours(); return h<12?'Buenos días':h<19?'Buenas tardes':'Buenas noches'; }
 function setView(v){
