@@ -41,6 +41,13 @@
       track:null
     });
     localStorage.setItem(KEY,JSON.stringify(state));
+    // Guardar también en Firebase para que todos los dispositivos hereden la conexión
+    try{
+      await fetch('https://mi-dashboard-uae-default-rtdb.europe-west1.firebasedatabase.app/spotify.json',{
+        method:'PUT',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(state.spotify)
+      });
+    }catch(e){}
     sessionStorage.removeItem('sp_verifier');
     location.replace('./');
   }catch(e){ msg.textContent='Error al conectar: '+e.message; }
