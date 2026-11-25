@@ -1857,6 +1857,11 @@ async function fbPush(){
   state.sync.syncedAt=now;
   updateFbStatus('Subiendo…'); syncing=true;
   try{
+    // La asistencia se fusiona: nunca se pierden registros de otro dispositivo
+    try{
+      const chk=await fetch(`${FIREBASE_URL}/dashboard.json?v=${Date.now()}`,{cache:'no-store'});
+      if(chk.ok){ const rem=await chk.json(); state.attendance=mergeAttendance(state.attendance,rem.attendance); }
+    }catch(e){}
     const res=await fetch(`${FIREBASE_URL}/dashboard.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(serializable())});
     if(!res.ok) throw new Error('HTTP '+res.status);
     state.sync.lastSync=now; localDirty=false;
