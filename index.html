@@ -372,6 +372,7 @@ function loadState(){
       sizeOverrides: { ...(p.sizeOverrides||{}) },
       python: { ...d.python, ...(p.python||{}) },
       spotify: { ...d.spotify, ...(p.spotify||{}) },
+      lastfm: { ...d.lastfm, ...(p.lastfm||{}) },
       theme:{...d.theme,...(p.theme||{})},
       ai:{...d.ai,...(p.ai||{})}, sync:{...d.sync,...(p.sync||{})},
       shortcuts: Array.isArray(p.shortcuts) ? p.shortcuts : d.shortcuts };
