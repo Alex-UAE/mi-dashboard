@@ -1324,6 +1324,16 @@ async function refreshSpotify(){
   if(d.refresh_token) s.refresh=d.refresh_token;
   save();
 }
+async function fetchSpotifyConfig(){
+  try{
+    const r=await fetch(`${FIREBASE_URL}/spotify.json?v=${Date.now()}`,{cache:'no-store'});
+    const s=await r.json();
+    if(s&&s.access&&(!state.spotify.access||(s.expires||0)>(state.spotify.expires||0))){
+      state.spotify={...state.spotify,...s};
+      save(); if(appReady) renderWidgets();
+    }
+  }catch(e){}
+}
 async function fetchNowPlaying(){
   const s=state.spotify; if(!s?.access) return;
   try{
