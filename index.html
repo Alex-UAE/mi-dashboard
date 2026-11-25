@@ -970,6 +970,35 @@ const WIDGETS = {
       <div class="text-center"><div class="text-2xl font-extrabold">${p.xp||0}</div><div class="text-[11px]" style="color:var(--muted)">XP total</div></div>
     </div>`;
   }},
+  spotify: { view:'spotify', title:'Spotify · Escuchando ahora', icon:'sparkles', span:'md:col-span-12', render(){
+    const s=state.spotify||{};
+    if(!s.access){
+      return `<div class="max-w-xl mx-auto">
+        <div class="text-sm font-bold mb-2">Conectar tu Spotify</div>
+        <p class="text-xs leading-relaxed mb-3" style="color:var(--muted)">
+          1. Entra a <b>developer.spotify.com/dashboard</b> con tu cuenta y crea una app.<br>
+          2. En <b>Edit settings → Redirect URIs</b> agrega exactamente:<br>
+          <code class="block mt-1 p-2 rounded" style="background:var(--panel2)">https://alex-uae.github.io/mi-dashboard/callback.html</code><br>
+          3. Copia el <b>Client ID</b> y pégalo abajo.
+        </p>
+        <input id="spClientId" class="input" value="${esc(s.clientId||'')}" placeholder="Client ID de Spotify">
+        <button class="btn btn-sm mt-3 w-full" data-act="sp-connect">Conectar con Spotify</button>
+        <p class="text-[11px] mt-2" style="color:var(--muted)">La conexión se guarda solo en este dispositivo.</p>
+      </div>`;
+    }
+    const t=s.track||{};
+    const pct=t.duration?Math.min(100,Math.round((t.progress||0)/t.duration*100)):0;
+    return `<div class="flex items-center gap-4">
+      ${t.image?`<img src="${esc(t.image)}" class="h-20 w-20 rounded-xl object-cover shrink-0" alt="">`:`<div class="flex h-20 w-20 shrink-0 items-center justify-center rounded-xl text-3xl" style="background:var(--panel2)">🎵</div>`}
+      <div class="min-w-0 flex-1">
+        <div class="text-sm font-bold truncate">${esc(t.name||'Nada sonando')}</div>
+        <div class="text-xs truncate" style="color:var(--muted)">${esc(t.artist||'Conecta tu Spotify para ver lo que suena')}</div>
+        <div class="h-1.5 rounded-full mt-3 overflow-hidden" style="background:var(--border)"><div class="progress-fill" style="width:${pct}%;background:#22c55e"></div></div>
+        <div class="text-[11px] mt-1" style="color:var(--muted)">${t.playing?'▶ Reproduciendo':'⏸ En pausa'}${t.name?' · '+esc(t.name):''}</div>
+      </div>
+      <button class="btn btn-ghost btn-sm shrink-0" data-act="sp-disconnect">Desconectar</button>
+    </div>`;
+  }},
   ia: { view:'ia', title:'Asistente IA', icon:'sparkles', span:'md:col-span-12', render(){
     if(!state.ai.key) return `<div class="flex flex-col sm:flex-row items-center gap-4 py-2"><div class="flex h-12 w-12 items-center justify-center rounded-xl" style="background:var(--accent-soft);color:var(--accent)">${icon('sparkles')}</div>
       <div class="flex-1"><div class="text-sm font-bold">Activa tu asistente</div><p class="text-xs mt-1" style="color:var(--muted)">Pega una clave de Gemini en Ajustes → Seguridad e IA.</p></div>
