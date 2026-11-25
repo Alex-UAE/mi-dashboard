@@ -1333,6 +1333,7 @@ function finishLesson(){
   const today=localISO(new Date()), p=state.python;
   if(!isDaily){
     const ph=PY_UNITS.flatMap(u=>u.phases).find(x=>x.title+': '+PY_BANK[x.unit].t===activePhase);
+    p.session=null;
     if(ph && !(p.completed||[]).includes(ph.id)){
       p.completed.push(ph.id); p.xp=(p.xp||0)+10;
       p.locks=p.locks||{}; p.locks[ph.id]=Date.now()+24*60*60*1000;
