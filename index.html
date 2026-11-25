@@ -1868,8 +1868,9 @@ function applyImported(data){
   const before = norm(state);
   state={ ...d, ...incoming, widgetOrder:order,
     profile:{...d.profile,...(data.profile||{})}, theme:{...d.theme,...(data.theme||{})},
-    tasks: normalizeTasks(data.tasks || state.tasks || d.tasks),
+    tasks: normalizeTasks(mergeByKey(state.tasks, data.tasks, r=>r.id)),
     attendance: mergeAttendance(state.attendance, data.attendance),
+    shortcuts: mergeByKey(state.shortcuts, data.shortcuts, s=>(s.url||'')+'|'+(s.name||'')),
     sync:{...d.sync,...(data.sync||{})},
     ai:{...d.ai,...(data.ai||{}),key:data.ai?.key||aiKey,model:data.ai?.model||d.ai.model},
     spotify: data.spotify?.access ? {...d.spotify,...(data.spotify||{})} : {...d.spotify,...(state.spotify||{})} };
