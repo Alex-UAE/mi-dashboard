@@ -1148,7 +1148,10 @@ function renderWidgets(){
     .map(w=>({...w,key:w.id,extra:true}));
   const all=[...base,...extras];
   const addBlock=state.editMode?`<section class="panel md:col-span-12 p-3">
-    <button data-act="open-add-widget" class="w-full flex items-center justify-center gap-2 rounded-lg py-2 text-sm font-semibold transition" style="border:2px solid var(--accent);color:var(--accent)">${icon('plus','h-4 w-4')} Añadir un bloque</button>
+    <div class="flex flex-wrap gap-2">
+      <button data-act="open-add-widget" class="flex-1 flex items-center justify-center gap-2 rounded-lg py-2 text-sm font-semibold transition" style="border:2px solid var(--accent);color:var(--accent)">${icon('plus','h-4 w-4')} Añadir un bloque</button>
+      <button data-act="auto-order" class="btn btn-ghost btn-sm">${icon('refresh','h-4 w-4')} Ordenar widgets</button>
+    </div>
   </section>`:'';
   $('#widgets').innerHTML=addBlock+(all.length?all.map(widgetCard).join(''):`<div class="panel col-span-12 p-10 text-center"><div class="text-4xl mb-3">📦</div><div class="font-bold">Sin widgets visibles</div><div class="text-xs mt-1" style="color:var(--muted)">Activa widgets en modo edición.</div></div>`);
   updateClock(); updateCountdown(); renderPlayerBar();
