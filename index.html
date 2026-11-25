@@ -1824,6 +1824,19 @@ function updateFbStatus(msg, isError){
   const el=$('#fbStatus'); if(el){ el.textContent=msg; el.style.color=isError?'#ef4444':'var(--muted)'; }
   updateFbDiag();
 }
+function autoAttendance(){
+  const now=new Date(), iso=localISO(now), wd=now.getDay();
+  if(wd===0||wd===6||EC_HOLIDAYS.includes(iso)) return;
+  const subjects=[...new Set((SCHEDULE.days[wd-1]?.classes||[]).map(c=>c.s).filter(s=>s&&s!=='Libre'))];
+  state.attendance=state.attendance||[];
+  let added=false;
+  subjects.forEach(s=>{
+    if(!state.attendance.some(r=>r.date===iso&&r.subject===s)){
+      state.attendance.push({id:uid(),subject:s,date:iso,status:'presente'}); added=true;
+    }
+  });
+  if(added){ save(); if(appReady&&currentView==='asistencia') renderWidgets(); toast('Asistencia registrada según el horario'); }
+}
 function mergeAttendance(local,remote){
   const out=Array.isArray(local)?[...local]:[];
   const keys=new Set(out.map(r=>(r.date||'')+'|'+(r.subject||'')));
