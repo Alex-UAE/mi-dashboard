@@ -524,6 +524,68 @@ const SCHEDULE = {
   ]
 };
 
+/* ============ Curso de Python (tipo Duolingo) ============ */
+const PYTHON_COURSE = [
+  { id:'u1', title:'Fundamentos', color:'#22c55e', lessons:[
+    { id:'l1', title:'Variables', questions:[
+      { q:'¿Cómo se crea una variable en Python?', o:['x = 5','var x = 5','int x = 5','x := 5'], a:0, e:'En Python no se declara el tipo: solo escribes nombre = valor.' },
+      { q:'¿Qué tipo tiene el valor 3.14?', o:['int','float','str','bool'], a:1, e:'Los números con decimal son float.' },
+      { q:'¿Qué imprime print("Hola")?', o:['Hola','"Hola"','print','Error'], a:0, e:'print() muestra el texto sin las comillas.' }
+    ]},
+    { id:'l2', title:'Textos y números', questions:[
+      { q:'¿Cómo se escribe un texto?', o:["'Hola'",'[Hola]','{Hola}','<Hola>'], a:0, e:'El texto va entre comillas simples o dobles.' },
+      { q:'¿Cuánto vale 7 // 2?', o:['3.5','3','4','7'], a:1, e:'// es división entera: solo la parte entera.' },
+      { q:'¿Qué hace len("abc")?', o:['3','abc','4','Error'], a:0, e:'len() devuelve la cantidad de caracteres.' }
+    ]},
+    { id:'l3', title:'Entrada y salida', questions:[
+      { q:'¿Qué función lee lo que escribe el usuario?', o:['input()','read()','get()','scan()'], a:0, e:'input() captura texto desde el teclado.' },
+      { q:'¿Cómo convides texto a número?', o:['int("5")','num("5")','str(5)','float[]'], a:0, e:'int() convierte un texto a entero.' }
+    ]}
+  ]},
+  { id:'u2', title:'Condicionales', color:'#3b82f6', lessons:[
+    { id:'l4', title:'if / else', questions:[
+      { q:'¿Qué palabra inicia un condicional?', o:['if','when','case','cond'], a:0, e:'Se usa if (si), y else para el resto.' },
+      { q:'¿Cómo se escribe "si x es mayor que 5"?', o:['if x > 5:','if x > 5 then','if (x > 5)','if x => 5:'], a:0, e:'Va if condición: y dos puntos al final.' },
+      { q:'¿Qué significa ==?', o:['Igualdad','Asignación','Mayor','Suma'], a:0, e:'== compara; = asigna.' }
+    ]},
+    { id:'l5', title:'Comparaciones', questions:[
+      { q:'¿5 >= 5 es?', o:['True','False','5','Error'], a:0, e:'>= significa mayor o igual, así que es True.' },
+      { q:'¿Qué operador significa "y"?', o:['and','&&','&','plus'], a:0, e:'En Python se usa and, or y not.' }
+    ]},
+    { id:'l6', title:'elif', questions:[
+      { q:'¿Para qué sirve elif?', o:['Otra condición','Repetir','Salir','Imports'], a:0, e:'elif es "si no, si..." para más condiciones.' }
+    ]}
+  ]},
+  { id:'u3', title:'Listas y bucles', color:'#f59e0b', lessons:[
+    { id:'l7', title:'Listas', questions:[
+      { q:'¿Cómo se crea una lista?', o:['[1, 2, 3]','(1, 2, 3)','{1, 2, 3}','<1,2,3>'], a:0, e:'Las listas usan corchetes.' },
+      { q:'¿Cuál es el primer índice?', o:['0','1','-1','Inicia en 2'], a:0, e:'Python empieza a contar en 0.' }
+    ]},
+    { id:'l8', title:'for', questions:[
+      { q:'¿Cómo recorres una lista?', o:['for x in lista:','for lista in x:','while x lista','repeat x'], a:0, e:'for elemento in colección: es la forma.' },
+      { q:'range(3) genera...', o:['0,1,2','1,2,3','0,1,2,3','3,2,1'], a:0, e:'range termina antes del número indicado.' }
+    ]},
+    { id:'l9', title:'while', questions:[
+      { q:'¿Cuándo se detiene un while?', o:['Cuando la condición es False','Siempre','Con break obligatorio','Nunca'], a:0, e:'while se repite mientras la condición sea True.' }
+    ]}
+  ]},
+  { id:'u4', title:'Funciones', color:'#a855f7', lessons:[
+    { id:'l10', title:'def y return', questions:[
+      { q:'¿Cómo se define una función?', o:['def mi_func():','function mi_func()','func mi_func()','define mi_func():'], a:0, e:'Se usa def nombre(): y dos puntos.' },
+      { q:'¿Qué hace return?', o:['Devuelve un valor','Repite','Imprime','Borra'], a:0, e:'return entrega el resultado de la función.' }
+    ]},
+    { id:'l11', title:'Parámetros', questions:[
+      { q:'¿Qué es un parámetro?', o:['Un valor de entrada','Un error','Una lista','Un bucle'], a:0, e:'Los parámetros van dentro de los paréntesis.' },
+      { q:'def suma(a, b): return a+b → suma(2,3) =', o:['5','23','Error','a+b'], a:0, e:'2 + 3 = 5.' }
+    ]},
+    { id:'l12', title:'Práctica final', questions:[
+      { q:'¿Qué hace este código: for i in range(2): print(i)?', o:['0 y 1','1 y 2','0,1,2','2 veces Hola'], a:0, e:'range(2) da 0 y 1.' },
+      { q:'¿Cuál es la forma correcta de una función con retorno?', o:['def f(): return 1','def f() return 1','function f(): return 1','def f: return 1'], a:0, e:'Faltan los paréntesis y los dos puntos.' }
+    ]}
+  ]}
+];
+const PY_LESSONS = PYTHON_COURSE.flatMap((u,ui)=>u.lessons.map((l,li)=>({...l,unit:u,ui,li})));
+
 /* ============ Widgets ============ */
 const WIDGETS = {
   resumen: { view:'inicio', title:'Resumen', icon:'chart', span:'md:col-span-12', render(){
