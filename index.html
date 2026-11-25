@@ -227,10 +227,10 @@
 </div>
 
 <div id="updateBanner" class="hidden fixed top-3 left-1/2 -translate-x-1/2 z-[80] flex items-center gap-3 rounded-xl px-4 py-2.5 shadow-2xl" style="background:var(--panel2);border:1px solid var(--accent)"><span id="updateText" class="text-xs font-semibold">Nueva versión</span><button id="updateReload" class="btn btn-sm">Actualizar</button><button id="updateLater" class="icon-btn"><span data-icon="x"></span></button></div>
-<div id="lessonModal" class="hidden fixed inset-0 z-[75] items-center justify-center p-4" style="background:rgba(0,0,0,.75);backdrop-filter:blur(4px)">
-  <div class="panel w-full max-w-lg p-6 fade-in">
-    <div class="flex items-center justify-between mb-4"><h3 id="lessonTitle" class="text-lg font-bold"></h3><button class="icon-btn" id="lessonClose"><span data-icon="x"></span></button></div>
-    <div id="lessonBody"></div>
+<div id="lessonModal" class="hidden fixed inset-0 z-[75] items-center justify-center p-3" style="background:rgba(0,0,0,.75);backdrop-filter:blur(4px)">
+  <div class="panel w-full max-w-lg p-5 fade-in flex flex-col max-h-[94vh]">
+    <div class="flex items-center justify-between mb-3 shrink-0"><h3 id="lessonTitle" class="text-lg font-bold"></h3><button class="icon-btn" id="lessonClose"><span data-icon="x"></span></button></div>
+    <div id="lessonBody" class="overflow-y-auto min-h-0 pr-1"></div>
   </div>
 </div>
 
