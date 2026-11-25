@@ -1391,6 +1391,10 @@ $('#widgets').addEventListener('submit', async e=>{
       editingTaskId=null; toast('Tarea actualizada');
     }
   }
+  else if(kind==='add-att'){
+    const subject=f.get('subject')||'', date=f.get('date')||'', status=f.get('status')||'presente';
+    if(subject&&date) state.attendance.push({id:uid(),subject,date,status});
+  }
   else if(kind==='add-shortcut'){ const n=(f.get('name')||'').trim(),u=(f.get('url')||'').trim(); if(n&&u) state.shortcuts.push({id:uid(),name:n,url:u}); }
   save(); renderWidgets(); toast('Agregado');
 });
