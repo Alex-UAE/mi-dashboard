@@ -1101,6 +1101,7 @@ $('#widgets').addEventListener('click', e=>{
   else if(act==='hide'){ if(!state.hiddenWidgets.includes(id)) state.hiddenWidgets.push(id); save(); renderWidgets(); renderToggles(); toast('Widget ocultado'); }
   else if(act==='py-phase'){ startLesson(btn.dataset.id,false); }
   else if(act==='py-daily'){ startLesson(null,true); }
+  else if(act==='py-resume'){ const s=state.python?.session; if(s) startLesson(s.phase==='__daily__'?null:s.phase,!!s.daily,true); }
   else if(act==='py-reset'){
     if(!confirm('¿Reiniciar todo el curso de Python? Se borrarán fases, XP, racha y bloqueos.')) return;
     state.python={completed:[],xp:0,streak:0,lastDay:'',dailyCount:0,dailyDate:'',locks:{}};
