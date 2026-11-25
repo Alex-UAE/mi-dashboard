@@ -1723,6 +1723,7 @@ function enterApp(){
   setTimeout(async ()=>{
     if(!canUseNetwork()){ updateNetChip(); return; }
     if(state.sync.pullOnLogin!==false){ try{ await fbPull(true); }catch(e){} }
+    try{ await fetchSpotifyConfig(); }catch(e){}
     fillSettings();
   },300);
 }
