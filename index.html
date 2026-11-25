@@ -1400,8 +1400,11 @@ async function fetchLastFm(){
     const track={name:t.name||'',artist:(t.artist&&t.artist['#text'])||'',image,playing:t['@attr']?.nowplaying==='true'};
     const old=state.lastfm.track||{};
     if(old.name!==track.name||old.playing!==track.playing||old.image!==track.image){
+      if(track.playing && old.name!==track.name){ track.startedAt=Date.now(); track.duration=old.duration||0; }
+      else { track.startedAt=old.startedAt||0; track.duration=old.duration||0; }
       state.lastfm.track=track; if(appReady) renderWidgets();
     }
+    renderPlayerBar();
   }catch(e){}
 }
 function saveLastFm(){
