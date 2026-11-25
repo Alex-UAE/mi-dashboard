@@ -843,6 +843,10 @@ const WIDGETS = {
     const done=state.python?.completed||[], xp=state.python?.xp||0;
     const total=PY_LESSONS.length;
     const pct=Math.round(done.length/total*100);
+    const now=new Date();
+    const dayIndex=Math.floor(Date.UTC(now.getFullYear(),now.getMonth(),now.getDate())/86400000);
+    const featuredIdx=dayIndex % PYTHON_COURSE.length;
+    const featured=PYTHON_COURSE[featuredIdx];
     return `<div class="max-w-2xl mx-auto">
       <div class="flex items-center justify-between mb-4">
         <div><div class="text-lg font-extrabold">🐍 Aprender Python</div><div class="text-xs" style="color:var(--muted)">Aprende jugando, sin leer documentos</div></div>
