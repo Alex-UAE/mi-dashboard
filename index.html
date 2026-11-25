@@ -1283,7 +1283,7 @@ function startLesson(id,daily,resume){
     if(!ph) return;
     activeQuestions=makeQuestions(ph.unit,ph.type,25,phaseSeed(ph.id)); activePhase=ph.title+': '+PY_BANK[ph.unit].t; isDaily=false; activePhaseId=id;
   }
-  batch=canResume?(sess.batch||0):0;
+  batch=Math.min(canResume?(sess.batch||0):0, Math.max(0,Math.ceil(activeQuestions.length/PY_BATCH)-1));
   answers=canResume?{...(sess.answers||{})}:{};
   correctCount=canResume?(sess.correct||0):0;
   if(!canResume) saveLessonSession();
