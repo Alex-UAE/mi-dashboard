@@ -1356,10 +1356,10 @@ $('#lessonClose').addEventListener('click', closeLesson);
 $('#lessonModal').addEventListener('click', e=>{
   if(e.target.id==='lessonModal'){ closeLesson(); return; }
   const b=e.target.closest('[data-act]'); if(!b) return;
-  if(b.dataset.act==='py-answer'){ answers[b.dataset.q]=+b.dataset.i;
+  if(b.dataset.act==='py-answer'){ answers[b.dataset.q]=+b.dataset.i; saveLessonSession();
     $$(`[data-act="py-answer"][data-q="${b.dataset.q}"]`).forEach(x=>{ x.style.borderColor=x===b?'var(--accent)':'var(--border)'; }); }
   else if(b.dataset.act==='py-check') checkBatch();
-  else if(b.dataset.act==='py-next-group'){ batch++; if(batch*PY_BATCH>=activeQuestions.length) finishLesson(); else renderBatch(); }
+  else if(b.dataset.act==='py-next-group'){ batch++; saveLessonSession(); if(batch*PY_BATCH>=activeQuestions.length) finishLesson(); else renderBatch(); }
   else if(b.dataset.act==='py-close'){ closeLesson(); renderWidgets(); }
 });
 function openAddWidget(){
