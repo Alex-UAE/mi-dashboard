@@ -1330,6 +1330,11 @@ async function fetchNowPlaying(){
     if(Date.now()>s.expires-60000) await refreshSpotify();
     const r=await fetch('https://api.spotify.com/v1/me/player/currently-playing',{headers:{Authorization:'Bearer '+s.access}});
     if(r.status===204){ s.track=null; renderWidgets(); return; }
+    if(r.status===401){
+      // Otro dispositivo renovó el token: bajamos la versión nueva de Firebase
+      if(appReady) await fbPull(false);
+      return;
+    }
     if(!r.ok) return;
     const d=await r.json(), it=d.item;
     const track=it?{name:it.name,artist:(it.artists||[]).map(a=>a.name).join(', '),image:it.album?.images?.[0]?.url||'',progress:d.progress_ms||0,duration:it.duration_ms||0,playing:d.is_playing,id:it.id}:null;
