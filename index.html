@@ -1256,6 +1256,7 @@ $('#widgets').addEventListener('click', e=>{
   else if(act==='hide'){ if(!state.hiddenWidgets.includes(id)) state.hiddenWidgets.push(id); save(); renderWidgets(); renderToggles(); toast('Widget ocultado'); }
   else if(act==='py-phase'){ startLesson(btn.dataset.id,false); }
   else if(act==='py-daily'){ startLesson(null,true); }
+  else if(act==='del-att'){ state.attendance=(state.attendance||[]).filter(r=>r.id!==btn.dataset.id); save(); renderWidgets(); }
   else if(act==='frase-next'){ state.quote=(Number(state.quote)||0)+1; save(); renderWidgets(); }
   else if(act==='target-clear'){ state.targetDate=''; save(); renderWidgets(); }
   else if(act==='lf-save'){ saveLastFm(); }
