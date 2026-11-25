@@ -1360,6 +1360,28 @@ async function fetchNowPlaying(){
   }catch(e){}
 }
 
+/* ============ Last.fm (escuchando ahora) ============ */
+async function fetchLastFm(){
+  const l=state.lastfm; if(!l?.user||!l?.key) return;
+  try{
+    const url=`https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${encodeURIComponent(l.user)}&api_key=${encodeURIComponent(l.key)}&format=json&limit=1`;
+    const r=await fetch(url); if(!r.ok) return;
+    const d=await r.json(), t=d.recenttracks?.track?.[0]; if(!t) return;
+    const image=(t.image||[]).map(x=>x&&x['#text']).filter(Boolean).pop()||'';
+    const track={name:t.name||'',artist:(t.artist&&t.artist['#text'])||'',image,playing:t['@attr']?.nowplaying==='true'};
+    const old=state.lastfm.track||{};
+    if(old.name!==track.name||old.playing!==track.playing||old.image!==track.image){
+      state.lastfm.track=track; if(appReady) renderWidgets();
+    }
+  }catch(e){}
+}
+function saveLastFm(){
+  const u=$('#lfUser'), k=$('#lfKey');
+  if(u) state.lastfm.user=u.value.trim();
+  if(k) state.lastfm.key=k.value.trim();
+  save(); if(appReady) renderWidgets(); toast('Last.fm guardado'); fetchLastFm();
+}
+
 /* ============ Navegación ============ */
 $('#nav').addEventListener('click', e=>{ const it=e.target.closest('.nav-item'); if(it) setView(it.dataset.section); });
 $('#quickSettings').addEventListener('click', ()=>openSettings());
