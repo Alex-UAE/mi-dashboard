@@ -1094,7 +1094,8 @@ function widgetCard(inst){
         <button class="icon-btn danger edit-only" data-act="hide" title="Ocultar">${icon('eyeoff','h-4 w-4')}</button>
         ${inst.extra?`<button class="icon-btn danger edit-only" data-act="del-instance" data-id="${inst.id}" title="Eliminar widget">${icon('trash','h-4 w-4')}</button>`:''}
       </div></div>
-    <div class="p-4">${w.render(inst)}</div></section>`;
+    <div class="p-4">${w.render(inst)}</div>
+    <div class="widget-foot"><span>${w.title}</span><span>${SIZE_LABEL[span]||'Personalizado'}</span></div></section>`;
 }
 function renderWidgets(){
   const base=state.widgetOrder.filter(id=>!state.hiddenWidgets.includes(id)&&WIDGETS[id]&&widgetViews(id).includes(currentView))
