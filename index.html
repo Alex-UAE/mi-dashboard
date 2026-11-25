@@ -688,13 +688,13 @@ const WIDGETS = {
     const start = new Date(now.getFullYear(),0,1);
     const week = Math.ceil(((now-start)/86400000 + start.getDay() + 1)/7);
     const doy = Math.floor((now - new Date(now.getFullYear(),0,0))/86400000);
-    return `<div class="flex flex-col items-center py-3 text-center">
-      <div data-clock class="text-5xl font-extrabold tabular-nums">--:--</div>
-      <div class="mt-1 text-sm capitalize" style="color:var(--muted)">${date}</div>
-      <div data-clock-greet class="mt-3 chip"></div>
-      <div class="mt-6 grid grid-cols-2 gap-2 w-full max-w-[250px]">
-        <div class="rounded-lg p-2.5" style="background:var(--panel2);border:1px solid var(--border)"><div class="text-[10px]" style="color:var(--muted)">Semana</div><div class="text-base font-bold">${week}</div></div>
-        <div class="rounded-lg p-2.5" style="background:var(--panel2);border:1px solid var(--border)"><div class="text-[10px]" style="color:var(--muted)">Día/año</div><div class="text-base font-bold">${doy}</div></div>
+    return `<div class="flex flex-col items-center py-2 text-center w-full">
+      <div data-clock class="text-4xl sm:text-5xl font-extrabold tabular-nums leading-none">--:--</div>
+      <div class="mt-1.5 text-xs sm:text-sm capitalize leading-tight" style="color:var(--muted)">${date}</div>
+      <div data-clock-greet class="mt-2 chip text-[10px] sm:text-[11px]"></div>
+      <div class="mt-4 grid grid-cols-2 gap-1.5 w-full max-w-[240px]">
+        <div class="rounded-lg p-2" style="background:var(--panel2);border:1px solid var(--border)"><div class="text-[9px]" style="color:var(--muted)">Semana</div><div class="text-sm sm:text-base font-bold">${week}</div></div>
+        <div class="rounded-lg p-2" style="background:var(--panel2);border:1px solid var(--border)"><div class="text-[9px]" style="color:var(--muted)">Día/año</div><div class="text-sm sm:text-base font-bold">${doy}</div></div>
       </div></div>`;
   }},
   urgentes: { view:'inicio', title:'Tareas urgentes', icon:'check', span:'md:col-span-8', render(){
