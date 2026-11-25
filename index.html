@@ -1406,17 +1406,11 @@ async function fetchLastFm(){
   }catch(e){}
 }
 function renderPlayerBar(){
-  const bar=$('#playerBar'), t=state.lastfm?.track;
-  if(!bar) return;
-  if(!t||!t.name){ bar.classList.add('hidden'); return; }
-  bar.classList.remove('hidden');
-  if($('#pbTitle')) $('#pbTitle').textContent=t.name;
-  if($('#pbArtist')) $('#pbArtist').textContent=t.artist||'';
-  const img=$('#pbCover'); if(img && t.image) img.src=t.image;
-  if(t.duration){
-    const m=Math.floor(t.duration/60000), s=Math.floor(t.duration%60000/1000);
-    $('#pbTotal').textContent=m+':'+String(s).padStart(2,'0');
-  } else $('#pbTotal').textContent='—';
+  const t=state.lastfm?.track, total=$('#pbTotal');
+  if(total){
+    if(t?.duration){ const m=Math.floor(t.duration/60000), s=Math.floor(t.duration%60000/1000); total.textContent=m+':'+String(s).padStart(2,'0'); }
+    else total.textContent='—';
+  }
   updatePlayerProgress();
 }
 function updatePlayerProgress(){
