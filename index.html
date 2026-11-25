@@ -972,33 +972,32 @@ const WIDGETS = {
       <div class="text-center"><div class="text-2xl font-extrabold">${p.xp||0}</div><div class="text-[11px]" style="color:var(--muted)">XP total</div></div>
     </div>`;
   }},
-  spotify: { view:'spotify', title:'Spotify · Escuchando ahora', icon:'sparkles', span:'md:col-span-12', render(){
-    const s=state.spotify||{};
-    if(!s.access){
+  spotify: { view:'spotify', title:'Escuchando ahora', icon:'sparkles', span:'md:col-span-12', render(){
+    const l=state.lastfm||{};
+    if(!l.user||!l.key){
       return `<div class="max-w-xl mx-auto">
-        <div class="text-sm font-bold mb-2">Conectar tu Spotify</div>
-        <p class="text-xs leading-relaxed mb-3" style="color:var(--muted)">
-          1. Entra a <b>developer.spotify.com/dashboard</b> con tu cuenta y crea una app.<br>
-          2. En <b>Edit settings → Redirect URIs</b> agrega exactamente:<br>
-          <code class="block mt-1 p-2 rounded" style="background:var(--panel2)">https://alex-uae.github.io/mi-dashboard/callback.html</code><br>
-          3. Copia el <b>Client ID</b> y pégalo abajo.
-        </p>
-        <input id="spClientId" class="input" value="${esc(s.clientId||'')}" placeholder="Client ID de Spotify">
-        <button class="btn btn-sm mt-3 w-full" data-act="sp-connect">Conectar con Spotify</button>
-        <p class="text-[11px] mt-2" style="color:var(--muted)">La conexión se guarda solo en este dispositivo.</p>
+        <div class="text-sm font-bold mb-2">Conecta tu música</div>
+        <p class="text-xs leading-relaxed mb-3" style="color:var(--muted)">Spotify gratis no permite leer «escuchando ahora» desde su API (pide Premium). Last.fm registra lo que escuchas y lo muestra aquí, sin Premium y sin token que expire.</p>
+        <div class="text-[11px] leading-relaxed mb-4" style="color:var(--muted)">
+          1. Crea tu cuenta en <b>last.fm</b> y activa el scrobbling de Spotify en <b>last.fm/applications</b> (conéctalo una vez).<br>
+          2. Crea una clave API en <b>last.fm/api/account/create</b>.<br>
+          3. Pega tu usuario y tu clave abajo.
+        </div>
+        <div class="grid sm:grid-cols-2 gap-2"><div><label class="label">Usuario de Last.fm</label><input id="lfUser" class="input" value="${esc(l.user||'')}" placeholder="tu_usuario"></div>
+          <div><label class="label">Clave API</label><input id="lfKey" type="password" class="input" value="${esc(l.key||'')}" placeholder="clave de 32 caracteres"></div></div>
+        <button class="btn btn-sm mt-3 w-full" data-act="lf-save">Guardar y conectar</button>
+        <p class="text-[11px] mt-2" style="color:var(--muted)">Se guarda en Firebase y sirve en todos tus dispositivos.</p>
       </div>`;
     }
-    const t=s.track||{};
-    const pct=t.duration?Math.min(100,Math.round((t.progress||0)/t.duration*100)):0;
+    const t=l.track||{};
     return `<div class="flex items-center gap-4">
       ${t.image?`<img src="${esc(t.image)}" class="h-20 w-20 rounded-xl object-cover shrink-0" alt="">`:`<div class="flex h-20 w-20 shrink-0 items-center justify-center rounded-xl text-3xl" style="background:var(--panel2)">🎵</div>`}
       <div class="min-w-0 flex-1">
-        <div class="text-sm font-bold truncate">${esc(t.name||'Nada sonando')}</div>
-        <div class="text-xs truncate" style="color:var(--muted)">${esc(t.artist||'Conecta tu Spotify para ver lo que suena')}</div>
-        <div class="h-1.5 rounded-full mt-3 overflow-hidden" style="background:var(--border)"><div class="progress-fill" style="width:${pct}%;background:#22c55e"></div></div>
-        <div class="text-[11px] mt-1" style="color:var(--muted)">${t.playing?'▶ Reproduciendo':'⏸ En pausa'}${t.name?' · '+esc(t.name):''}</div>
+        <div class="text-sm font-bold truncate">${esc(t.name||'Buscando lo que escuchas…')}</div>
+        <div class="text-xs truncate" style="color:var(--muted)">${esc(t.artist||'Last.fm conectado')}</div>
+        <div class="text-[11px] mt-2" style="color:${t.playing?'#22c55e':'var(--muted)'}">${t.playing?'▶ Escuchando ahora':'⏸ Última canción'}</div>
       </div>
-      <button class="btn btn-ghost btn-sm shrink-0" data-act="sp-disconnect">Desconectar</button>
+      <button class="btn btn-ghost btn-sm shrink-0" data-act="lf-disconnect">Desconectar</button>
     </div>`;
   }},
   ia: { view:'ia', title:'Asistente IA', icon:'sparkles', span:'md:col-span-12', render(){
