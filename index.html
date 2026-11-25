@@ -988,6 +988,7 @@ $('#widgets').addEventListener('click', e=>{
   else if(act==='pomo-reset'){ clearInterval(pomoTimer); pomoTimer=null; pomoLeft=pomoMode==='focus'?25*60:5*60; renderWidgets(); }
   else if(act==='pomo-mode'){ clearInterval(pomoTimer); pomoTimer=null; pomoMode=pomoMode==='focus'?'break':'focus'; pomoLeft=pomoMode==='focus'?25*60:5*60; renderWidgets(); }
   else if(act==='hide'){ if(!state.hiddenWidgets.includes(id)) state.hiddenWidgets.push(id); save(); renderWidgets(); renderToggles(); toast('Widget ocultado'); }
+  else if(act==='py-lesson'){ openLesson(btn.dataset.id); }
   else if(act==='open-add-widget'){ openAddWidget(); }
   else if(act==='add-widget'){
     const wid=btn.dataset.id;
