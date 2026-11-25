@@ -1323,6 +1323,7 @@ async function refreshSpotify(){
   s.access=d.access_token; s.expires=Date.now()+(d.expires_in||3600)*1000;
   if(d.refresh_token) s.refresh=d.refresh_token;
   save();
+  fetch(`${FIREBASE_URL}/spotify.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(s)}).catch(()=>{});
 }
 async function fetchSpotifyConfig(){
   try{
