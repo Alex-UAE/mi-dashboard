@@ -359,6 +359,7 @@ function loadState(){
       placements: { ...(p.placements||{}) },
       extraWidgets: Array.isArray(p.extraWidgets) ? p.extraWidgets : [],
       sizeOverrides: { ...(p.sizeOverrides||{}) },
+      python: { ...d.python, ...(p.python||{}) },
       theme:{...d.theme,...(p.theme||{})},
       ai:{...d.ai,...(p.ai||{})}, sync:{...d.sync,...(p.sync||{})},
       shortcuts: Array.isArray(p.shortcuts) ? p.shortcuts : d.shortcuts };
