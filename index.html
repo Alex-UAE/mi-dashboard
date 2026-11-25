@@ -1112,7 +1112,7 @@ const WIDGETS = {
       <span class="chip ${r.status==='presente'?'':''}" style="color:${r.status==='presente'?'#22c55e':r.status==='tarde'?'#f59e0b':'#ef4444'}">${r.status==='presente'?'Presente':r.status==='tarde'?'Tarde':'Ausente'}</span>
       <button class="icon-btn danger edit-only" data-act="del-att" data-id="${r.id}">${icon('trash','h-4 w-4')}</button></div>`).join('');
     return `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">${cards||'<div class="col-span-full text-center py-4 text-xs" style="color:var(--muted)">Sin materias</div>'}</div>
-      <form class="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-5 edit-only" data-form="add-att">
+      <form class="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-5" data-form="add-att">
         <select class="input" name="subject" required>${subjects.map(s=>`<option>${esc(s)}</option>`).join('')}</select>
         <input class="input" type="date" name="date" required>
         <select class="input" name="status"><option value="presente">Presente</option><option value="tarde">Tarde</option><option value="ausente">Ausente</option></select>
