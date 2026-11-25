@@ -1845,6 +1845,7 @@ function applyImported(data){
   state={ ...d, ...incoming, widgetOrder:order,
     profile:{...d.profile,...(data.profile||{})}, theme:{...d.theme,...(data.theme||{})},
     tasks: normalizeTasks(data.tasks || state.tasks || d.tasks),
+    attendance: mergeAttendance(state.attendance, data.attendance),
     sync:{...d.sync,...(data.sync||{})},
     ai:{...d.ai,...(data.ai||{}),key:data.ai?.key||aiKey,model:data.ai?.model||d.ai.model},
     spotify: data.spotify?.access ? {...d.spotify,...(data.spotify||{})} : {...d.spotify,...(state.spotify||{})} };
