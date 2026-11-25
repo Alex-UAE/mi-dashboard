@@ -1258,7 +1258,7 @@ $('#widgets').addEventListener('click', async e=>{
       if(!/not found|404|deprecated|no longer available/i.test(last)) break;
     }
     throw new Error(last||'Modelo no disponible');
-  }catch(ex){ out.textContent='No se pudo conectar: '+ex.message; }
+  }catch(ex){ aiReply='No se pudo conectar: '+ex.message; out.textContent=aiReply; }
   finally{ btn.disabled=false; btn.innerHTML=icon('send','h-4 w-4')+' Preguntar'; }
 });
 
