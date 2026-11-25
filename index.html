@@ -1688,6 +1688,22 @@ $('#addWidgetList').addEventListener('click', e=>{
 });
 document.addEventListener('click', e=>{
   const b=e.target.closest('[data-act]'); if(!b) return;
+  if(b.dataset.act==='ini-up'||b.dataset.act==='ini-down'){
+    const id=b.dataset.id;
+    const ids=state.widgetOrder.filter(x=>WIDGETS[x]&&widgetViews(x).includes('inicio'));
+    const i=ids.indexOf(id), j=b.dataset.act==='ini-up'?i-1:i+1;
+    if(i<0||j<0||j>=ids.length) return;
+    [ids[i],ids[j]]=[ids[j],ids[i]];
+    let k=0; state.widgetOrder=state.widgetOrder.map(x=>widgetViews(x).includes('inicio')?(ids[k++]||x):x);
+    save(); renderInicioSettings(); renderWidgets(); return;
+  }
+  if(b.dataset.act==='ini-toggle'){
+    const id=b.dataset.id;
+    state.hiddenWidgets=state.hiddenWidgets.filter(x=>x!==id);
+    if(!b.checked) state.hiddenWidgets.push(id);
+    save(); renderInicioSettings(); renderWidgets(); return;
+  }
+  if(b.id==='iniAdd'){ closeSettings(); setView('inicio'); openAddWidget(); return; }
   if(b.dataset.act==='pb-open'){ window.open('https://open.spotify.com/search/'+encodeURIComponent(state.lastfm?.track?.name||''),'_blank','noopener'); }
 });
 $('#bellBtn').addEventListener('click', ()=>{ updateBell(); $('#bellPanel').classList.toggle('hidden'); });
