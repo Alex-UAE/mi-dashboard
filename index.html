@@ -1265,6 +1265,7 @@ $('#widgets').addEventListener('click', async e=>{
 $('#nav').addEventListener('click', e=>{ const it=e.target.closest('.nav-item'); if(it) setView(it.dataset.section); });
 $('#quickSettings').addEventListener('click', ()=>openSettings());
 let activePhase=null, activeQuestions=[], qIndex=0, correctCount=0, batch=0, isDaily=false, answers={};
+let aiDraft='', aiReply='';
 const PY_BATCH=5;
 function closeLesson(){ $('#lessonModal').classList.add('hidden'); $('#lessonModal').classList.remove('flex'); activePhase=null; if(appReady) renderWidgets(); }
 function phaseSeed(id){ let h=0; for(const c of id) h=(h*31+c.charCodeAt(0))>>>0; return h%99991; }
