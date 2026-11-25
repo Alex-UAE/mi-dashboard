@@ -1245,7 +1245,7 @@ $('#widgets').addEventListener('click', async e=>{
   if(!e.target.closest('#aiSend')) return;
   const btn=e.target.closest('#aiSend'), prompt=$('#aiPrompt').value.trim(), out=$('#aiResponse');
   if(!prompt) return;
-  btn.disabled=true; btn.textContent='Pensando...'; out.classList.remove('hidden'); out.textContent='Consultando…';
+  btn.disabled=true; btn.textContent='Pensando...'; out.classList.remove('hidden'); out.textContent='Consultando…'; aiReply='';
   const models=[state.ai.model,'gemini-3.1-flash-lite','gemini-flash-latest','gemini-3.8-flash','gemini-3.5-flash'].filter((m,i,a)=>m&&a.indexOf(m)===i);
   try{
     let last='';
