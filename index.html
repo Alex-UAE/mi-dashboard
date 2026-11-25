@@ -1083,6 +1083,32 @@ const WIDGETS = {
     return `<div class="text-center py-3"><div class="text-5xl font-extrabold" style="color:var(--wc)">${days}</div><div class="text-xs" style="color:var(--muted)">días para ${esc(t)}</div>
       <button class="btn btn-ghost btn-sm mt-3" data-act="target-clear">Cambiar fecha</button></div>`;
   }},
+  asistencia: { view:'asistencia', title:'Asistencia por materia', icon:'calendar', span:'md:col-span-12', render(){
+    const subjects=[...new Set(SCHEDULE.days.flatMap(d=>d.classes.map(c=>c.s)).filter(s=>s&&s!=='Libre'))];
+    const rows=state.attendance||[];
+    const cards=subjects.map(s=>{
+      const list=rows.filter(r=>r.subject===s);
+      const total=list.length, p=list.filter(r=>r.status==='presente').length, t=list.filter(r=>r.status==='tarde').length;
+      const pct=total?Math.round((p+t*0.5)/total*100):0;
+      const color=pct>=80?'#22c55e':pct>=60?'#f59e0b':'#ef4444';
+      return `<div class="rounded-xl p-3" style="background:var(--panel2);border:1px solid var(--border)">
+        <div class="flex justify-between items-start gap-2"><div class="text-xs font-semibold leading-tight">${esc(s)}</div><div class="text-sm font-extrabold shrink-0" style="color:${color}">${pct}%</div></div>
+        <div class="h-1.5 rounded-full overflow-hidden mt-2" style="background:var(--border)"><div class="h-full rounded-full" style="width:${pct}%;background:${color}"></div></div>
+        <div class="text-[10px] mt-1.5" style="color:var(--muted)">${p} presentes · ${t} tardes · ${list.filter(r=>r.status==='ausente').length} ausentes</div></div>`;
+    }).join('');
+    const recent=rows.slice(-8).reverse().map(r=>`<div class="flex items-center gap-2 py-1.5 border-b last:border-0" style="border-color:var(--border)">
+      <span class="text-[11px] w-16 shrink-0" style="color:var(--muted)">${esc(r.date)}</span>
+      <span class="text-xs flex-1 truncate">${esc(r.subject)}</span>
+      <span class="chip ${r.status==='presente'?'':''}" style="color:${r.status==='presente'?'#22c55e':r.status==='tarde'?'#f59e0b':'#ef4444'}">${r.status==='presente'?'Presente':r.status==='tarde'?'Tarde':'Ausente'}</span>
+      <button class="icon-btn danger edit-only" data-act="del-att" data-id="${r.id}">${icon('trash','h-4 w-4')}</button></div>`).join('');
+    return `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">${cards||'<div class="col-span-full text-center py-4 text-xs" style="color:var(--muted)">Sin materias</div>'}</div>
+      <form class="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-5 edit-only" data-form="add-att">
+        <select class="input" name="subject" required>${subjects.map(s=>`<option>${esc(s)}</option>`).join('')}</select>
+        <input class="input" type="date" name="date" required>
+        <select class="input" name="status"><option value="presente">Presente</option><option value="tarde">Tarde</option><option value="ausente">Ausente</option></select>
+        <button class="btn btn-sm sm:col-span-3" type="submit">${icon('plus','h-4 w-4')} Registrar asistencia</button></form>
+      <div class="mt-4"><div class="text-[11px] mb-1" style="color:var(--muted)">Últimos registros</div>${recent||'<div class="text-xs" style="color:var(--muted)">Sin registros</div>'}</div>`;
+  }},
   ia: { view:'ia', title:'Asistente IA', icon:'sparkles', span:'md:col-span-12', render(){
     if(!state.ai.key) return `<div class="flex flex-col sm:flex-row items-center gap-4 py-2"><div class="flex h-12 w-12 items-center justify-center rounded-xl" style="background:var(--accent-soft);color:var(--accent)">${icon('sparkles')}</div>
       <div class="flex-1"><div class="text-sm font-bold">Activa tu asistente</div><p class="text-xs mt-1" style="color:var(--muted)">Pega una clave de Gemini en Ajustes → Seguridad e IA.</p></div>
