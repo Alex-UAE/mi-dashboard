@@ -832,6 +832,35 @@ const WIDGETS = {
       <label class="btn btn-ghost btn-sm mt-2 cursor-pointer w-full edit-only">${icon('plus','h-4 w-4')} Agregar fotos o videos<input type="file" id="mediaInput" accept="image/*,video/*" multiple class="hidden"></label>
       <p class="text-[11px] mt-2" style="color:var(--muted)">Se muestran completos, en su formato original y centrados. Los videos se reproducen solos, sin sonido ni controles. Fotos ≤ 900 px y videos ≤ 2 MB c/u.</p>`;
   }},
+  python: { view:'python', title:'Aprender Python', icon:'code', span:'md:col-span-12', render(){
+    const done=state.python?.completed||[], xp=state.python?.xp||0;
+    const total=PY_LESSONS.length;
+    const pct=Math.round(done.length/total*100);
+    return `<div class="max-w-2xl mx-auto">
+      <div class="flex items-center justify-between mb-4">
+        <div><div class="text-lg font-extrabold">🐍 Aprender Python</div><div class="text-xs" style="color:var(--muted)">Aprende jugando, sin leer documentos</div></div>
+        <div class="chip" style="color:#f59e0b">⚡ ${xp} XP</div>
+      </div>
+      <div class="mb-6"><div class="flex justify-between text-[11px] mb-1.5" style="color:var(--muted)"><span>Tu avance</span><span>${done.length}/${total} lecciones · ${pct}%</span></div>
+        <div class="h-3 rounded-full overflow-hidden" style="background:var(--border)"><div class="progress-fill" style="width:${pct}%;background:#22c55e"></div></div></div>
+      ${PYTHON_COURSE.map((u,ui)=>{
+        const unitDone=u.lessons.filter(l=>done.includes(l.id)).length;
+        const unlocked=ui===0 || PYTHON_COURSE[ui-1].lessons.every(l=>done.includes(l.id));
+        return `<div class="mb-6">
+          <div class="flex items-center justify-between mb-3"><div class="text-sm font-bold" style="color:${u.color}">Unidad ${ui+1}: ${u.title}</div><div class="text-[11px]" style="color:var(--muted)">${unitDone}/${u.lessons.length}</div></div>
+          <div class="flex items-center justify-around gap-2">
+            ${u.lessons.map((l,li)=>{
+              const complete=done.includes(l.id);
+              const open=unlocked && (li===0 || done.includes(u.lessons[li-1].id));
+              return `<div class="flex flex-col items-center gap-1" style="width:33%">
+                <button data-act="py-lesson" data-id="${l.id}" ${open?'':'disabled'} class="flex h-14 w-14 items-center justify-center rounded-full text-xl font-extrabold transition transform hover:scale-105 ${open?'':''}" style="background:${complete?'#22c55e':open?u.color:'var(--panel2)'};color:${complete||open?'#fff':'var(--muted)'};border:3px solid ${complete?'#16a34a':open?u.color:'var(--border)'}">${complete?'✓':open?'▶':'🔒'}</button>
+                <span class="text-[10px] text-center truncate w-full" style="color:${open?'var(--text)':'var(--muted)'}">${l.title}</span>
+              </div>`;
+            }).join('')}
+          </div></div>`;
+      }).join('')}
+    </div>`;
+  }},
   ia: { view:'ia', title:'Asistente IA', icon:'sparkles', span:'md:col-span-12', render(){
     if(!state.ai.key) return `<div class="flex flex-col sm:flex-row items-center gap-4 py-2"><div class="flex h-12 w-12 items-center justify-center rounded-xl" style="background:var(--accent-soft);color:var(--accent)">${icon('sparkles')}</div>
       <div class="flex-1"><div class="text-sm font-bold">Activa tu asistente</div><p class="text-xs mt-1" style="color:var(--muted)">Pega una clave de Gemini en Ajustes → Seguridad e IA.</p></div>
