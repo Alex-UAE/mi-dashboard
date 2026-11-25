@@ -1299,8 +1299,10 @@ function syncOrder(visibleIds){
   slots.forEach((idx,k)=>{ if(visibleIds[k]) state.widgetOrder[idx]=visibleIds[k]; });
 }
 $('#widgets').addEventListener('dragstart', e=>{
-  const h=e.target.closest('[data-act="drag"]'); if(!h){e.preventDefault();return;}
-  draggedEl=h.closest('.widget'); draggedEl.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain',draggedEl.dataset.id);
+  if(e.target.closest('button,input,select,textarea')){ e.preventDefault(); return; }
+  const w=e.target.closest('.widget');
+  if(!w || (!e.target.closest('[data-act="drag"]') && !e.target.closest('.widget>div:first-child'))){ e.preventDefault(); return; }
+  draggedEl=w; draggedEl.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain',draggedEl.dataset.id);
 });
 $('#widgets').addEventListener('dragover', e=>{
   if(!draggedEl) return; e.preventDefault();
