@@ -1407,6 +1407,29 @@ async function fetchLastFm(){
     renderPlayerBar();
   }catch(e){}
 }
+function renderPlayerBar(){
+  const bar=$('#playerBar'), t=state.lastfm?.track;
+  if(!bar) return;
+  if(!t||!t.name){ bar.classList.add('hidden'); return; }
+  bar.classList.remove('hidden');
+  if($('#pbTitle')) $('#pbTitle').textContent=t.name;
+  if($('#pbArtist')) $('#pbArtist').textContent=t.artist||'';
+  const img=$('#pbCover'); if(img && t.image) img.src=t.image;
+  if(t.duration){
+    const m=Math.floor(t.duration/60000), s=Math.floor(t.duration%60000/1000);
+    $('#pbTotal').textContent=m+':'+String(s).padStart(2,'0');
+  } else $('#pbTotal').textContent='—';
+  updatePlayerProgress();
+}
+function updatePlayerProgress(){
+  const t=state.lastfm?.track, fill=$('#pbFill'), el=$('#pbElapsed');
+  if(!t||!fill||!el) return;
+  const secs=t.startedAt?Math.max(0,Math.floor((Date.now()-t.startedAt)/1000)):0;
+  const m=Math.floor(secs/60), s=secs%60;
+  el.textContent=m+':'+String(s).padStart(2,'0');
+  const dur=t.duration||240000;
+  fill.style.width=Math.min(100,secs*1000/dur*100)+'%';
+}
 function saveLastFm(){
   const u=$('#lfUser'), k=$('#lfKey');
   if(u) state.lastfm.user=u.value.trim();
