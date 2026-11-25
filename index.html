@@ -1296,7 +1296,7 @@ function renderBatch(){
     ${slice.map((q,k)=>{
       const i=from+k;
       const opts=q.type==='write'
-        ? `<input class="input mt-2" data-qwrite="${i}" placeholder="Escribe tu respuesta...">`
+        ? `<input class="input mt-2" data-qwrite="${i}" value="${esc(answers['w'+i]||'')}" placeholder="Escribe tu respuesta...">`
         : `<div class="grid gap-1.5 mt-2">${q.o.map((o,n)=>`<button data-act="py-answer" data-q="${i}" data-i="${n}" class="w-full text-left rounded-lg px-3 py-2 text-sm border-2" style="background:var(--panel2);border-color:var(--border)">${esc(o)}</button>`).join('')}</div>`;
       return `<div class="mb-4 pb-3 border-b last:border-0" style="border-color:var(--border)" data-qblock="${i}">
         <div class="text-sm font-semibold whitespace-pre-wrap">${esc(q.q)}</div>${opts}
