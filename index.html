@@ -1106,10 +1106,10 @@ const WIDGETS = {
         <div class="h-1.5 rounded-full overflow-hidden mt-2" style="background:var(--border)"><div class="h-full rounded-full" style="width:${pct}%;background:${color}"></div></div>
         <div class="text-[10px] mt-1.5" style="color:var(--muted)">${p} presentes · ${t} tardes · ${list.filter(r=>r.status==='ausente').length} ausentes</div></div>`;
     }).join('');
-    const recent=rows.slice(-8).reverse().map(r=>`<div class="flex items-center gap-2 py-1.5 border-b last:border-0" style="border-color:var(--border)">
+    const recent=rows.slice().reverse().map(r=>`<div class="flex flex-wrap items-center gap-2 py-1.5 border-b last:border-0" style="border-color:var(--border)">
       <span class="text-[11px] w-16 shrink-0" style="color:var(--muted)">${esc(r.date)}</span>
-      <span class="text-xs flex-1 truncate">${esc(r.subject)}</span>
-      <span class="chip ${r.status==='presente'?'':''}" style="color:${r.status==='presente'?'#22c55e':r.status==='tarde'?'#f59e0b':'#ef4444'}">${r.status==='presente'?'Presente':r.status==='tarde'?'Tarde':'Ausente'}</span>
+      <span class="text-xs flex-1 min-w-[120px] truncate">${esc(r.subject)}</span>
+      <div class="flex gap-1">${[['presente','P','#22c55e'],['tarde','T','#f59e0b'],['ausente','A','#ef4444']].map(o=>`<button data-act="att-status" data-id="${r.id}" data-status="${o[0]}" class="h-6 w-6 rounded text-[10px] font-bold" style="background:${r.status===o[0]?o[2]:'var(--panel2)'};color:${r.status===o[0]?'#fff':'var(--muted)'};border:1px solid ${r.status===o[0]?o[2]:'var(--border)'}">${o[1]}</button>`).join('')}</div>
       <button class="icon-btn danger edit-only" data-act="del-att" data-id="${r.id}">${icon('trash','h-4 w-4')}</button></div>`).join('');
     return `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">${cards||'<div class="col-span-full text-center py-4 text-xs" style="color:var(--muted)">Sin materias</div>'}</div>
       <form class="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-5" data-form="add-att">
