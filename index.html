@@ -1342,7 +1342,7 @@ async function fetchNowPlaying(){
     if(r.status===204){ s.track=null; renderWidgets(); return; }
     if(r.status===401){
       // Otro dispositivo renovó el token: bajamos la versión nueva de Firebase
-      if(appReady) await fbPull(false);
+      if(appReady){ await fbPull(false); await fetchSpotifyConfig(); }
       return;
     }
     if(!r.ok) return;
