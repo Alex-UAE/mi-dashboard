@@ -1242,7 +1242,7 @@ $('#widgets').addEventListener('click', e=>{
   }
   else if(act==='maximize'){
     const key=btn.closest('.widget').dataset.key;
-    state.sizeOverrides[key]='md:col-span-12'; save(); renderWidgets(); toast('Widget maximizado');
+    state.sizeOverrides[key]='md:col-span-12'; if(state.widgetSizes) delete state.widgetSizes[key]; save(); renderWidgets(); toast('Widget maximizado');
   }
   else if(act==='del-instance'){
     const wid=btn.dataset.id;
