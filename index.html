@@ -1465,6 +1465,7 @@ async function fetchLastFm(){
       if(track.playing && old.name!==track.name){ track.startedAt=Date.now(); track.duration=old.duration||0; }
       else { track.startedAt=old.startedAt||0; track.duration=old.duration||0; }
       state.lastfm.track=track; if(appReady) renderWidgets();
+      if(track.playing && track.name && Notification.permission==='granted') fireNotify('Escuchando ahora', track.name+(track.artist?' · '+track.artist:''));
     }
     renderPlayerBar();
   }catch(e){}
