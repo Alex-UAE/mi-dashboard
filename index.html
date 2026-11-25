@@ -1265,16 +1265,26 @@ $('#quickSettings').addEventListener('click', ()=>openSettings());
 let activePhase=null, activeQuestions=[], qIndex=0, correctCount=0, batch=0, isDaily=false, answers={};
 const PY_BATCH=5;
 function closeLesson(){ $('#lessonModal').classList.add('hidden'); $('#lessonModal').classList.remove('flex'); activePhase=null; }
-function startLesson(id,daily){
-  const now=Date.now();
+function phaseSeed(id){ let h=0; for(const c of id) h=(h*31+c.charCodeAt(0))>>>0; return h%99991; }
+function saveLessonSession(){
+  state.python.session={phase:isDaily?'__daily__':activePhaseId,daily:isDaily,batch,answers:{...answers},correct:correctCount};
+  save();
+}
+let activePhaseId=null;
+function startLesson(id,daily,resume){
+  const p=state.python||{}, sess=p.session;
+  const canResume=resume&&sess&&(daily?sess.daily&&sess.phase==='__daily__':!sess.daily&&sess.phase===id);
   if(daily){
-    const c=dailyChallenge(); activeQuestions=c.questions; activePhase=c.title; isDaily=true;
+    const c=dailyChallenge(); activeQuestions=c.questions; activePhase=c.title; isDaily=true; activePhaseId='__daily__';
   } else {
-    const ph=PY_UNITS.flatMap(u=>u.phases).find(p=>p.id===id);
+    const ph=PY_UNITS.flatMap(u=>u.phases).find(x=>x.id===id);
     if(!ph) return;
-    activeQuestions=makeQuestions(ph.unit,ph.type,25,now%99991); activePhase=ph.title+': '+PY_BANK[ph.unit].t; isDaily=false;
+    activeQuestions=makeQuestions(ph.unit,ph.type,25,phaseSeed(ph.id)); activePhase=ph.title+': '+PY_BANK[ph.unit].t; isDaily=false; activePhaseId=id;
   }
-  qIndex=0; correctCount=0; batch=0; answers={};
+  batch=canResume?(sess.batch||0):0;
+  answers=canResume?{...(sess.answers||{})}:{};
+  correctCount=canResume?(sess.correct||0):0;
+  if(!canResume) saveLessonSession();
   $('#lessonTitle').textContent=activePhase;
   $('#lessonModal').classList.remove('hidden'); $('#lessonModal').classList.add('flex');
   renderBatch();
