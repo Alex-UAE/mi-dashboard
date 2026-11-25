@@ -908,8 +908,10 @@ const WIDGETS = {
       const phases=u.phases.map(ph=>{
         const complete=done.includes(ph.id);
         const until=p.locks?.[ph.id]||0, locked=until>nowMs;
-        const unitOpen=ui===0 || PY_UNITS[ui-1].phases.some(x=>done.includes(x.id));
-        const can=unitOpen&&!locked&&!complete&&daily<2;
+        const unitOpen=ui===0 || PY_UNITS[ui-1].phases.every(x=>done.includes(x.id));
+        const prev=u.phases[u.phases.indexOf(ph)-1];
+        const prevDone=!prev||done.includes(prev.id);
+        const can=unitOpen&&prevDone&&!locked&&!complete&&daily<2;
         return `<div class="flex flex-col items-center gap-1" style="width:20%">
           <button data-act="py-phase" data-id="${ph.id}" ${can?'':'disabled'}
             data-lock-until="${locked?until:''}"
