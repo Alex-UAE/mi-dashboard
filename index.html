@@ -1727,6 +1727,7 @@ function selectTab(tab){
   $$('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
   $$('.tab-panel').forEach(p=>p.classList.toggle('active',p.dataset.panel===tab));
   if(tab==='perfil') renderAvatarPreview();
+  if(tab==='inicio') renderInicioSettings();
   if(tab==='sync') updateFbStatus(state.sync?.lastSync?'Última sync: '+new Date(state.sync.lastSync).toLocaleString('es-EC'):'Sin sincronizar.');
 }
 $('#tabs').addEventListener('click', e=>{ const b=e.target.closest('.tab-btn'); if(b) selectTab(b.dataset.tab); });
