@@ -928,7 +928,8 @@ const WIDGETS = {
     return `<div class="max-w-3xl mx-auto">
       <div class="flex items-center justify-between mb-4">
         <div><div class="text-lg font-extrabold">🐍 Aprender Python</div><div class="text-xs" style="color:var(--muted)">${PY_UNITS.length} unidades · ${PY_TOTAL_PHASES} fases · contenido generado</div></div>
-        <div class="chip" style="color:#f59e0b">⚡ ${xp} XP</div>
+        <div class="flex items-center gap-2"><div class="chip" style="color:#f59e0b">⚡ ${xp} XP</div>
+          <button class="btn btn-ghost btn-sm edit-only" data-act="py-reset">Reiniciar curso</button></div>
       </div>
       <div class="mb-5"><div class="flex justify-between text-[11px] mb-1.5" style="color:var(--muted)"><span>Tu avance</span><span>${done.length}/${PY_TOTAL_PHASES} fases · ${pct}%</span></div>
         <div class="h-3 rounded-full overflow-hidden" style="background:var(--border)"><div class="progress-fill" style="width:${pct}%;background:#22c55e"></div></div></div>
