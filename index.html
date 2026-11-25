@@ -1821,6 +1821,7 @@ async function checkVersion(){
     const res=await fetch(location.href.split('?')[0]+'?v='+Date.now(),{cache:'no-store'});
     if(!res.ok)return; const txt=await res.text(); const m=txt.match(/const APP_VERSION = '([^']+)'/);
     if(!m||m[1]===APP_VERSION||m[1]===pausedVersion)return;
+    if(Notification.permission==='granted') fireNotify('Mi Dashboard · Actualización', 'Hay una versión nueva ('+m[1]+'). Se actualizará en unos segundos.');
     $('#updateText').textContent=`Nueva versión ${m[1]}. Actualizando…`;
     $('#updateBanner').classList.remove('hidden'); armAutoReload();
   }catch(e){}
