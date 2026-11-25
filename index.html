@@ -1068,6 +1068,19 @@ const WIDGETS = {
       </div>
     </div>`;
   }},
+  frase: { view:'inicio', title:'Frase del día', icon:'note', span:'md:col-span-4', render(){
+    const qs=['Un paso pequeño cada día suma más que un gran salto de vez en cuando.','No esperes el momento perfecto: haz que el momento sea perfecto.','Aprender a programar es aprender a pensar.','La constancia vence al talento cuando el talento descansa.','Cada error es una respuesta que ya no necesitas buscar.'];
+    const i=(Number(state.quote)||0)%qs.length;
+    return `<div class="text-center py-3"><div class="text-3xl">“</div><div class="text-sm leading-relaxed mb-3">${esc(qs[i])}</div>
+      <button class="btn btn-ghost btn-sm" data-act="frase-next">Otra frase</button></div>`;
+  }},
+  contador: { view:'inicio', title:'Contador de días', icon:'calendar', span:'md:col-span-4', render(){
+    const t=state.targetDate;
+    if(!t) return `<div class="text-center py-3"><div class="text-xs mb-2" style="color:var(--muted)">¿Qué fecha estás esperando?</div><input type="date" class="input" data-act="target-date"></div>`;
+    const days=Math.ceil((new Date(t+'T00:00:00')-new Date(localISO(new Date())+'T00:00:00'))/86400000);
+    return `<div class="text-center py-3"><div class="text-5xl font-extrabold" style="color:var(--wc)">${days}</div><div class="text-xs" style="color:var(--muted)">días para ${esc(t)}</div>
+      <button class="btn btn-ghost btn-sm mt-3" data-act="target-clear">Cambiar fecha</button></div>`;
+  }},
   ia: { view:'ia', title:'Asistente IA', icon:'sparkles', span:'md:col-span-12', render(){
     if(!state.ai.key) return `<div class="flex flex-col sm:flex-row items-center gap-4 py-2"><div class="flex h-12 w-12 items-center justify-center rounded-xl" style="background:var(--accent-soft);color:var(--accent)">${icon('sparkles')}</div>
       <div class="flex-1"><div class="text-sm font-bold">Activa tu asistente</div><p class="text-xs mt-1" style="color:var(--muted)">Pega una clave de Gemini en Ajustes → Seguridad e IA.</p></div>
