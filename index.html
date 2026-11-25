@@ -1746,6 +1746,7 @@ function enterApp(){
   setInterval(tryPull,4000); setInterval(flush,10000); setInterval(checkDue,60000); setTimeout(checkDue,3000);
   setInterval(checkNotices,30000); setTimeout(checkNotices,2000);
   setInterval(fetchNowPlaying,10000); setTimeout(fetchNowPlaying,1500);
+  setInterval(fetchLastFm,30000); setTimeout(fetchLastFm,2000);
   document.addEventListener('visibilitychange',()=>{ if(!document.hidden)onNet(); }); window.addEventListener('focus',onNet);
   // Mostrar el menú de inmediato: al recargar por una actualización no debe aparecer el login
   appReady = true;
