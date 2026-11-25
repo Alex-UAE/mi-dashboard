@@ -1353,6 +1353,9 @@ function finishLesson(){
     <button class="btn mt-5" data-act="py-close">Continuar</button></div>`;
 }
 $('#lessonClose').addEventListener('click', closeLesson);
+$('#lessonModal').addEventListener('input', e=>{
+  if(e.target.dataset?.qwrite){ answers['w'+e.target.dataset.qwrite]=e.target.value; saveLessonSession(); }
+});
 $('#lessonModal').addEventListener('click', e=>{
   if(e.target.id==='lessonModal'){ closeLesson(); return; }
   const b=e.target.closest('[data-act]'); if(!b) return;
