@@ -1109,6 +1109,17 @@ function renderWidgets(){
   $('#widgets').innerHTML=addBlock+(all.length?all.map(widgetCard).join(''):`<div class="panel col-span-12 p-10 text-center"><div class="text-4xl mb-3">📦</div><div class="font-bold">Sin widgets visibles</div><div class="text-xs mt-1" style="color:var(--muted)">Activa widgets en modo edición.</div></div>`);
   updateClock(); updateCountdown(); renderPlayerBar();
 }
+function saveWidgetSizes(){
+  let changed=false;
+  $$('.widget').forEach(w=>{
+    const id=w.dataset.id, h=Math.round(w.getBoundingClientRect().height);
+    state.widgetSizes=state.widgetSizes||{};
+    if(state.widgetSizes[id]!==h){ state.widgetSizes[id]=h; changed=true; }
+  });
+  if(changed) save();
+}
+document.addEventListener('mouseup', saveWidgetSizes);
+document.addEventListener('touchend', saveWidgetSizes);
 function syncVisibleOrder(){
   const dom=$$('.widget').map(w=>w.dataset.id);
   const baseSet=state.widgetOrder.filter(id=>!state.hiddenWidgets.includes(id)&&widgetViews(id).includes(currentView));
