@@ -1237,7 +1237,7 @@ $('#widgets').addEventListener('click', e=>{
     const key=btn.closest('.widget').dataset.key;
     const cur=spanOf(key,btn.closest('.widget').dataset.type);
     const next=SIZES[(SIZES.indexOf(cur)+1)%SIZES.length];
-    state.sizeOverrides[key]=next; save(); renderWidgets();
+    state.sizeOverrides[key]=next; if(state.widgetSizes) delete state.widgetSizes[key]; save(); renderWidgets();
     toast('Tamaño: '+SIZE_LABEL[next]);
   }
   else if(act==='maximize'){
