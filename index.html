@@ -1885,7 +1885,12 @@ async function fbPush(){
     // La asistencia se fusiona: nunca se pierden registros de otro dispositivo
     try{
       const chk=await fetch(`${FIREBASE_URL}/dashboard.json?v=${Date.now()}`,{cache:'no-store'});
-      if(chk.ok){ const rem=await chk.json(); state.attendance=mergeAttendance(state.attendance,rem.attendance); }
+      if(chk.ok){
+        const rem=await chk.json();
+        state.attendance=mergeAttendance(state.attendance,rem.attendance);
+        state.shortcuts=mergeByKey(state.shortcuts,rem.shortcuts,s=>(s.url||'')+'|'+(s.name||''));
+        state.tasks=normalizeTasks(mergeByKey(state.tasks,rem.tasks,r=>r.id));
+      }
     }catch(e){}
     const res=await fetch(`${FIREBASE_URL}/dashboard.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(serializable())});
     if(!res.ok) throw new Error('HTTP '+res.status);
