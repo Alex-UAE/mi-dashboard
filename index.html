@@ -42,6 +42,11 @@
   .fade-in{animation:fadeIn .3s ease both}@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
   .shake{animation:shake .4s}@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
   .drag-handle{cursor:grab}.widget.dragging{opacity:.4;border-style:dashed}.widget.drop-target{border-color:var(--accent)}
+  .widget{resize:vertical;overflow:auto;min-height:110px;transition:box-shadow .15s}
+  .widget:hover{box-shadow:0 6px 24px rgba(0,0,0,.35)}
+  .widget>div:first-child{cursor:grab}
+  [class*="col-span-4"]>.p-4{padding:.85rem}
+  [class*="col-span-4"] [data-clock]{font-size:2.5rem}
   .task-done .task-title{text-decoration:line-through;color:#666}
   input[type=range]{-webkit-appearance:none;height:5px;border-radius:99px;background:var(--border)}
   input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--accent);cursor:pointer;border:3px solid var(--panel)}
