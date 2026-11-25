@@ -1819,7 +1819,7 @@ function enterApp(){
 $('#loginForm').addEventListener('submit', doLogin);
 if(sessionStorage.getItem(SESSION_KEY)==='1'||localStorage.getItem(SESSION_KEY)==='1') enterApp();
 else { applyTheme(); mountIcons(); $('#loginPass').focus(); }
-setInterval(updateClock,15000); setInterval(updateCountdown,1000); setInterval(checkVersion,60000);
+setInterval(updateClock,15000); setInterval(updateCountdown,1000); setInterval(updatePlayerProgress,1000); setInterval(checkVersion,60000);
 window.addEventListener('orientationchange',()=>setTimeout(updateClock,250));
 if('serviceWorker' in navigator && location.protocol==='https:') navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
