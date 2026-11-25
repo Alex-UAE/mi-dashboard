@@ -1294,6 +1294,48 @@ $('#widgets').addEventListener('click', async e=>{
   finally{ btn.disabled=false; btn.innerHTML=icon('send','h-4 w-4')+' Preguntar'; }
 });
 
+/* ============ Spotify ============ */
+const SPOTIFY_REDIRECT='https://alex-uae.github.io/mi-dashboard/callback.html';
+async function pkceChallenge(verifier){
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(verifier));
+  return btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+function saveSpClient(){ const el=$('#spClientId'); if(el){ state.spotify.clientId=el.value.trim(); save(); } }
+async function connectSpotify(){
+  saveSpClient();
+  const cid=state.spotify.clientId;
+  if(!cid){ toast('Pega primero el Client ID'); return; }
+  const v=Array.from(crypto.getRandomValues(new Uint8Array(32))).map(b=>('0'+b.toString(16)).slice(-2)).join('');
+  sessionStorage.setItem('sp_verifier',v);
+  const challenge=await pkceChallenge(v);
+  const url=`https://accounts.spotify.com/authorize?client_id=${encodeURIComponent(cid)}&response_type=code&redirect_uri=${encodeURIComponent(SPOTIFY_REDIRECT)}&scope=user-read-currently-playing%20user-read-playback-state&code_challenge=${encodeURIComponent(challenge)}&code_challenge_method=S256`;
+  window.location.href=url;
+}
+async function refreshSpotify(){
+  const s=state.spotify;
+  const body=new URLSearchParams({grant_type:'refresh_token',refresh_token:s.refresh,client_id:s.clientId});
+  const r=await fetch('https://accounts.spotify.com/api/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body});
+  if(!r.ok) throw new Error('No se pudo renovar Spotify ('+r.status+')');
+  const d=await r.json();
+  s.access=d.access_token; s.expires=Date.now()+(d.expires_in||3600)*1000;
+  if(d.refresh_token) s.refresh=d.refresh_token;
+  save();
+}
+async function fetchNowPlaying(){
+  const s=state.spotify; if(!s?.access) return;
+  try{
+    if(Date.now()>s.expires-60000) await refreshSpotify();
+    const r=await fetch('https://api.spotify.com/v1/me/player/currently-playing',{headers:{Authorization:'Bearer '+s.access}});
+    if(r.status===204){ s.track=null; renderWidgets(); return; }
+    if(!r.ok) return;
+    const d=await r.json(), it=d.item;
+    const track=it?{name:it.name,artist:(it.artists||[]).map(a=>a.name).join(', '),image:it.album?.images?.[0]?.url||'',progress:d.progress_ms||0,duration:it.duration_ms||0,playing:d.is_playing,id:it.id}:null;
+    const changed=(s.track?.id||'')!==(track?.id||'')||(s.track?.playing)!==(track?.playing);
+    s.track=track;
+    if(changed && appReady) renderWidgets();
+  }catch(e){}
+}
+
 /* ============ Navegación ============ */
 $('#nav').addEventListener('click', e=>{ const it=e.target.closest('.nav-item'); if(it) setView(it.dataset.section); });
 $('#quickSettings').addEventListener('click', ()=>openSettings());
