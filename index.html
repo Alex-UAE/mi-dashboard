@@ -42,37 +42,39 @@
   .fade-in{animation:fadeIn .3s ease both}@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
   .shake{animation:shake .4s}@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
   .drag-handle{cursor:grab}.widget.dragging{opacity:.4;border-style:dashed}.widget.drop-target{border-color:var(--accent)}
-  .widget{--wc:var(--accent);--wb:#111318;resize:both;overflow:auto;min-height:90px;max-width:100%;container-type:inline-size;border:none;background:var(--wb);border-radius:1.25rem;box-shadow:0 4px 18px rgba(0,0,0,.25)}
-  .widget[data-type="resumen"]{--wc:#3b82f6;--wb:#0e1626}
-  .widget[data-type="reloj"]{--wc:#a855f7;--wb:#161026}
-  .widget[data-type="urgentes"]{--wc:#f59e0b;--wb:#1a1408}
-  .widget[data-type="tareas"]{--wc:#ef4444;--wb:#1c0f0f}
-  .widget[data-type="notas"]{--wc:#06b6d4;--wb:#0c1a1d}
-  .widget[data-type="horario"]{--wc:#22c55e;--wb:#0e1a12}
-  .widget[data-type="calendario"]{--wc:#3b82f6;--wb:#0e1626}
-  .widget[data-type="agenda"]{--wc:#14b8a6;--wb:#0b1a19}
-  .widget[data-type="pomodoro"]{--wc:#f97316;--wb:#1c1208}
-  .widget[data-type="atajos"]{--wc:#8b5cf6;--wb:#151026}
-  .widget[data-type="perfil"]{--wc:#ec4899;--wb:#1d0f18}
-  .widget[data-type="medios"]{--wc:#eab308;--wb:#0d0d0d}
-  .widget[data-type="racha"]{--wc:#f59e0b;--wb:#1a1408}
-  .widget[data-type="python"]{--wc:#22c55e;--wb:#0e1a12}
-  .widget[data-type="spotify"]{--wc:#1db954;--wb:#081a0e}
-  .widget[data-type="ia"]{--wc:#a855f7;--wb:#161026}
-  .widget:hover{box-shadow:0 8px 26px rgba(0,0,0,.45)}
+  .widget{--wc:var(--accent);--wb:#0b0b0b;resize:both;overflow:auto;min-height:90px;max-width:100%;container-type:inline-size;border:none;background:var(--wb);border-radius:1.5rem;box-shadow:0 4px 20px rgba(0,0,0,.4);transition:box-shadow .15s}
+  .widget:hover{box-shadow:0 8px 28px rgba(0,0,0,.6)}
   .widget>div:first-child{cursor:grab;background:transparent;padding:.7rem .9rem;border-bottom:1px solid rgba(255,255,255,.05)}
   .w-icon{display:flex;align-items:center;justify-content:center;width:1.7rem;height:1.7rem;border-radius:.5rem;background:var(--wc);color:#fff;flex-shrink:0}
   .widget>.p-4{flex:1;display:flex;flex-direction:column;justify-content:center;min-height:80px}
   .widget[data-type="tareas"]>.p-4,.widget[data-type="urgentes"]>.p-4,.widget[data-type="horario"]>.p-4,.widget[data-type="agenda"]>.p-4,.widget[data-type="notas"]>.p-4{justify-content:flex-start}
-  .widget[data-type="medios"]>.p-4{padding:.6rem}
+  /* Reloj: redondeado con halo del color */
+  .widget[data-type="reloj"]{border-radius:2rem;background:radial-gradient(circle at 50% 35%,color-mix(in srgb,var(--wc) 22%,#000),#0b0b0b 70%)}
+  .widget[data-type="reloj"] [data-clock]{font-size:3.6rem;letter-spacing:-.05em;color:#fff;text-shadow:0 0 24px color-mix(in srgb,var(--wc) 60%,transparent)}
+  .widget[data-type="reloj"] [data-clock-greet]{background:color-mix(in srgb,var(--wc) 22%,transparent);border-color:color-mix(in srgb,var(--wc) 55%,transparent);color:var(--wc)}
+  .widget[data-type="reloj"]>.p-4 .rounded-lg{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12)}
+  /* Racha: tarjeta clara con número gigante */
+  .widget[data-type="racha"]{--wb:#f5f5f5;--text:#111;--muted:#666;color:#111}
+  .widget[data-type="racha"]>div:first-child{border-bottom-color:rgba(0,0,0,.08)}
+  .widget[data-type="racha"] .text-4xl{font-size:4rem;line-height:1;color:var(--wc)}
+  .widget[data-type="racha"] .text-2xl{font-size:2.5rem;color:#111}
+  /* Resumen: números grandes con acento */
+  .widget[data-type="resumen"] .text-xl{font-size:1.9rem;color:var(--wc);font-weight:800}
+  .widget[data-type="resumen"] .rounded-xl{background:#111;border-color:rgba(255,255,255,.08)}
+  /* Urgentes y tareas: chips con el acento */
+  .widget[data-type="urgentes"] .chip,.widget[data-type="tareas"] .chip{background:color-mix(in srgb,var(--wc) 25%,transparent);border-color:color-mix(in srgb,var(--wc) 45%,transparent)}
+  /* Fotos: imagen sin marco */
+  .widget[data-type="medios"]{--wb:#000;padding:0}
+  .widget[data-type="medios"]>.p-4{padding:.5rem}
   .widget[data-type="medios"]>.p-4>.max-w-3xl{max-width:none;width:100%}
-  .widget[data-type="medios"] .chip{background:rgba(0,0,0,.6)}
-  .widget[data-type="reloj"] [data-clock]{font-size:3.2rem;letter-spacing:-.04em}
-  .widget[data-type="reloj"] [data-clock-greet]{background:rgba(168,85,247,.16);border-color:rgba(168,85,247,.4)}
-  .widget[data-type="racha"] .text-4xl{font-size:3.4rem}
-  .widget[data-type="resumen"] .text-xl{font-size:1.6rem}
-  @container (max-width:300px){ .widget [data-clock]{font-size:2.1rem} .widget .chip{font-size:9px;padding:.15rem .45rem} .widget .grid{gap:.35rem} .widget .text-xl{font-size:1.2rem} }
-  @container (min-width:430px){ .widget [data-clock]{font-size:4rem} }
+  .widget[data-type="medios"] .rounded-2xl{border-radius:1rem;border:1px solid rgba(255,255,255,.08)}
+  .widget[data-type="medios"] .chip{background:rgba(0,0,0,.7)}
+  /* Otros: acento en cabecera */
+  .widget[data-type="calendario"] .font-extrabold{color:var(--wc)}
+  .widget[data-type="python"] .progress-fill{background:var(--wc)}
+  .widget[data-type="spotify"] [style*="#22c55e"]{background:var(--wc)!important}
+  @container (max-width:300px){ .widget [data-clock]{font-size:2.2rem} .widget .chip{font-size:9px;padding:.15rem .45rem} .widget .grid{gap:.35rem} .widget .text-xl{font-size:1.3rem} .widget .text-4xl{font-size:2.6rem} }
+  @container (min-width:430px){ .widget [data-clock]{font-size:4.2rem} }
   .task-done .task-title{text-decoration:line-through;color:#666}
   input[type=range]{-webkit-appearance:none;height:5px;border-radius:99px;background:var(--border)}
   input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--accent);cursor:pointer;border:3px solid var(--panel)}
