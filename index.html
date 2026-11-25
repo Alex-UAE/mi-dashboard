@@ -1287,6 +1287,7 @@ $('#widgets').addEventListener('input', e=>{
   const el=e.target;
   if(el.id==='aiPrompt'){ aiDraft=el.value; return; }
   if(el.id==='spClientId'){ state.spotify.clientId=el.value.trim(); save(); return; }
+  if(el.dataset.act==='target-date'){ state.targetDate=el.value; save(); renderWidgets(); return; }
   if(el.id==='lfUser'){ state.lastfm.user=el.value.trim(); save(); return; }
   if(el.id==='lfKey'){ state.lastfm.key=el.value.trim(); save(); return; }
   if(el.id==='notesArea'){
