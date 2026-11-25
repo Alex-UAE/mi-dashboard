@@ -868,7 +868,7 @@ const WIDGETS = {
         const unitDone=u.lessons.filter(l=>done.includes(l.id)).length;
         const unlocked=ui===0 || PYTHON_COURSE[ui-1].lessons.every(l=>done.includes(l.id));
         return `<div class="mb-6">
-          <div class="flex items-center justify-between mb-3"><div class="text-sm font-bold" style="color:${u.color}">Unidad ${ui+1}: ${u.title}</div><div class="text-[11px]" style="color:var(--muted)">${unitDone}/${u.lessons.length}</div></div>
+          <div class="flex items-center justify-between mb-3"><div class="text-sm font-bold" style="color:${u.color}">Unidad ${ui+1}: ${u.title}${ui===featuredIdx?' · HOY':''}</div><div class="text-[11px]" style="color:var(--muted)">${unitDone}/${u.lessons.length}</div></div>
           <div class="flex items-center justify-around gap-2">
             ${u.lessons.map((l,li)=>{
               const complete=done.includes(l.id);
