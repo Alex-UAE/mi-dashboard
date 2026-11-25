@@ -898,46 +898,68 @@ const WIDGETS = {
       <p class="text-[11px] mt-2" style="color:var(--muted)">Se muestran completos, en su formato original y centrados. Los videos se reproducen solos, sin sonido ni controles. Fotos ≤ 900 px y videos ≤ 2 MB c/u.</p>`;
   }},
   python: { view:'python', title:'Aprender Python', icon:'code', span:'md:col-span-12', render(){
-    const done=state.python?.completed||[], xp=state.python?.xp||0;
-    const total=PY_LESSONS.length;
-    const pct=Math.round(done.length/total*100);
-    const now=new Date();
-    const dayIndex=Math.floor(Date.UTC(now.getFullYear(),now.getMonth(),now.getDate())/86400000);
-    const featuredIdx=dayIndex % PYTHON_COURSE.length;
-    const featured=PYTHON_COURSE[featuredIdx];
-    return `<div class="max-w-2xl mx-auto">
+    const p=state.python||{}, done=p.completed||[], xp=p.xp||0;
+    const today=localISO(new Date()), daily=p.dailyDate===today?(p.dailyCount||0):0;
+    const pct=Math.round(done.length/PY_TOTAL_PHASES*100);
+    const chal=dailyChallenge();
+    const nowMs=Date.now();
+    const unitHTML=PY_UNITS.map((u,ui)=>{
+      const phases=u.phases.map(ph=>{
+        const complete=done.includes(ph.id);
+        const until=p.locks?.[ph.id]||0, locked=until>nowMs;
+        const prev=u.phases[u.phases.indexOf(ph)-1];
+        const prevDone=!prev||done.includes(prev.id);
+        const can=prevDone&&!locked&&!complete&&daily<2;
+        return `<div class="flex flex-col items-center gap-1" style="width:20%">
+          <button data-act="py-phase" data-id="${ph.id}" ${can?'':'disabled'}
+            data-lock-until="${locked?until:''}"
+            class="flex h-12 w-12 items-center justify-center rounded-full text-lg transition transform hover:scale-105"
+            style="background:${complete?'#22c55e':can?ph.color:'var(--panel2)'};color:${complete||can?'#fff':'var(--muted)'};border:3px solid ${complete?'#16a34a':can?ph.color:'var(--border)'}">${complete?'✓':locked?'⏳':can?'▶':'🔒'}</button>
+          <span class="text-[9px] text-center w-full truncate" style="color:${can?'var(--text)':'var(--muted)'}">${ph.title}</span>
+        </div>`;
+      }).join('');
+      return `<div class="mb-6"><div class="flex items-center justify-between mb-2">
+        <div class="text-sm font-bold" style="color:${u.color}">Unidad ${ui+1}: ${u.title}</div>
+        <div class="text-[10px]" style="color:var(--muted)">${u.phases.filter(x=>done.includes(x.id)).length}/${u.phases.length} fases</div></div>
+        <div class="flex justify-around">${phases}</div></div>`;
+    }).join('');
+    return `<div class="max-w-3xl mx-auto">
       <div class="flex items-center justify-between mb-4">
-        <div><div class="text-lg font-extrabold">🐍 Aprender Python</div><div class="text-xs" style="color:var(--muted)">Aprende jugando, sin leer documentos</div></div>
+        <div><div class="text-lg font-extrabold">🐍 Aprender Python</div><div class="text-xs" style="color:var(--muted)">${PY_UNITS.length} unidades · ${PY_TOTAL_PHASES} fases · contenido generado</div></div>
         <div class="chip" style="color:#f59e0b">⚡ ${xp} XP</div>
       </div>
-      <div class="mb-6"><div class="flex justify-between text-[11px] mb-1.5" style="color:var(--muted)"><span>Tu avance</span><span>${done.length}/${total} lecciones · ${pct}%</span></div>
+      <div class="mb-5"><div class="flex justify-between text-[11px] mb-1.5" style="color:var(--muted)"><span>Tu avance</span><span>${done.length}/${PY_TOTAL_PHASES} fases · ${pct}%</span></div>
         <div class="h-3 rounded-full overflow-hidden" style="background:var(--border)"><div class="progress-fill" style="width:${pct}%;background:#22c55e"></div></div></div>
-      <div class="rounded-xl p-4 mb-6" style="background:var(--panel2);border:1px solid ${featured.color}">
+      <div class="rounded-xl p-4 mb-5" style="background:var(--panel2);border:1px solid ${chal.color}">
         <div class="flex items-center justify-between gap-3">
-          <div><div class="text-[11px] font-bold" style="color:${featured.color}">🎯 RETO DEL DÍA</div>
-            <div class="text-sm font-bold mt-1">Unidad ${featuredIdx+1}: ${featured.title}</div>
-            <div class="text-[11px] mt-1" style="color:var(--muted)">Contenido nuevo cada día a medianoche</div></div>
+          <div><div class="text-[11px] font-bold" style="color:${chal.color}">🎯 RETO DEL DÍA · ${chal.questions.length} preguntas</div>
+            <div class="text-sm font-bold mt-1">${esc(PY_BANK[chal.unit].t)}</div>
+            <div class="text-[11px] mt-1" style="color:var(--muted)">Mezcla de teoría, práctica, escritura y corrección. Aleatorio cada día.</div></div>
           <div class="shrink-0 text-right"><div class="text-[10px]" style="color:var(--muted)">Cambia en</div>
             <div data-countdown class="text-lg font-extrabold tabular-nums" style="color:var(--accent)">--:--:--</div></div>
         </div>
-        <button data-act="py-lesson" data-id="${featured.lessons[0].id}" class="btn btn-sm mt-3 w-full" style="background:${featured.color};color:#fff">Practicar el contenido de hoy</button>
+        <button data-act="py-daily" class="btn btn-sm mt-3 w-full" style="background:${chal.color};color:#fff">Hacer el reto de hoy</button>
       </div>
-      ${PYTHON_COURSE.map((u,ui)=>{
-        const unitDone=u.lessons.filter(l=>done.includes(l.id)).length;
-        const unlocked=ui===0 || PYTHON_COURSE[ui-1].lessons.every(l=>done.includes(l.id));
-        return `<div class="mb-6">
-          <div class="flex items-center justify-between mb-3"><div class="text-sm font-bold" style="color:${u.color}">Unidad ${ui+1}: ${u.title}${ui===featuredIdx?' · HOY':''}</div><div class="text-[11px]" style="color:var(--muted)">${unitDone}/${u.lessons.length}</div></div>
-          <div class="flex items-center justify-around gap-2">
-            ${u.lessons.map((l,li)=>{
-              const complete=done.includes(l.id);
-              const open=unlocked && (li===0 || done.includes(u.lessons[li-1].id));
-              return `<div class="flex flex-col items-center gap-1" style="width:33%">
-                <button data-act="py-lesson" data-id="${l.id}" ${open?'':'disabled'} class="flex h-14 w-14 items-center justify-center rounded-full text-xl font-extrabold transition transform hover:scale-105 ${open?'':''}" style="background:${complete?'#22c55e':open?u.color:'var(--panel2)'};color:${complete||open?'#fff':'var(--muted)'};border:3px solid ${complete?'#16a34a':open?u.color:'var(--border)'}">${complete?'✓':open?'▶':'🔒'}</button>
-                <span class="text-[10px] text-center truncate w-full" style="color:${open?'var(--text)':'var(--muted)'}">${l.title}</span>
-              </div>`;
-            }).join('')}
-          </div></div>`;
-      }).join('')}
+      <div class="text-[11px] mb-3" style="color:${daily>=2?'#ef4444':'var(--muted)'}">Fases de hoy: ${daily}/2 · cada fase termina y se bloquea 24 h.</div>
+      ${unitHTML}
+    </div>`;
+  }},
+  racha: { view:'python', title:'Mi racha', icon:'bell', span:'md:col-span-12', render(){
+    const p=state.python||{}, streak=p.streak||0;
+    const days=['L','M','X','J','V','S','D'];
+    const now=new Date(), today=localISO(now);
+    const start=new Date(now); start.setDate(now.getDate()-((now.getDay()+6)%7));
+    const week=days.map((d,i)=>{
+      const dt=new Date(start); dt.setDate(start.getDate()+i);
+      const iso=localISO(dt);
+      const active=iso===today || (p.lastDay&&iso<=p.lastDay&&((new Date(p.lastDay)-new Date(iso))/86400000<streak));
+      return `<div class="flex flex-col items-center gap-1"><span class="text-[10px]" style="color:var(--muted)">${d}</span>
+        <span class="flex h-8 w-8 items-center justify-center rounded-full text-sm" style="background:${active?'#f59e0b':'var(--panel2)'};color:${active?'#fff':'var(--muted)'}">${active?'🔥':'·'}</span></div>`;
+    }).join('');
+    return `<div class="flex flex-wrap items-center justify-center gap-6 py-2">
+      <div class="text-center"><div class="text-4xl font-extrabold" style="color:#f59e0b">🔥 ${streak}</div><div class="text-[11px]" style="color:var(--muted)">días seguidos</div></div>
+      <div class="flex gap-2">${week}</div>
+      <div class="text-center"><div class="text-2xl font-extrabold">${p.xp||0}</div><div class="text-[11px]" style="color:var(--muted)">XP total</div></div>
     </div>`;
   }},
   ia: { view:'ia', title:'Asistente IA', icon:'sparkles', span:'md:col-span-12', render(){
