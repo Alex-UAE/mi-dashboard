@@ -1079,7 +1079,9 @@ let pomoLeft = 25*60, pomoTimer = null, pomoMode = 'focus';
 let editingTaskId = null;
 function widgetCard(inst){
   const w=WIDGETS[inst.type], key=inst.key, span=spanOf(key,inst.type);
-  return `<section class="widget panel panel-hover ${span}" data-id="${inst.id}" data-key="${key}" data-type="${inst.type}">
+  const sz=(state.widgetSizes||{})[inst.id];
+  const style=sz&&sz.h?`height:${Math.round(sz.h)}px;max-width:100%`:'';
+  return `<section class="widget panel-hover ${span}" style="${style}" data-id="${inst.id}" data-key="${key}" data-type="${inst.type}">
     <div class="flex items-center gap-2 px-4 py-3 border-b" draggable="true" style="border-color:var(--border)">
       <span class="w-icon">${icon(w.icon,'h-4 w-4')}</span>
       <h3 class="text-sm font-bold flex-1 truncate">${w.title}${inst.mediaId?' · '+(state.media||[]).findIndex(m=>m.id===inst.mediaId)+1:''}</h3>
