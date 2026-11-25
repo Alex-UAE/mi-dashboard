@@ -1325,6 +1325,7 @@ function checkBatch(){
     if(fb){ fb.classList.remove('hidden'); fb.style.color=ok?'#22c55e':'#ef4444'; fb.textContent=(ok?'✓ Correcto · ':'✗ Incorrecto · ')+q.e; }
   });
   const more=(batch+1)*PY_BATCH<activeQuestions.length;
+  saveLessonSession();
   $('#lessonFeedback').innerHTML=`<button class="btn btn-sm" data-act="py-next-group">${more?'Siguiente grupo':'Terminar fase'}</button>`;
   $('[data-act="py-check"]').disabled=true;
 }
