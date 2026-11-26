@@ -1445,6 +1445,10 @@ $('#widgets').addEventListener('submit', async e=>{
       editingTaskId=null; toast('Tarea actualizada');
     }
   }
+  else if(kind==='add-exam'){
+    const subject=(f.get('subject')||'').trim(), date=f.get('date')||'', time=f.get('time')||'';
+    if(subject&&date&&time) state.examsExtra.push({id:uid(),subject,date,time,teacher:''});
+  }
   else if(kind==='add-att'){
     const subject=f.get('subject')||'', date=f.get('date')||'', status=f.get('status')||'presente';
     if(subject&&date) state.attendance.push({id:uid(),subject,date,status});
