@@ -1195,7 +1195,7 @@ function renderWidgets(){
     </div>
   </section>`:'';
   $('#widgets').innerHTML=addBlock+(all.length?all.map(widgetCard).join(''):`<div class="panel col-span-12 p-10 text-center"><div class="text-4xl mb-3">📦</div><div class="font-bold">Sin widgets visibles</div><div class="text-xs mt-1" style="color:var(--muted)">Activa widgets en modo edición.</div></div>`);
-  updateClock(); updateCountdown(); renderPlayerBar();
+  updateClock(); updateCountdown(); updateExamCountdowns(); renderPlayerBar();
 }
 function saveWidgetSizes(){
   let changed=false;
