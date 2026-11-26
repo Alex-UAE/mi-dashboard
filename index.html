@@ -433,6 +433,7 @@ function loadState(){
       widgetSizes: { ...(p.widgetSizes||{}) },
       quote: p.quote||0, targetDate: p.targetDate||'',
       attendance: Array.isArray(p.attendance) ? p.attendance : [],
+      examsExtra: Array.isArray(p.examsExtra) ? p.examsExtra : [],
       python: { ...d.python, ...(p.python||{}) },
       spotify: { ...d.spotify, ...(p.spotify||{}) },
       lastfm: { ...d.lastfm, ...(p.lastfm||{}) },
