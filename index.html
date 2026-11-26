@@ -725,6 +725,16 @@ function dailyChallenge(){
 const PY_TOTAL_PHASES=PY_UNITS.reduce((n,u)=>n+u.phases.length,0);
 // Feriados de Ecuador 2026 que caen en días lectivos del periodo
 const EC_HOLIDAYS=['2026-11-02','2026-11-03','2026-11-20'];
+// Horario de exámenes C2 · período desde el 7 de diciembre de 2026
+const EXAMS=[
+ {id:'ex1',subject:'Física',teacher:'Ing. Christian Nieves M.',date:'2026-12-07',time:'20:00'},
+ {id:'ex2',subject:'Cálculo diferencial',teacher:'Ing. Raquel Gómez C.',date:'2026-12-08',time:'20:00'},
+ {id:'ex3',subject:'Computación y sociedad',teacher:'Ing. Luis Pilco A.',date:'2026-12-09',time:'18:00'},
+ {id:'ex4',subject:'Ofimática 1',teacher:'Ing. Christian Nieves M.',date:'2026-12-09',time:'20:00'},
+ {id:'ex5',subject:'Introducción al pensamiento crítico',teacher:'Ing. Verónica Guevara A.',date:'2026-12-10',time:'18:00'},
+ {id:'ex6',subject:'Fundamentos de programación',teacher:'Ing. Christian Nieves M.',date:'2026-12-10',time:'20:00'},
+ {id:'ex7',subject:'Lenguaje y comunicación',teacher:'Ing. Eddie Erazo P.',date:'2026-12-11',time:'20:00'}
+];
 
 /* ============ Widgets ============ */
 const WIDGETS = {
